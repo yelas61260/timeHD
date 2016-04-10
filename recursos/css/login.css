@@ -1,0 +1,13 @@
+.loginform{
+	position:relative;
+	width:25%;
+	height:200px;
+	background:#fff;
+	text-align:center;
+	margin:30px auto;
+	border-radius:15%;
+}
+.loginform .contenido{
+	position:absolute;
+	margin:25px 50px;
+}

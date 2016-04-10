@@ -1,0 +1,15 @@
+#logo_img{
+	width: 40%;
+	display: inline-block;
+}
+#logo_texto{
+	text-align: center;
+	color: #fff;
+	font-family: Helvetica, Helvetica Neue, Arial, sans-serif;
+	font-size: 23px;
+	font-weight: bold;
+	width: 57%;
+	margin-top: 20px;
+	position: absolute;
+	display: inline-block;
+}
