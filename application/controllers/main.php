@@ -19,9 +19,11 @@ class Main extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->model('lib');
-		$data = array('header' => $this->lib->print_header());
-		$this->load->view('login', $data);
+		if(empty($this->session->userdata('id'))){
+			header('Location: ' . base_url() . 'login' );
+		}else{
+			header('Location: home');
+		}
 	}
 }
 

@@ -3,13 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Login</title>
-<link rel="stylesheet" type="text/css" href="<?= base_url(); ?>recursos/css/base.css" />
 <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>recursos/css/login.css" />
 </head>
 
 <body>
   <?= $header ?>
-    <form action="<?= base_url(); ?>login/ingreso.php" method="post" id="login">
+    <form action="<?= base_url(); ?>login/control_login" method="post" id="login">
           <div class="loginform">
           <div class="contenido" align="center">
             <div class="form-label"><label for="username">Usuario</label></div>
