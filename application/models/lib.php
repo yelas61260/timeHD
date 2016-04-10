@@ -22,11 +22,11 @@ class lib extends CI_Model
 		$content = '';
 		$content .= "<div class='botones'>";
 		$content .= "<div class='botones_nav'>";
-		$content .= "<a href='".base_url()."/mod'>Menú</a>";
-		$content .= "<a>Usuario: ".$_SESSION["nombre"]."</a>";
+		$content .= "<a href='".base_url()."home'>Menú</a>";
+		$content .= "<a>Usuario: ".$this->session->userdata("nombre")."</a>";
 		$content .= "</div>";
 		$content .= "<div class='botones_salida'>";
-		$content .= "<a href='".base_url()."/login/salida.php'>Salir</a>";
+		$content .= "<a href='".base_url()."login/control_logout'>Salir</a>";
 		$content .= "</div>";
 		$content .= "</div>";
 		return $content;
@@ -36,22 +36,22 @@ class lib extends CI_Model
 		$content = '';
 		$content .= "<div class='form_general'>";
 		$content .= "<div>";
-		$content .= "<p>Bienvenido ".$_SESSION["nombre"]."</p>";
+		$content .= "<p>Bienvenido ".$this->session->userdata("nombre")."</p>";
 		$content .= "</div>";
 		$content .= "</div>";
 		return $content;
 	}
 
-	public function print_lista($DB, $tabla, $campo){
+	public function print_lista($tabla, $campo){
 		$content = '<option value="">Seleccionar</option>';
-		$datos = $DB->get_all_records_tabla($tabla, $campo);
+		$datos = $this->db_con->get_all_records_tabla($tabla, $campo);
 		foreach ($datos as $valor) {
 			$content .= '<option value="'.$valor[0].'">'.utf8_encode($valor[1]).'</option>';
 		}
 		return $content;
 	}
 
-	public function tabla_generar($tabla,$campos,$nameCampos,$valoresCondicion,$DB,$URL){
+	public function tabla_generar($tabla,$campos,$nameCampos,$valoresCondicion,$URL){
 		$tamano = count($campos);
 		$tamcampos = count($nameCampos);
 		echo '<thead><tr>';
@@ -62,7 +62,7 @@ class lib extends CI_Model
 
 		echo '<tbody>';
 		if(empty($valoresCondicion)){
-			$datos = $DB->get_all_records_tabla($tabla, ['*']);
+			$datos = $this->db_con->get_all_records_tabla($tabla, ['*']);
 		}else{
 			$sentenciaSQL = "SELECT * FROM ".$tabla." WHERE ";
 			$tamCondicion = count($valoresCondicion);
@@ -70,7 +70,7 @@ class lib extends CI_Model
 				$sentenciaSQL .= $valoresCondicion[$k]." AND ";
 			}
 			$sentenciaSQL .= $valoresCondicion[$tamCondicion-1];
-			$datos = $DB->get_sql_records($sentenciaSQL);
+			$datos = $this->db_con->get_sql_records($sentenciaSQL);
 		}
 		//print_r($datos);
 		foreach ($datos as $dato) {
@@ -79,11 +79,11 @@ class lib extends CI_Model
 				echo '<td id="campo">'.utf8_encode($dato[$nameCampos[$j]]).'</td>';
 			}
 			echo '<td>';
-			?><img src="<?php echo base_url() ?>/pix/modificar.jpg" width="25" height="25" style="cursor: pointer" onclick="abrir_edit('<?php echo base_url()."/mod/".$URL ?>',<?php echo $dato[0] ?>)">
+			?><img src="<?= base_url(); ?>pix/modificar.jpg" width="25" height="25" style="cursor: pointer" onclick="abrir_edit('<?= base_url()."".$URL ?>',<?php echo $dato[0] ?>)">
 			<?php
   			echo '</td>';
   			echo '<td>';
-			echo '<img src="'.base_url().'/pix/eliminar.jpg" width="25" height="25" style="cursor: pointer" onclick="deleted('.$dato[0].')">';
+			echo '<img src="'.base_url().'pix/eliminar.jpg" width="25" height="25" style="cursor: pointer" onclick="deleted('.$dato[0].')">';
   			echo '</td>';
   			echo '</tr>';
 		}
@@ -98,18 +98,17 @@ class lib extends CI_Model
 	}
 
 	public function required_session(){
-		session_start();
-		if(empty($_SESSION["id"])){
+		if(empty($this->session->userdata("id"))){
 			header("Location: ".base_url());
 		}
 	}
 
 	public function css_js_tables(){
 		$content = '';
-		$content .="<script type='text/javascript' src='".base_url()."/js/jquery.dataTables.min.js'></script>";
-		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."/css/jquery.dataTables.css'>";
-		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."/css/jquery.dataTables.min.css'>";
-		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."/css/estilotabla.css'>";
+		$content .="<script type='text/javascript' src='".base_url()."recursos/js/jquery.dataTables.min.js'></script>";
+		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/jquery.dataTables.css'>";
+		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/jquery.dataTables.min.css'>";
+		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/estilotabla.css'>";
 		return $content;
 	}
 }
