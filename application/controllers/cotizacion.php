@@ -2,8 +2,12 @@
 
 class Cotizacion extends CI_Controller {
 
-	public function index(){}
+	public function index(){
+		$this->lib->required_session();
+	}
 
-	public function create(){}
+	public function create(){
+		$this->lib->required_session();
+	}
 
 }

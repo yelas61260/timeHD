@@ -50,7 +50,7 @@ class db_con extends CI_Model {
 	public function get_sql_records($sentenciaSQL){
 		$sql1=$this->db->query(utf8_decode($sentenciaSQL)) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 		
-		return $$sql1->result_array();
+		return $sql1->result_array();
 	}
 	public function insert_db_datos($tabla, $parametros, $valores)
 	{

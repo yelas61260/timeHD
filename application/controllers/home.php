@@ -4,6 +4,9 @@ class Home extends CI_Controller {
 
 	public function index()
 	{
+
+		$this->lib->required_session();
+		
 		$this->load->model('home/mhome');
 
 		$data = array(

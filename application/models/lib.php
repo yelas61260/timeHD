@@ -1,6 +1,7 @@
 <?php
 class lib extends CI_Model
 {
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -46,21 +47,23 @@ class lib extends CI_Model
 		$content = '<option value="">Seleccionar</option>';
 		$datos = $this->db_con->get_all_records_tabla($tabla, $campo);
 		foreach ($datos as $valor) {
-			$content .= '<option value="'.$valor[0].'">'.utf8_encode($valor[1]).'</option>';
+			$content .= '<option value="'.$valor[0].'">'.$valor[1].'</option>';
 		}
 		return $content;
 	}
 
-	public function tabla_generar($tabla,$campos,$nameCampos,$valoresCondicion,$URL){
+	public function tabla_generar($tabla,$campos,$nameCampos,$valoresCondicion,$URL,$id){
+		$content = '';
+
 		$tamano = count($campos);
 		$tamcampos = count($nameCampos);
-		echo '<thead><tr>';
+		$content .= '<thead><tr>';
 		for($i = 0; $i<$tamano; $i++){
-		echo'<th id="titul">'.$campos[$i].'</th>';
+		$content .='<th id="titul">'.$campos[$i].'</th>';
 		}
-		echo '</tr></thead>';
+		$content .= '</tr></thead>';
 
-		echo '<tbody>';
+		$content .= '<tbody>';
 		if(empty($valoresCondicion)){
 			$datos = $this->db_con->get_all_records_tabla($tabla, ['*']);
 		}else{
@@ -73,28 +76,30 @@ class lib extends CI_Model
 			$datos = $this->db_con->get_sql_records($sentenciaSQL);
 		}
 		//print_r($datos);
+		//return $sentenciaSQL;
 		foreach ($datos as $dato) {
-			echo '<tr>';
+			$content .= '<tr>';
 			for($j = 0; $j<$tamcampos - 2; $j++){
-				echo '<td id="campo">'.utf8_encode($dato[$nameCampos[$j]]).'</td>';
+				$content .= '<td id="campo">'.$dato[$nameCampos[$j]].'</td>';
 			}
-			echo '<td>';
-			?><img src="<?= base_url(); ?>pix/modificar.jpg" width="25" height="25" style="cursor: pointer" onclick="abrir_edit('<?= base_url()."".$URL ?>',<?php echo $dato[0] ?>)">
-			<?php
-  			echo '</td>';
-  			echo '<td>';
-			echo '<img src="'.base_url().'pix/eliminar.jpg" width="25" height="25" style="cursor: pointer" onclick="deleted('.$dato[0].')">';
-  			echo '</td>';
-  			echo '</tr>';
+			$content .= '<td>';
+			$content .= '<form action="'.base_url().$URL.'/create/'.$dato[$id].'" metod="post">';
+			$content .= '<button><img src="'.base_url().'recursos/pix/modificar.jpg" width="25" height="25"></button>';
+  			$content .= '</form>';
+  			$content .= '</td>';
+  			$content .= '<td>';
+			$content .= '<img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25" style="cursor:pointer" onclick="deleted('.$dato[$id].')">';
+  			$content .= '</td>';
+  			$content .= '</tr>';
 		}
-		echo '</tbody>';
+		$content .= '</tbody>';
 
-		echo'<tfoot><tr>';
+		$content .='<tfoot><tr>';
 		for($j = 0; $j<$tamcampos; $j++){
-			echo '<th id="titul"></th>';
+			$content .= '<th id="titul"></th>';
 		}
-		echo '</tr></tfoot>';
-
+		$content .= '</tr></tfoot>';
+		return $content;
 	}
 
 	public function required_session(){
@@ -111,4 +116,5 @@ class lib extends CI_Model
 		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/estilotabla.css'>";
 		return $content;
 	}
+
 }
