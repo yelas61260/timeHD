@@ -6,7 +6,7 @@ class renders extends CI_Model
 {
 	private static $tablas;
 	
-	function __construct(argument)
+	function __construct()
 	{
 		parent::__construct();
 

@@ -1,10 +1,12 @@
 <?php
 class mestandar extends CI_Model
 {
-	private $id;
-	private $campos;
-	private $campos_actividad;
-	private $campos_read;
+	private static $id;
+	private static $campos;
+	private static $campos_actividad;
+	private static $campos_read;
+
+	private static $tablas;
 
 	public function __construct()
 	{
@@ -55,6 +57,16 @@ class mestandar extends CI_Model
 		self::$campos_actividad[4] = "costo_estimado";
 		self::$campos_actividad[5] = "fk_proyecto";
 		self::$campos_actividad[6] = "fk_actividad";
+
+		self::$tablas = $this->db_struc->getTablas();
+	}
+
+	public function get_table_grafic(){
+		return $this->lib->tabla_generar(self::$tablas[10]." AS t1, ".self::$tablas[2]." AS t2, ".self::$tablas[19]." AS t3",
+				array("Nombre","Fecha inicio estimada","Fecha fin estimada","Cliente","Tipo","",""),
+				array("nombre","fecha_inicio_estimada","fecha_fin_estimada","cliente","tipo","",""),
+				["t1.fk_cliente=t2.id","t1.fk_tipo=t3.id","t1.fk_estados=1"],"estandar",self::get_id(),
+				["t1.id as id","t1.nombre","t1.fecha_inicio_estimada","t1.fecha_fin_estimada","t2.nombre as cliente","t3.nombre as tipo"]);
 	}
 
 	public function get_id(){

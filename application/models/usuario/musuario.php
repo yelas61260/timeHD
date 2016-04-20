@@ -1,10 +1,12 @@
 <?php
 class musuario extends CI_Model
 {
-	private $campos;
-	private $campos2;
-	private $campos3;
-	private $campos_read;
+	private static $campos;
+	private static $campos2;
+	private static $campos3;
+	private static $campos_read;
+
+	private static $tablas;
 
 	public function __construct()
 	{
@@ -46,6 +48,19 @@ class musuario extends CI_Model
 
 		self::$campos3[0] = "fk_recursos";
 		self::$campos3[1] = "fk_roles";
+
+		self::$tablas = $this->db_struc->getTablas();
+	}
+
+	public function get_table_grafic(){
+		return $this->lib->tabla_generar(self::$tablas[12],
+				array("Cedula","Nombre","Apellido","Direccion","Telefono 1","Telefono 2","Titulo","Usuario","Salario","Cargo","",""),
+				array("cedula","nombre","apellido","direccion","telefono_uno","telefono_dos","titulo","usuario","salario","cargo","",""),
+				["fk_estados=1"],"usuario",self::get_id());
+	}
+
+	public function get_id(){
+		return self::$campos[0];
 	}
 
 	public function get_campos(){

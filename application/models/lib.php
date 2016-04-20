@@ -47,12 +47,12 @@ class lib extends CI_Model
 		$content = '<option value="">Seleccionar</option>';
 		$datos = $this->db_con->get_all_records_tabla($tabla, $campo);
 		foreach ($datos as $valor) {
-			$content .= '<option value="'.$valor[0].'">'.$valor[1].'</option>';
+			$content .= '<option value="'.$valor[$campo[0]].'">'.$valor[$campo[1]].'</option>';
 		}
 		return $content;
 	}
 
-	public function tabla_generar($tabla,$campos,$nameCampos,$valoresCondicion,$URL,$id){
+	public function tabla_generar($tabla,$campos,$nameCampos,$valoresCondicion,$URL,$id,$campos_get=null){
 		$content = '';
 
 		$tamano = count($campos);
@@ -67,7 +67,17 @@ class lib extends CI_Model
 		if(empty($valoresCondicion)){
 			$datos = $this->db_con->get_all_records_tabla($tabla, ['*']);
 		}else{
-			$sentenciaSQL = "SELECT * FROM ".$tabla." WHERE ";
+			$sentenciaSQL = "SELECT ";
+			if($campos_get == null){
+				$sentenciaSQL .= "*";
+			}else{
+				$tamCondicion = count($campos_get);
+				for($k = 0; $k<$tamCondicion-1; $k++) {
+					$sentenciaSQL .= $campos_get[$k].", ";
+				}
+				$sentenciaSQL .= $campos_get[$tamCondicion-1];
+			}
+			$sentenciaSQL .= " FROM ".$tabla." WHERE ";
 			$tamCondicion = count($valoresCondicion);
 			for($k = 0; $k<$tamCondicion-1; $k++) {
 				$sentenciaSQL .= $valoresCondicion[$k]." AND ";
@@ -75,8 +85,8 @@ class lib extends CI_Model
 			$sentenciaSQL .= $valoresCondicion[$tamCondicion-1];
 			$datos = $this->db_con->get_sql_records($sentenciaSQL);
 		}
+		//print_r($sentenciaSQL);
 		//print_r($datos);
-		//return $sentenciaSQL;
 		foreach ($datos as $dato) {
 			$content .= '<tr>';
 			for($j = 0; $j<$tamcampos - 2; $j++){

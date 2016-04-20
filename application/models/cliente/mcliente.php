@@ -1,9 +1,11 @@
 <?php
 class mcliente extends CI_Model
 {
-	private $campos;
-	private $campos2;
-	private $campos_read;
+	private static $campos;
+	private static $campos2;
+	private static $campos_read;
+
+	private static $tablas;
 
 	public function __construct()
 	{
@@ -34,6 +36,15 @@ class mcliente extends CI_Model
 
 		self::$campos2[0] = "nombre";
 		self::$campos2[1] = "fk_pais";
+
+		self::$tablas = $this->db_struc->getTablas();
+	}
+
+	public function get_table_grafic(){
+		return $this->lib->tabla_generar(self::$tablas[2],
+				array("NIT","Nombre","Dirección","Nombre contacto","Apellido contacto","Correo","Telefono","",""),
+				array("id","nombre","direccion","nombre_contacto","apellido_contacto","correo","telefono_uno","",""),
+				["fk_estados=1"],"cliente",self::get_id());
 	}
 
 	public function get_id(){
