@@ -20,7 +20,7 @@
 						<?= $table_grafic ?>
 					</table>
 					<br>
-					<button id="boton_agregar" onclick="abrir_nuevo('<?= base_url().$mod_view; ?>')">Agregar</button>
+					<button id="boton_agregar" onclick="abrir_ruta('<?= base_url().$mod_view; ?>/create')">Agregar</button>
 					<br>
 				</div>
 			</div>

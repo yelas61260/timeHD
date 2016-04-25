@@ -95,7 +95,8 @@ class mactividad extends CI_Model
 		return $this->lib->tabla_generar(self::$tablas[0]." AS t1, ".self::$tablas[4]." AS t2",
 				array("Nombre","Fase","",""),
 				array("nombre","nombre_fase","",""),
-				["t1.fk_fases = t2.id", "t1.fk_estados = 1"],"actividad",self::get_id());
+				["t1.fk_fases = t2.id", "t1.fk_estados = 1"],"actividad",self::get_id(),
+				["t1.id","t1.nombre","t2.nombre_fase"]);
 	}
 
 	public function get_id(){

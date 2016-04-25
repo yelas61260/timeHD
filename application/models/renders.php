@@ -24,4 +24,12 @@ class renders extends CI_Model
 	public function get_list_roles(){
 		return $this->lib->print_lista(self::$tablas[15], ["id","nombre"]);
 	}
+
+	public function get_list_pais(){
+		return $this->lib->print_lista(self::$tablas[5], ["id","nombre"]);
+	}
+
+	public function get_list_sector(){
+		return $this->lib->print_lista(self::$tablas[17], ["id","nombre"]);
+	}
 }

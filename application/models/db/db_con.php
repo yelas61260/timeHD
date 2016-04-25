@@ -22,15 +22,26 @@ class db_con extends CI_Model {
 			return false;
 		}
 	}
-	public function get_all_records($tabla, $parametros, $valores){
-		$sentenciaSQL = "SELECT * FROM $tabla WHERE";
+	public function get_all_records($tabla, $parametros, $valores, $campos_get=null){
+		$sentenciaSQL = "SELECT ";
+		if($campos_get == null){
+			$sentenciaSQL .= "*";
+		}else{
+			$tamCondicion = count($campos_get);
+			for($k = 0; $k<$tamCondicion-1; $k++) {
+				$sentenciaSQL .= $campos_get[$k].", ";
+			}
+			$sentenciaSQL .= $campos_get[$tamCondicion-1];
+		}
+		$sentenciaSQL .= " FROM $tabla WHERE";
 		$tamParam = count($parametros);
 		for($i=0; $i<$tamParam-1; $i++){
 			$sentenciaSQL .= " ".$parametros[$i]."='".$valores[$i]."' AND";
 		}
 		$sentenciaSQL .= " ".$parametros[$tamParam-1]."='".$valores[$tamParam-1]."';";
+		//print_r($sentenciaSQL);
 		$sql1=$this->db->query(utf8_decode($sentenciaSQL)) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
-		
+
 		return $sql1->result_array();
 	}
 	public function get_all_records_tabla($tabla, $parametros){
@@ -55,17 +66,14 @@ class db_con extends CI_Model {
 	public function insert_db_datos($tabla, $parametros, $valores)
 	{
 		$tamParam = count($parametros);
-		$sentenciaSQL = "INSERT INTO $tabla (`";
-		for($i = 0; $i<$tamParam-1; $i++){
-			$sentenciaSQL .= $parametros[$i]."`, `";
+		$datos_array = [];
+		for($i = 0; $i<$tamParam; $i++){
+			$datos_array[$parametros[$i]] = $valores[$i];
 		}
-		$sentenciaSQL .= $parametros[$tamParam-1]."`) VALUES ('";
-		for($i = 0; $i<$tamParam-1; $i++){
-			$sentenciaSQL .= $valores[$i]."', '";
-		}
-		$sentenciaSQL .= $valores[$tamParam-1]."');";
 
-		$sql1 = $this->db->query(utf8_decode($sentenciaSQL)) or die("No se pudo agregar el registro ".$sentenciaSQL);
+		$sql1 = $this->db->insert($tabla, $datos_array);
+
+		return $this->db->insert_id();
 	}
 	
 	public function update_db_datos($tabla, $parametros, $valores, $nameID, $valueID){

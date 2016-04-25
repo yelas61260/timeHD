@@ -1,51 +1,81 @@
-var formName="";
-var root_ruta="";
-
-function cambiarFormName(param_root_ruta,paramformName){
-	formName=paramformName;
-	root_ruta = param_root_ruta;
-}
-function create(){
-	alert(document.forms[formName]);
+function create(param_ruta,param_formName){
 	var strDAtos = "";
-	for(i=0; i<document.forms[formName].length; i++){
-		strDAtos += document.forms[formName][i].name+"="+document.forms[formName][i].value;
-		if(i<document.forms[formName].length-1){
+	for(i=0; i<document.forms[param_formName].length; i++){
+		strDAtos += document.forms[param_formName][i].name+"="+document.forms[param_formName][i].value;
+		if(i<document.forms[param_formName].length-1){
+			strDAtos += "&";
+		}
+	}
+	alert(strDAtos);
+	alert(param_ruta);
+	$.ajax({
+		type: "POST",
+		url: param_ruta+"/jinsert",
+		datatype: "html",
+		data: strDAtos,
+		success: function(data) {
+			alert(data);
+			window.location.reload(true);
+		}
+	});
+}
+function update(param_ruta,param_formName){
+	var strDAtos = "";
+	for(i=0; i<document.forms[param_formName].length; i++){
+		strDAtos += document.forms[param_formName][i].name+"="+document.forms[param_formName][i].value;
+		if(i<document.forms[param_formName].length-1){
 			strDAtos += "&";
 		}
 	}
 	$.ajax({
 		type: "POST",
-		url: root_ruta+"class/insert.php",
+		url: param_ruta+"/jupdate",
 		datatype: "html",
 		data: strDAtos,
 		success: function(data) {
-			alert(data);
-			//window.location.reload(true);
+			window.location = param_ruta+"/";
 		}
 	});
 }
-function abrir_edit(param_ruta_padre, id){
-	window.location= param_ruta_padre+"/create/edit.php?id="+id;
+function deleted(paramId, param_ruta){
+	if (confirm("esta seguro de eliminar el registro")){// validacion de eliminar
+		var strDAtos = "id="+paramId;
+		$.ajax({
+			type: "POST",
+			url: param_ruta+"/jdeleted",
+			datatype: "html",
+			data: strDAtos,
+			success: function(data) {
+				//alert(data);
+				window.location = param_ruta;
+			}
+		});
+	}else{
+		window.location = param_ruta;
+	}
 }
-function abrir_nuevo(param_ruta_padre){
-	window.location= param_ruta_padre+"/create/";
+function abrir_ruta(param_ruta){
+	window.location= param_ruta;
 }
-function read(paramId, param_ruta_padre){
+function read(paramId, param_ruta, param_formName){
 	var strDAtos = "id="+paramId;
 	var datosArray;
 	mostrando = false;
 	$.ajax({
 		type: "POST",
-		url: root_ruta+"class/read.php",
+		url: param_ruta+"/jread",
 		datatype: "html",
 		data: strDAtos,
 		success: function(data) {
+			//alert(data);
 			datosArray = data.split(",");
-			for(i=0; i<document.forms[formName].length; i++){
-				document.forms[formName][i].value = datosArray[i];
+			for(i=0; i<document.forms[param_formName].length; i++){
+				document.forms[param_formName][i].value = datosArray[i];
+				if(i==0){
+					document.forms[param_formName][i].disabled = true;
+				}
 			}
-			document.getElementById("enviar_btn").onclick = function(){update(param_ruta_padre);};
+			document.getElementById("enviar_btn").onclick = function(){update(param_ruta,param_formName);};
 		}
 	});
 }
@@ -180,49 +210,15 @@ function read_tarea_act(){
 	document.getElementById("roles_tarea").value = ""+arreglo_acti+"";
 	document.getElementById("cont_roles_tareas").innerHTML += content;
 }
-function read_tarea_act_edit(id_rol){
-	var arreglo_roles = document.getElementById("roles").value;
-	var content = "<tr><td>"+document.getElementById("rol").options[id_rol].innerHTML+"</td></tr>";
-	if(arreglo_roles == ""){
-		arreglo_roles += ""+id_rol+"";
+function read_tarea_act_edit(id_rol, nom_tarea){
+	var arreglo_acti = document.getElementById("roles_tarea").value;
+	var content = "<tr><td>"+document.getElementById("roles").options[id_rol].innerHTML+"</td>";
+	content += "<td>"+nom_tarea+"</td></tr>"
+	if(arreglo_acti == ""){
+		arreglo_acti += ""+document.getElementById("roles").value+","+nom_tarea;
 	}else{
-		arreglo_roles += ";"+id_rol+"";
+		arreglo_acti += ";"+document.getElementById("roles").value+","+nom_tarea;
 	}
-	document.getElementById("roles").value = ""+arreglo_roles+"";
-	document.getElementById("cont_roles").innerHTML += content;
-}
-
-function update(param_ruta_padre){
-	var strDAtos = "";
-	for(i=0; i<document.forms[formName].length; i++){
-		strDAtos += document.forms[formName][i].name+"="+document.forms[formName][i].value;
-		if(i<document.forms[formName].length-1){
-			strDAtos += "&";
-		}
-	}
-	$.ajax({
-		type: "POST",
-		url: root_ruta+"class/update.php",
-		datatype: "html",
-		data: strDAtos,
-		success: function(data) {
-			alert(data);
-			window.location = param_ruta_padre+"/";
-		}
-	});
-}
-function deleted(paramId){
-	if (confirm("esta seguro de eliminar el registro")){// validacion de eliminar
-		var strDAtos = "id="+paramId;
-		$.ajax({
-			type: "POST",
-			url: root_ruta+"class/deleted.php",
-			datatype: "html",
-			data: strDAtos,
-			success: function(data) {
-				//alert(data);
-				window.location.reload(true);
-			}
-		});
-	}
+	document.getElementById("roles_tarea").value = ""+arreglo_acti+"";
+	document.getElementById("cont_roles_tareas").innerHTML += content;
 }

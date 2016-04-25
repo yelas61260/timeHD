@@ -93,12 +93,14 @@ class lib extends CI_Model
 				$content .= '<td id="campo">'.$dato[$nameCampos[$j]].'</td>';
 			}
 			$content .= '<td>';
-			$content .= '<form action="'.base_url().$URL.'/create/'.$dato[$id].'" metod="post">';
+			$content .= '<form action="'.base_url().$URL.'/update/'.$dato[$id].'" metod="post">';
 			$content .= '<button><img src="'.base_url().'recursos/pix/modificar.jpg" width="25" height="25"></button>';
   			$content .= '</form>';
   			$content .= '</td>';
   			$content .= '<td>';
-			$content .= '<img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25" style="cursor:pointer" onclick="deleted('.$dato[$id].')">';
+  			$content .= '<form action="'.base_url().$URL.'/deleted/'.$dato[$id].'" metod="post">';
+			$content .= '<button><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
+  			$content .= '</form>';
   			$content .= '</td>';
   			$content .= '</tr>';
 		}

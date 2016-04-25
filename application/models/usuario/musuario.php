@@ -28,14 +28,14 @@ class musuario extends CI_Model
 		self::$campos[13] = "fk_ciudad";
 
 		self::$campos_read[0] = "cedula";
-		self::$campos_read[1] = 1;
-		self::$campos_read[2] = 2;
+		self::$campos_read[1] = "nombre_usu";
+		self::$campos_read[2] = "apellido";
 		self::$campos_read[3] = "direccion";
 		self::$campos_read[4] = "telefono_uno";
 		self::$campos_read[5] = "telefono_dos";
 		self::$campos_read[6] = "correo";
-		self::$campos_read[7] = 15;
-		self::$campos_read[8] = 16;
+		self::$campos_read[7] = "ciudad_nombre";
+		self::$campos_read[8] = "id_pais";
 		self::$campos_read[9] = "titulo";
 		self::$campos_read[10] = "cargo";
 		self::$campos_read[11] = "salario";

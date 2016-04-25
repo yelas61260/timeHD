@@ -10,7 +10,6 @@
 	<?= $header ?>
 	<?= $menu ?>
 	<script type='text/javascript' src='<?= base_url(); ?>recursos/js/ajax.js'/></script>
-	<script type='text/javascript' src='<?= base_url(); ?>recursos/js/tabla.js'/></script>
 	<div class="form_general">
 		<div id="cont" >
 			<div id="formulario">
@@ -70,8 +69,9 @@
 						</tbody>
 					</table>
 				</div>
-				<button id="enviar_btn" onclick="create('../')"/>Enviar</button>
+				<button id="enviar_btn" onclick="create('<?= base_url() ?>actividad','form_actividad')">Enviar</button>
 		</div>
 	</div>
 </body>
+<script type="text/javascript"><?= $update_script ?></script>
 </html>

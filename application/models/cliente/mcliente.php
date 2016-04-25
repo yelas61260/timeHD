@@ -23,8 +23,8 @@ class mcliente extends CI_Model
 		self::$campos[9] = "fk_sector";
 		self::$campos[10] = "fk_estados";
 
-		self::$campos_read[0] = 1;
-		self::$campos_read[1] = 12;
+		self::$campos_read[0] = "nomb_cliente";
+		self::$campos_read[1] = "ciudad";
 		self::$campos_read[2] = "fk_pais";
 		self::$campos_read[3] = "direccion";
 		self::$campos_read[4] = "nombre_contacto";
