@@ -70,22 +70,21 @@ function read(paramId, param_ruta, param_formName){
 			//alert(data);
 			datosArray = data.split(",");
 			for(i=0; i<document.forms[param_formName].length; i++){
-				document.forms[param_formName][i].value = datosArray[i];
-				if(i==0){
-					document.forms[param_formName][i].disabled = true;
+				if(datosArray[i] != ""){
+					document.forms[param_formName][i].value = datosArray[i];
 				}
 			}
 			document.getElementById("enviar_btn").onclick = function(){update(param_ruta,param_formName);};
 		}
 	});
 }
-function read_actividad_cotizacion(){
+function read_actividad_cotizacion(param_ruta){
 	var strDAtos = "id="+document.getElementById("act").value+"&cant_est="+document.getElementById("cant_est_act").value;
 	strDAtos += "&total_tiempo="+document.getElementById("total_tiempo").innerHTML+"&total_costo="+document.getElementById("total_costo").innerHTML;
 	var datosArray;
 	$.ajax({
 		type: "POST",
-		url: "../../actividad/class/read_data_act.php",
+		url: param_ruta+"/read_data_act",
 		datatype: "html",
 		data: strDAtos,
 		success: function(data) {
@@ -215,9 +214,9 @@ function read_tarea_act_edit(id_rol, nom_tarea){
 	var content = "<tr><td>"+document.getElementById("roles").options[id_rol].innerHTML+"</td>";
 	content += "<td>"+nom_tarea+"</td></tr>"
 	if(arreglo_acti == ""){
-		arreglo_acti += ""+document.getElementById("roles").value+","+nom_tarea;
+		arreglo_acti += ""+id_rol+","+nom_tarea;
 	}else{
-		arreglo_acti += ";"+document.getElementById("roles").value+","+nom_tarea;
+		arreglo_acti += ";"+id_rol+","+nom_tarea;
 	}
 	document.getElementById("roles_tarea").value = ""+arreglo_acti+"";
 	document.getElementById("cont_roles_tareas").innerHTML += content;

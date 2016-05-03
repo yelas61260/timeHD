@@ -16,6 +16,7 @@
 				<form action="" metod="post" name="form_actividad" id="form_actividad">
 
 				<input type="hidden" name="roles_tarea" id="roles_tarea" value="">
+				<input type="hidden" name="id" id="id" value="">
 				<table class="form_header" id="tab_datos">
 				<br>
 				<tr>

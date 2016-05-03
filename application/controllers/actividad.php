@@ -72,15 +72,15 @@ class Actividad extends CI_Controller {
 
 		$datos = $this->db_con->get_all_records($tablas[0], [$this->mactividad->get_id()], [$id]);
 
-		$datosSTR = "";
+		$datosSTR = ",".$id.",";
 
 		$etiquetas = $this->mactividad->get_campos1();
 		$tam = count($etiquetas);
 
 		for($i = 0; $i<$tam-1; $i++) {
-			$datosSTR .= utf8_encode($datos[0][$i]).",";
+			$datosSTR .= utf8_encode($datos[0][$etiquetas[$i]]).",";
 		}
-		$datosSTR .= utf8_encode($datos[0][$tam-1])."";
+		$datosSTR .= utf8_encode($datos[0][$etiquetas[$tam-1]])."";
 		echo $datosSTR;
 	}
 
@@ -117,7 +117,7 @@ class Actividad extends CI_Controller {
 			'titulo' => 'Crear Actividad',
 			'header' => $this->lib->print_header(),
 			'menu' => $this->lib->print_menu(),
-			'lista_pais' => $this->renders->get_list_pais(),
+			'lista_fase' => $this->renders->get_list_fase(),
 			'lista_estado' => $this->renders->get_list_estado(),
 			'lista_roles' => $this->renders->get_list_roles(),
 			'update_script' => 'read('.$id.', "'.base_url().'actividad", "form_actividad");'.$script_roles
@@ -131,11 +131,36 @@ class Actividad extends CI_Controller {
 		$this->load->model('actividad/mactividad');
 
 		$id = $this->input->post("id");
+
 		$datos_array1[0] = $this->input->post("nombre");
 		$datos_array1[1] = $this->input->post("fase");
-		$datos_array1[2] = 1;
+		$datos_array1[2] = $this->input->post("Estado");
 
+		//Se inserta la actividad
 		$this->db_con->update_db_datos($tablas[0], $this->mactividad->get_campos1(), $datos_array1, [$this->mactividad->get_id()], [$id]);
+
+		$datos_array2 = [];
+		$temp_datos_array2 = explode(";", $this->input->post('roles_tarea'));
+		$rel_tarea_rol = [];
+
+		foreach ($temp_datos_array2 as $value) {
+			$datos_array2[] = explode(",", $value);
+		}
+		foreach ($datos_array2 as $array_temp) {
+			if(!$this->db_con->existe_registro($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$id])){
+				$id_tarea = $this->db_con->insert_db_datos($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$id]);
+			}else{
+				$id_tarea = $this->db_con->get_all_records($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$id], ["id"])[0]["id"];
+			}
+			$rel_tarea_rol[] = [$array_temp[0],$id_tarea];
+		}
+
+		foreach ($rel_tarea_rol as $datos_relacion) {
+			if(!$this->db_con->existe_registro($tablas[16], $this->mactividad->get_campos2(), $datos_relacion)){
+				$this->db_con->insert_db_datos($tablas[16], $this->mactividad->get_campos2(), $datos_relacion);
+			}
+		}
+		
 	}
 
 }

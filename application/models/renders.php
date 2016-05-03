@@ -32,4 +32,28 @@ class renders extends CI_Model
 	public function get_list_sector(){
 		return $this->lib->print_lista(self::$tablas[17], ["id","nombre"]);
 	}
+
+	public function get_list_clientes(){
+		return $this->lib->print_lista(self::$tablas[2], ["id","nombre"]);
+	}
+
+	public function get_list_t_desarrollo(){
+		return $this->lib->print_lista(self::$tablas[19], ["id","nombre"]);
+	}
+
+	public function get_list_t_tecnologia(){
+		return $this->lib->print_lista(self::$tablas[19], ["id","nombre"]);
+	}
+
+	public function get_list_responsable(){
+		return $this->lib->print_lista(self::$tablas[12], ["cedula","nombre"]);
+	}
+
+	public function get_list_estado_proy(){
+		return $this->lib->print_lista(self::$tablas[20], ["id","nombre"]);
+	}
+
+	public function get_list_actividades(){
+		return $this->lib->print_lista(self::$tablas[0], ["id","nombre"]);
+	}
 }
