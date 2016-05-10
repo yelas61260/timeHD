@@ -10,6 +10,7 @@ class lib extends CI_Model
 	public function print_header(){
 		$content = '';
 		$content .= "<script type='text/javascript' src='".base_url()."recursos/js/jquery-1.7.1.min.js'></script>";
+		$content .= "<script type='text/javascript' src='".base_url()."recursos/js/jquery.js'></script>";
 		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/header.css'/>";
 		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/base.css'/>";
 		$content .= "<div class='header'>";
@@ -92,17 +93,22 @@ class lib extends CI_Model
 			for($j = 0; $j<$tamcampos - 2; $j++){
 				$content .= '<td id="campo">'.$dato[$nameCampos[$j]].'</td>';
 			}
-			$content .= '<td>';
-			$content .= '<form action="'.base_url().$URL.'/update/'.$dato[$id].'" metod="post">';
-			$content .= '<button><img src="'.base_url().'recursos/pix/modificar.jpg" width="25" height="25"></button>';
-  			$content .= '</form>';
-  			$content .= '</td>';
-  			$content .= '<td>';
-  			$content .= '<form action="'.base_url().$URL.'/deleted/'.$dato[$id].'" metod="post">';
-			$content .= '<button><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
-  			$content .= '</form>';
-  			$content .= '</td>';
-  			$content .= '</tr>';
+			if($nameCampos[$tamcampos - 1] == "" && $nameCampos[$tamcampos - 2] == ""){
+				$content .= '<td>';
+				$content .= '<form action="'.base_url().$URL.'/update/'.$dato[$id].'" metod="post">';
+				$content .= '<button><img src="'.base_url().'recursos/pix/modificar.jpg" width="25" height="25"></button>';
+	  			$content .= '</form>';
+	  			$content .= '</td>';
+	  			$content .= '<td>';
+	  			$content .= '<form action="'.base_url().$URL.'/deleted/'.$dato[$id].'" metod="post">';
+				$content .= '<button><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
+	  			$content .= '</form>';
+	  			$content .= '</td>';
+	  			$content .= '</tr>';
+	  		}else{
+	  			$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 2]].'</td>';
+	  			$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 1]].'</td>';
+	  		}
 		}
 		$content .= '</tbody>';
 
@@ -125,6 +131,17 @@ class lib extends CI_Model
 		$content .="<script type='text/javascript' src='".base_url()."recursos/js/jquery.dataTables.min.js'></script>";
 		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/jquery.dataTables.css'>";
 		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/jquery.dataTables.min.css'>";
+		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/estilotabla.css'>";
+		return $content;
+	}
+
+	public function css_js_tables_responsive(){
+		$content = '';
+		$content .="<script type='text/javascript' src='".base_url()."recursos/js/responsive/jquery-1.12.0.min.js'></script>";
+		$content .="<script type='text/javascript' src='".base_url()."recursos/js/responsive/jquery.dataTables.min.js'></script>";
+		$content .="<script type='text/javascript' src='".base_url()."recursos/js/responsive/dataTables.responsive.min.js'></script>";
+		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/responsive/responsive.dataTables.min.css'>";
+		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/responsive/jquery.dataTables.min.css'>";
 		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/estilotabla.css'>";
 		return $content;
 	}

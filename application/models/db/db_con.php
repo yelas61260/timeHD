@@ -14,8 +14,8 @@ class db_con extends CI_Model {
 			$sentenciaSQL .= " ".$parametros[$i]."='".$valores[$i]."' AND";
 		}
 		$sentenciaSQL .= " ".$parametros[$tamParam-1]."='".$valores[$tamParam-1]."';";
-		$sql1=$this->db->query(utf8_decode($sentenciaSQL)) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
-		
+		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
+		print_r($sentenciaSQL);
 		if(count($sql1->result_array())>0 && count($sql1->result_array()[0])>0){
 			return true;
 		}else{
@@ -40,7 +40,7 @@ class db_con extends CI_Model {
 		}
 		$sentenciaSQL .= " ".$parametros[$tamParam-1]."='".$valores[$tamParam-1]."';";
 		//print_r($sentenciaSQL);
-		$sql1=$this->db->query(utf8_decode($sentenciaSQL)) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
+		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 
 		return $sql1->result_array();
 	}
@@ -54,12 +54,12 @@ class db_con extends CI_Model {
 		
 		$sentenciaSQL .= " FROM $tabla";
 		
-		$sql1=$this->db->query(utf8_decode($sentenciaSQL)) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
+		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 		
 		return $sql1->result_array();
 	}
 	public function get_sql_records($sentenciaSQL){
-		$sql1=$this->db->query(utf8_decode($sentenciaSQL)) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
+		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 		
 		return $sql1->result_array();
 	}
@@ -89,7 +89,7 @@ class db_con extends CI_Model {
 		}
 		$sentenciaSQL .= "`".$nameID[$tamParam-1]."` = '".$valueID[$i]."'";
 		
-		$sql1 = $this->db->query(utf8_decode($sentenciaSQL)) or die("No se pudo actualizar el registro ".$sentenciaSQL);
+		$sql1 = $this->db->query($sentenciaSQL) or die("No se pudo actualizar el registro ".$sentenciaSQL);
 	}
 
 	public function delete_db_datos($tabla, $parametros, $valores){
@@ -99,6 +99,6 @@ class db_con extends CI_Model {
 			$sentenciaSQL .= "`".$parametros[$i]."` = '".$valores[$i]."' AND ";
 		}
 		$sentenciaSQL .= "`".$parametros[$tamParam-1]."` = '".$valores[$i]."'";
-		$sql1 = $this->db->query(utf8_decode($sentenciaSQL)) or die("No se pudo borrar el registro ".$sentenciaSQL);
+		$sql1 = $this->db->query($sentenciaSQL) or die("No se pudo borrar el registro ".$sentenciaSQL);
 	}
 }

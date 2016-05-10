@@ -16,7 +16,7 @@
 		<div id="cont" >
 			<div id="principalTabla"><!--DIV PRINCIPAL-->
 				<div id="div_tabla">
-					<table id="tablaCRUD" class="display" cellspacing="0" width="100%">
+					<table id="tablaCRUD" class="display responsive nowrap" cellspacing="0" width="100%">
 						<?= $table_grafic ?>
 					</table>
 					<br>

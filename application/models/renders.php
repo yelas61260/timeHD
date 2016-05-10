@@ -46,7 +46,7 @@ class renders extends CI_Model
 	}
 
 	public function get_list_responsable(){
-		return $this->lib->print_lista(self::$tablas[12], ["cedula","nombre"]);
+		return $this->lib->print_lista(self::$tablas[12], ["cedula","CONCAT(nombre,' ',apellido)"]);
 	}
 
 	public function get_list_estado_proy(){
@@ -55,5 +55,9 @@ class renders extends CI_Model
 
 	public function get_list_actividades(){
 		return $this->lib->print_lista(self::$tablas[0], ["id","nombre"]);
+	}
+
+	public function get_list_proyecto(){
+		return $this->lib->print_lista(self::$tablas[10], ["id","nombre"]);
 	}
 }

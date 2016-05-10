@@ -33,6 +33,7 @@ function update(param_ruta,param_formName){
 		datatype: "html",
 		data: strDAtos,
 		success: function(data) {
+//			alert(data);
 			window.location = param_ruta+"/";
 		}
 	});
@@ -119,13 +120,13 @@ function read_actividad_cotizacion(param_ruta){
 		}
 	});
 }
-function read_actividad_cotizacion_edit(id_act,cant_est,tiempo_act,val_act){
+function read_actividad_cotizacion_edit(id_act,cant_est,tiempo_act,val_act,param_ruta){
 	var strDAtos = "id="+id_act+"&cant_est="+cant_est+"&tiempo_act="+tiempo_act+"&val_act="+val_act;
 	strDAtos += "&total_tiempo="+document.getElementById("total_tiempo").innerHTML+"&total_costo="+document.getElementById("total_costo").innerHTML;
 	var datosArray;
 	$.ajax({
 		type: "POST",
-		url: "../../actividad/class/read_data_act.php",
+		url: param_ruta+"/read_data_act",
 		datatype: "html",
 		data: strDAtos,
 		success: function(data) {

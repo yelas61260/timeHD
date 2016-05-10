@@ -1,12 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-//cambio de actividad jj
+
 class Actividad extends CI_Controller {
 
 	public function index(){
 		$this->lib->required_session();
 		$this->load->model('actividad/mactividad');
 		$data = array(
-			'css_js_tables' => $this->lib->css_js_tables(),
+			'css_js_tables' => $this->lib->css_js_tables_responsive(),
 			'header' => $this->lib->print_header(),
 			'menu' => $this->lib->print_menu(),
 			'table_grafic' => $this->mactividad->get_table_grafic(),
@@ -114,7 +114,7 @@ class Actividad extends CI_Controller {
 		}
 
 		$data = array(
-			'titulo' => 'Crear Actividad',
+			'titulo' => 'Editar Actividad',
 			'header' => $this->lib->print_header(),
 			'menu' => $this->lib->print_menu(),
 			'lista_fase' => $this->renders->get_list_fase(),
@@ -161,6 +161,51 @@ class Actividad extends CI_Controller {
 			}
 		}
 		
+	}
+
+	public function read_data_act(){
+		$tablas = $this->db_struc->getTablas();
+		$this->lib->required_session();
+		$this->load->model('actividad/mactividad');
+
+		$id = $this->input->post("id");
+
+		$datos1 = $this->db_con->get_sql_records("SELECT t1.fk_fases, t2.nombre_fase, t1.id, t1.nombre FROM ".$tablas[0]." AS t1 JOIN ".$tablas[4]." AS t2 ON t1.fk_fases = t2.id WHERE t1.id = ".$id);
+		$datos2 = $this->db_con->get_sql_records("SELECT DISTINCT AVG(t4.salario) AS dat1 FROM ".$tablas[18]." AS t1 JOIN ".$tablas[16]." AS t2 ON t2.fk_tarea = t1.id JOIN ".$tablas[13]." AS t3 ON t3.fk_roles = t2.fk_roles JOIN ".$tablas[12]." AS t4 ON t4.cedula = t3.fk_recursos WHERE t1.fk_actividad = ".$id);
+		$datos3 = $this->db_con->get_sql_records("SELECT SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(".$this->mactividad->get_campos_time()[8].", ".$this->mactividad->get_campos_time()[7].")))/SUM(".$this->mactividad->get_campos_time()[6].")) AS dat1 FROM ".$tablas[14]." WHERE ".$this->mactividad->get_campos_time()[11]."=".$id);
+
+		$valor_actividad_unidad = floor((int)$datos2[0]['dat1']);
+
+		$datosSTR = "";
+
+		$etiquetas = $this->mactividad->get_campos3();
+		$tam = count($etiquetas);
+
+		for($i = 0; $i<$tam-1; $i++) {
+			$datosSTR .= $datos1[0][$etiquetas[$i]].",";
+		}
+		$datosSTR .= $this->mactividad->val_x_act($datos3[0]['dat1'], $valor_actividad_unidad).",".$datos1[0][$etiquetas[$tam-1]].",".$this->input->post("cant_est");
+		if(empty($this->input->post("cant_real")) == false){
+			$datosSTR .= ",".$this->input->post("cant_real");
+		}
+		$tiempo_act;
+		if (empty($this->input->post("tiempo_act"))) {
+			$tiempo_act = $this->mactividad->mult_fecha($datos3[0]['dat1'], (int)($this->input->post("cant_est").""));
+			$datosSTR .=",".$tiempo_act;
+		}else{
+			$tiempo_act = $this->input->post("tiempo_act");
+			$datosSTR .=",".$this->input->post("tiempo_act");
+		}
+		$val_act;
+		if (empty($this->input->post("val_act"))) {
+			$val_act = floor(($this->mactividad->val_x_act($datos3[0]['dat1'], $valor_actividad_unidad)*(int)($this->input->post("cant_est"))));
+			$datosSTR .=",".$val_act;
+		}else{
+			$val_act = (int)($this->input->post("val_act"));
+			$datosSTR .=",".$this->input->post("val_act");
+		}
+		$datosSTR .=",".$this->mactividad->suma_fecha($this->input->post("total_tiempo"),$tiempo_act).",".((int)($this->input->post("total_costo"))+$val_act);
+		echo $datosSTR;
 	}
 
 }
