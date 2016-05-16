@@ -58,6 +58,20 @@ class db_con extends CI_Model {
 		
 		return $sql1->result_array();
 	}
+	public function get_all_records_tabla_where($tabla, $parametros, $condicion){
+		$sentenciaSQL = "SELECT DISTINCT";
+		$tamParam = count($parametros);
+		for($i=0; $i<$tamParam-1; $i++){
+			$sentenciaSQL .= " ".$parametros[$i].", ";
+		}
+		$sentenciaSQL .= " ".$parametros[$tamParam-1]." ";
+		
+		$sentenciaSQL .= " FROM $tabla WHERE ".$condicion;
+		
+		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
+		
+		return $sql1->result_array();
+	}
 	public function get_sql_records($sentenciaSQL){
 		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 		

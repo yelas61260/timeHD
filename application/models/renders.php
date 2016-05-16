@@ -60,4 +60,16 @@ class renders extends CI_Model
 	public function get_list_proyecto(){
 		return $this->lib->print_lista(self::$tablas[10], ["id","nombre"]);
 	}
+
+	public function get_list_proyecto_x_cli($id_cli){
+		return $this->lib->print_lista_filtrada(self::$tablas[10], ["id","nombre"], ["id","nombre"], "fk_cliente=".$id_cli);
+	}
+
+	public function get_list_recurso_x_proy($id_proy){
+		return $this->lib->print_lista_filtrada(self::$tablas[14].' AS t1, '.self::$tablas[12].' AS t2', ["cedula","nombre"], ["t2.cedula","t2.nombre"], "t1.fk_recursos = t2.cedula AND t1.fk_proyecto = ".$id_proy);
+	}
+
+	public function get_list_actividad_x_rec($id_rec){
+		return $this->lib->print_lista_filtrada(self::$tablas[14].' AS t1, '.self::$tablas[0].' AS t2', ["id","nombre"], ["t2.id","t2.nombre"], "t1.fk_actividad = t2.id AND t1.fk_recursos = ".$id_rec);
+	}
 }

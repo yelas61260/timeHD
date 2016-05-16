@@ -12,6 +12,7 @@
 	<?= $menu ?>
 	<?= $css_js_tables ?>
 	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/ajax.js'/></script>
+	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/renders.js'/></script>
 	<script type='text/javascript' src='<?= base_url(); ?>recursos/js/tabla.js'/></script>
 	<div class="form_general">
 		<div id="cont" >
@@ -23,40 +24,41 @@
 						<tr>
 							<td>
 								<div class="form-label"><label for="cliente">Cliente</label></div>
-								<div class="form-input"><select name="cliente" id="cliente" class="list_reporte"><?= $lista_cliente ?></select></div>
-							</td>
-							<td>
-								<div class="form-label"><label for="tipo_proyecto">Tipo de proyecto</label></div>
-								<div class="form-input"><select name="tipo_proyecto" id="tipo_proyecto" class="list_reporte"><?= $lista_t_proyecto ?></select></div>
+								<div class="form-input"><select name="cliente" id="cliente" class="list_reporte" onchange="cargar_proyectos(this.value,'<?= base_url() ?>reportes')">
+									<?= $lista_cliente ?>
+								</select></div>
 							</td>
 							<td>
 								<div class="form-label"><label for="proyecto">Proyecto</label></div>
-								<div class="form-input"><select name="proyecto" id="proyecto" class="list_reporte"><?= $lista_proyecto ?></select></div>
+								<div class="form-input"><select name="proyecto" id="proyecto" class="list_reporte" onchange="cargar_recursos(this.value,'<?= base_url() ?>reportes')">
+									<option value="">Seleccionar</option>
+								</select></div>
 							</td>
 							<td>
-								<div class="form-label"><label for="estado_proyecto">Estado del proyecto</label></div>
-								<div class="form-input"><select name="estado_proyecto" id="estado_proyecto" class="list_reporte"><?= $lista_e_proeycto ?></select></div>
+								<div class="form-label"><label for="recurso">Colaborador</label></div>
+								<div class="form-input"><select name="recurso" id="recurso" class="list_reporte" onchange="cargar_actividad(this.value,'<?= base_url() ?>reportes')">
+									<option value="">Seleccionar</option>
+								</select></div>
+							</td>
+							<td>
+								<div class="form-label"><label for="actividad">Actividad</label></div>
+								<div class="form-input"><select name="actividad" id="actividad" class="list_reporte">
+									<option value="">Seleccionar</option>
+								</select></div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="form-label"><label for="fase">Fase</label></div>
-								<div class="form-input"><select name="fase" id="fase" class="list_reporte"><?= $lista_fase ?></select></div>
+								<div class="form-label"><label for="fecha_ini">Desde:</label></div>
+								<div class="form-input"><input type="date" name="fecha_ini" id="fecha_ini" size="45" value="" required/></div>
 							</td>
 							<td>
-								<div class="form-label"><label for="actividad">Actividad</label></div>
-								<div class="form-input"><select name="actividad" id="actividad" class="list_reporte"><?= $lista_actividad ?></select></div>
-							</td>
-							<td>
-								<div class="form-label"><label for="rol">Rol</label></div>
-								<div class="form-input"><select name="rol" id="rol" class="list_reporte"><?= $lista_rol ?></select></div>
-							</td>
-							<td>
-								<div class="form-label"><label for="recurso">Colaborador</label></div>
-								<div class="form-input"><select name="recurso" id="recurso" class="list_reporte"><?= $lista_recurso ?></select></div>
+								<div class="form-label"><label for="fecha_fin">Hasta:</label></div>
+								<div class="form-input"><input type="date" name="fecha_fin" id="fecha_fin" size="45" value="" required/></div>
 							</td>
 						</tr>
 					</table>
+					<button>Filtrar</button>
 				</form>
 			</div>
 			<br>
@@ -67,6 +69,12 @@
 						<?= $table_grafic ?>
 					</table>
 				</div>
+			</div>
+			<div>
+				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel/<?= $id_cli ?>/<?= $id_proy ?>/<?= $id_rec ?>/<?= $id_act ?>');">Exportar</button>
+				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_proyectos');">Exportar Proyectos</button>
+				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_actividad');">Exportar Actividades</button>
+				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_recursos');">Exportar Colaboradores</button>
 			</div>
 		</div>
 	</div>

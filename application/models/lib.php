@@ -53,6 +53,16 @@ class lib extends CI_Model
 		return $content;
 	}
 
+
+	public function print_lista_filtrada($tabla, $campo, $get_campo, $condiciones){
+		$content = '<option value="">Seleccionar</option>';
+		$datos = $this->db_con->get_all_records_tabla_where($tabla, $get_campo, $condiciones);
+		foreach ($datos as $valor) {
+			$content .= '<option value="'.$valor[$campo[0]].'">'.$valor[$campo[1]].'</option>';
+		}
+		return $content;
+	}
+
 	public function tabla_generar($tabla,$campos,$nameCampos,$valoresCondicion,$URL,$id,$campos_get=null){
 		$content = '';
 

@@ -70,7 +70,11 @@ class mreporte extends CI_Model
 
 	public function get_table_grafic($condicionales_adicionales=null){
 		if ($condicionales_adicionales!=null) {
-			self::$condicionales = array_merge(self::$condicionales, $condicionales_adicionales);
+			$cond_temp = array();
+			foreach ($condicionales_adicionales as $value) {
+				$cond_temp[] = $value;
+			}
+			self::$condicionales = array_merge(self::$condicionales, $cond_temp);
 		}
 		return $this->lib->tabla_generar(self::$tablas[2]." AS t1, ".self::$tablas[20]." AS t2, ".self::$tablas[10]." AS t3, ".self::$tablas[14]." AS t4, ".self::$tablas[19]." AS t5, ".self::$tablas[12]." AS t6, ".self::$tablas[0]." AS t7, ".self::$tablas[4]." AS t8",
 				self::$encabezados,self::$etiquetas_get,self::$condicionales,"","",self::$etiquetas_set);
