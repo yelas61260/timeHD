@@ -45,14 +45,14 @@ class db_con extends CI_Model {
 		return $sql1->result_array();
 	}
 	public function get_all_records_tabla($tabla, $parametros){
-		$sentenciaSQL = "SELECT";
+		$sentenciaSQL = "SELECT ";
 		$tamParam = count($parametros);
 		for($i=0; $i<$tamParam-1; $i++){
-			$sentenciaSQL .= " ".$parametros[$i].", ";
+			$sentenciaSQL .= $parametros[$i].", ";
 		}
-		$sentenciaSQL .= " ".$parametros[$tamParam-1]." ";
+		$sentenciaSQL .= $parametros[$tamParam-1]." ";
 		
-		$sentenciaSQL .= " FROM $tabla";
+		$sentenciaSQL .= "FROM $tabla";
 		
 		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 		
@@ -114,7 +114,7 @@ class db_con extends CI_Model {
 			$sentenciaSQL .= "`".$parametros[$i]."` = '".$valores[$i]."' AND ";
 		}
 		$sentenciaSQL .= "`".$parametros[$tamParam-1]."` = '".$valores[$i]."'";
-		print_r($sentenciaSQL);
+		//print_r($sentenciaSQL);
 		$sql1 = $this->db->query($sentenciaSQL) or die("No se pudo borrar el registro ".$sentenciaSQL);
 	}
 }

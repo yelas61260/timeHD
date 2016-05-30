@@ -10,8 +10,6 @@ function create(param_ruta,param_formName){
 			strDAtos += "&";
 		}
 	}
-	//alert(strDAtos);
-	//alert(param_ruta);
 	$.ajax({
 		type: "POST",
 		url: param_ruta+"/jinsert",
@@ -35,14 +33,13 @@ function update(param_ruta,param_formName){
 			strDAtos += "&";
 		}
 	}
-	alert(strDAtos);
 	$.ajax({
 		type: "POST",
 		url: param_ruta+"/jupdate",
 		datatype: "html",
 		data: strDAtos,
 		success: function(data) {
-			alert(data);
+			//alert(data);
 			window.location = param_ruta+"/";
 		}
 	});
@@ -105,6 +102,45 @@ function read(paramId, param_ruta, param_formName){
 		}
 	});
 }
+function read_conf(param_ruta, param_formName){
+	var strDAtos = "";
+	var datosArray;
+	mostrando = false;
+	$.ajax({
+		type: "POST",
+		url: param_ruta+"/jread",
+		datatype: "html",
+		data: strDAtos,
+		success: function(data) {
+			//alert(data);
+			datosArray = data.split(",");
+			for(i=0; i<document.forms[param_formName].length; i++){
+				if(datosArray[i] != ""){
+					document.forms[param_formName][i].value = datosArray[i];
+				}
+			}
+		}
+	});
+}
+function update_conf(param_ruta,param_formName){
+	var strDAtos = "";
+	for(i=0; i<document.forms[param_formName].length; i++){
+		strDAtos += document.forms[param_formName][i].name+"="+document.forms[param_formName][i].value;
+		if(i<document.forms[param_formName].length-1){
+			strDAtos += "&";
+		}
+	}
+	$.ajax({
+		type: "POST",
+		url: param_ruta+"/jupdate",
+		datatype: "html",
+		data: strDAtos,
+		success: function(data) {
+			//alert(data);
+			window.location = param_ruta+"/";
+		}
+	});
+}
 function read_actividad_cotizacion(param_ruta){
 	var strDAtos = "id="+document.getElementById("act").value+"&cant_est="+document.getElementById("cant_est_act").value;
 	strDAtos += "&total_tiempo="+document.getElementById("total_tiempo").innerHTML+"&total_costo="+document.getElementById("total_costo").innerHTML;
@@ -139,6 +175,8 @@ function read_actividad_cotizacion(param_ruta){
 			content += "</tr>";
 
 			document.getElementById("cont_acti").innerHTML += content;
+
+			totales_tabla_tiempo_costo();
 		}
 	});
 }
@@ -179,6 +217,8 @@ function read_actividad_cotizacion_edit(id_act,cant_est,tiempo_act,val_act,param
 			document.getElementById("total_costo").innerHTML = parseInt(document.getElementById("total_costo").innerHTML)+parseInt(datosArray[7]);
 
 			document.getElementById("cont_acti").innerHTML += content;
+
+			totales_tabla_tiempo_costo();
 		}
 	});
 }
@@ -197,6 +237,9 @@ function calcularAct(id_act){
 			var temp = Math.floor(fecha_res[i]/60);
 			fecha_res[i] = fecha_res[i]-(temp*60);
 		}
+		if(fecha_res[i]<10){
+			fecha_res[i] = "0"+fecha_res[i];
+		}
 	}
 	datos[3] = fecha_res.join(":");
 	$("#ext_"+id_act+" td")[6].innerHTML = datos[3]+"";
@@ -204,6 +247,8 @@ function calcularAct(id_act){
 	datos[2] = cant_new+"";
 
 	$("#ext_"+id_act).attr("valor", datos+"");
+
+	totales_tabla_tiempo_costo();
 }
 function totales_tabla_cotizacion(param_fecha1,param_fecha2){
 	var fecha_sep1 = (param_fecha1+"").split(":");
@@ -215,6 +260,9 @@ function totales_tabla_cotizacion(param_fecha1,param_fecha2){
 		if(i>0){
 			var temp = Math.floor(fecha_res[i]/60);
 			fecha_res[i] = fecha_res[i]-(temp*60);
+		}
+		if(fecha_res[i]<10){
+			fecha_res[i] = "0"+fecha_res[i];
 		}
 	}
 	return fecha_res.join(":");
@@ -268,4 +316,15 @@ function quitar(id_ext, id_ext_parent){
 			}
 		});
 	}
+	totales_tabla_tiempo_costo();
+}
+function totales_tabla_tiempo_costo(){
+	var total_costo = 0;
+	var total_tiempo = "00:00:00";
+	$("#cont_acti tr").each(function(index){
+		total_costo += parseInt($(this).children()[7].innerHTML);
+		total_tiempo = totales_tabla_cotizacion(total_tiempo, $(this).children()[6].innerHTML);
+	});
+	$("#total_costo").html(total_costo);
+	$("#total_tiempo").html(total_tiempo);
 }
