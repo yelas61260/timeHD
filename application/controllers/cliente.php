@@ -120,9 +120,9 @@ class Cliente extends CI_Controller {
 		$tam = count($etiquetas);
 
 		for($i = 0; $i<$tam-1; $i++) {
-			$datosSTR .= utf8_encode($datos[0][$etiquetas[$i]]).",";
+			$datosSTR .= $datos[0][$etiquetas[$i]].",";
 		}
-		$datosSTR .= utf8_encode($datos[0][$etiquetas[$tam-1]])."";
+		$datosSTR .= $datos[0][$etiquetas[$tam-1]]."";
 		echo $datosSTR;
 	}
 

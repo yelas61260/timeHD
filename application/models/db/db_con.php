@@ -15,7 +15,7 @@ class db_con extends CI_Model {
 		}
 		$sentenciaSQL .= " ".$parametros[$tamParam-1]."='".$valores[$tamParam-1]."';";
 		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
-		print_r($sentenciaSQL);
+		//print_r($sentenciaSQL);
 		if(count($sql1->result_array())>0 && count($sql1->result_array()[0])>0){
 			return true;
 		}else{
@@ -99,9 +99,10 @@ class db_con extends CI_Model {
 		$sentenciaSQL .= "`".$parametros[$tamParam-1]."`= '".$valores[$i]."' WHERE ";
 		$tamParam = count($nameID);
 		for($i = 0; $i<$tamParam-1; $i++){
-			$sentenciaSQL .= "`".$nameID[$i]."` = '".$valueID[$i]."', ";
+			$sentenciaSQL .= "`".$nameID[$i]."` = '".$valueID[$i]."' AND ";
 		}
 		$sentenciaSQL .= "`".$nameID[$tamParam-1]."` = '".$valueID[$i]."'";
+		//print_r($sentenciaSQL);
 		
 		$sql1 = $this->db->query($sentenciaSQL) or die("No se pudo actualizar el registro ".$sentenciaSQL);
 	}
@@ -113,6 +114,7 @@ class db_con extends CI_Model {
 			$sentenciaSQL .= "`".$parametros[$i]."` = '".$valores[$i]."' AND ";
 		}
 		$sentenciaSQL .= "`".$parametros[$tamParam-1]."` = '".$valores[$i]."'";
+		print_r($sentenciaSQL);
 		$sql1 = $this->db->query($sentenciaSQL) or die("No se pudo borrar el registro ".$sentenciaSQL);
 	}
 }

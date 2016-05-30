@@ -4,6 +4,7 @@ class mproyecto extends CI_Model
 	private static $id;
 	private static $campos;
 	private static $campos_actividad;
+	private static $campos_actividad_update;
 	private static $campos_read;
 
 	private static $tablas;
@@ -58,6 +59,11 @@ class mproyecto extends CI_Model
 		self::$campos_actividad[5] = "fk_proyecto";
 		self::$campos_actividad[6] = "fk_actividad";
 
+		self::$campos_actividad_update[0] = "cantidad_real";
+		self::$campos_actividad_update[1] = "cantidad_estimada";
+		self::$campos_actividad_update[2] = "tiempo_estimado";
+		self::$campos_actividad_update[3] = "costo_estimado";
+
 		self::$tablas = $this->db_struc->getTablas();
 	}
 
@@ -83,5 +89,9 @@ class mproyecto extends CI_Model
 
 	public function get_campos_actividad(){
 		return self::$campos_actividad;
+	}
+
+	public function get_campos_actividad_update(){
+		return self::$campos_actividad_update;
 	}
 }

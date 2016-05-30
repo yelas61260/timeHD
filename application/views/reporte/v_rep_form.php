@@ -37,7 +37,7 @@
 							<td>
 								<div class="form-label"><label for="recurso">Colaborador</label></div>
 								<div class="form-input"><select name="recurso" id="recurso" class="list_reporte" onchange="cargar_actividad(this.value,'<?= base_url() ?>reportes')">
-									<option value="">Seleccionar</option>
+									<?= $lista_recurso ?>
 								</select></div>
 							</td>
 							<td>

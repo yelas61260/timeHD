@@ -43,7 +43,7 @@ class Actividad extends CI_Controller {
 		$actividad = $this->db_con->insert_db_datos($tablas[0], $this->mactividad->get_campos1(), $datos_array1);
 
 		$datos_array2 = [];
-		$temp_datos_array2 = explode(";", $this->input->post('roles_tarea'));
+		$temp_datos_array2 = explode(";", $this->input->post('extra'));
 		$rel_tarea_rol = [];
 
 		foreach ($temp_datos_array2 as $value) {
@@ -72,15 +72,15 @@ class Actividad extends CI_Controller {
 
 		$datos = $this->db_con->get_all_records($tablas[0], [$this->mactividad->get_id()], [$id]);
 
-		$datosSTR = ",".$id.",";
+		$datosSTR = $id.",";
 
 		$etiquetas = $this->mactividad->get_campos1();
 		$tam = count($etiquetas);
 
 		for($i = 0; $i<$tam-1; $i++) {
-			$datosSTR .= utf8_encode($datos[0][$etiquetas[$i]]).",";
+			$datosSTR .= $datos[0][$etiquetas[$i]].",";
 		}
-		$datosSTR .= utf8_encode($datos[0][$etiquetas[$tam-1]])."";
+		$datosSTR .= $datos[0][$etiquetas[$tam-1]]."";
 		echo $datosSTR;
 	}
 
@@ -140,7 +140,7 @@ class Actividad extends CI_Controller {
 		$this->db_con->update_db_datos($tablas[0], $this->mactividad->get_campos1(), $datos_array1, [$this->mactividad->get_id()], [$id]);
 
 		$datos_array2 = [];
-		$temp_datos_array2 = explode(";", $this->input->post('roles_tarea'));
+		$temp_datos_array2 = explode(";", $this->input->post('extra'));
 		$rel_tarea_rol = [];
 
 		foreach ($temp_datos_array2 as $value) {
@@ -204,8 +204,18 @@ class Actividad extends CI_Controller {
 			$val_act = (int)($this->input->post("val_act"));
 			$datosSTR .=",".$this->input->post("val_act");
 		}
-		$datosSTR .=",".$this->mactividad->suma_fecha($this->input->post("total_tiempo"),$tiempo_act).",".((int)($this->input->post("total_costo"))+$val_act);
 		echo $datosSTR;
+	}
+
+	public function jdextra(){
+		$tablas = $this->db_struc->getTablas();
+
+		$this->load->model('actividad/mactividad');
+
+		$datos = $this->db_con->get_all_records($tablas[16]." AS t1, ".$tablas[18]." AS t2", [" t1.fk_tarea=t2.id AND t1.fk_roles", "t2.nombre"], [$this->input->post("p2_extra"), $this->input->post("p1_extra")], ["t1.id"]);		
+
+		print_r($datos);
+		$this->db_con->delete_db_datos($tablas[16], ["id"], [$datos[0]["id"]]);
 	}
 
 }

@@ -63,10 +63,12 @@ class Usuario extends CI_Controller {
 		$this->db_con->insert_db_datos($tablas[12], $this->musuario->get_campos(), $datos_array);
 
 		//roles
-		$datos_array = explode(";", $this->input->post('roles'));
+		$datos_array = explode(";", $this->input->post('extra'));
 
 		foreach ($datos_array as $dato_rol) {
-			$this->db_con->insert_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
+			if($dato_rol != ""){
+				$this->db_con->insert_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
+			}
 		}
 	}
 
@@ -98,14 +100,14 @@ class Usuario extends CI_Controller {
 
 		$datos_get = array("t1.cedula","t1.nombre AS nombre_usu","t1.apellido","t1.direccion","t1.telefono_uno","t1.telefono_dos","t1.correo","t2.nombre AS ciudad_nombre","t2.fk_pais AS id_pais","t1.titulo","t1.cargo","t1.salario","t1.usuario","t1.password","t1.fk_estados");
 		$datos = $this->db_con->get_all_records($tablas[12]." AS t1, ".$tablas[1]." AS t2", [" t1.fk_ciudad = t2.id AND t1.cedula"], [$id], $datos_get);
-		$datosSTR = ",";
+		$datosSTR = "";
 
 		$tam = count($etiquetas);
 
 		for($i = 0; $i<$tam-1; $i++) {
-			$datosSTR .= utf8_encode($datos[0][$etiquetas[$i]]).",";
+			$datosSTR .= $datos[0][$etiquetas[$i]].",";
 		}
-		$datosSTR .= utf8_encode($datos[0][$etiquetas[$tam-1]])."";
+		$datosSTR .= $datos[0][$etiquetas[$tam-1]]."";
 		echo $datosSTR;
 	}
 
@@ -118,7 +120,7 @@ class Usuario extends CI_Controller {
 		$script_roles = '';
 		$datos = $this->db_con->get_all_records($tablas[13], ["fk_recursos"], [$id]);
 		foreach ($datos as $dato) {
-			$script_roles .= 'read_roles_usuario_edit('.$dato["fk_roles"].');';
+			$script_roles .= 'read_roles_usuario_edit('.$dato["fk_roles"].', '.$id.');';
 		}
 
 		$data = array(
@@ -166,7 +168,8 @@ class Usuario extends CI_Controller {
 		$this->db_con->update_db_datos($tablas[12], $this->musuario->get_campos(), $datos_array, [$this->musuario->get_campos()[0]], [$this->input->post("cedula")]);
 
 		//roles
-		$datos_array = explode(";", $this->input->post('roles'));
+		$datos_array = explode(";", $this->input->post('extra'));
+		//$this->db_con->delete_db_datos($tablas[13], [$this->musuario->get_campos3()[0]], [$this->input->post("cedula")]);
 
 		foreach ($datos_array as $dato_rol) {
 			$rol = $this->db_con->get_all_records($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
@@ -174,6 +177,14 @@ class Usuario extends CI_Controller {
 				$this->db_con->insert_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
 			}
 		}
+	}
+
+	public function jdextra(){
+		$tablas = $this->db_struc->getTablas();
+
+		$this->load->model('usuario/musuario');
+
+		$this->db_con->delete_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("p1_extra"), $this->input->post("p2_extra")]);
 	}
 
 }

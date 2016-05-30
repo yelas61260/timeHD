@@ -100,10 +100,20 @@ class lib extends CI_Model
 		//print_r($datos);
 		foreach ($datos as $dato) {
 			$content .= '<tr>';
-			for($j = 0; $j<$tamcampos - 2; $j++){
+			for($j = 0; $j<$tamcampos - 3; $j++){
 				$content .= '<td id="campo">'.$dato[$nameCampos[$j]].'</td>';
 			}
 			if($nameCampos[$tamcampos - 1] == "" && $nameCampos[$tamcampos - 2] == ""){
+				if($nameCampos[$tamcampos - 3] == ""){	
+		  			$content .= '<td>';
+		  			$content .= '<form action="'.base_url().$URL.'/conv_proy/'.$dato[$id].'" metod="post">';
+					$content .= '<button><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
+		  			$content .= '</form>';
+		  			$content .= '</td>';
+	  			}else{
+	  				$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 3]].'</td>';
+	  			}
+
 				$content .= '<td>';
 				$content .= '<form action="'.base_url().$URL.'/update/'.$dato[$id].'" metod="post">';
 				$content .= '<button><img src="'.base_url().'recursos/pix/modificar.jpg" width="25" height="25"></button>';

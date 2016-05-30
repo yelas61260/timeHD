@@ -15,7 +15,6 @@
 		<div id="cont" >
 			<div id="formulario">
 				<form method="post" id="form_cotizacion" name="form_cotizacion">
-					<input type="hidden" name="actividades" id="arreglo_env" value="" required>
 					<table class="form_header">
 						<tr>
 							<td>
@@ -43,7 +42,7 @@
 								<div class="form-input"><input type="text" name="codigo" id="codigo" size="45" value="" required/></div>
 							</td>
 							<td>
-								<div class="form-label"><label for="duracion_est">Duración estimada en minutos:</label></div>
+								<div class="form-label"><label for="duracion_est">Duración estimada en minutos del curso:</label></div>
 								<div class="form-input"><input type="text" name="duracion_est" id="duracion_est" size="15" value="" required/></div>
 							</td>
 						</tr>
@@ -112,7 +111,7 @@
 						<td><button onclick="read_actividad_cotizacion('<?= base_url() ?>actividad')">Agregar Actividad</button></td>
 					</tr>
 				</table>
-				<table class="tabla_general" id="tabla_act_de_coti" border="1">
+				<table class="tabla_general" id="extra" border="1">
 					<thead>
 						<th>Fase No.</th>
 						<th>Fase</th>

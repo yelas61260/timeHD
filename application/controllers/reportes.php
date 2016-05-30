@@ -27,6 +27,7 @@ class Reportes extends CI_Controller {
 			'menu' => $this->lib->print_menu(),
 			'css_js_tables' => $this->lib->css_js_tables_responsive(),
 			'lista_cliente' => $this->renders->get_list_clientes(),
+			'lista_recurso' => $this->renders->get_list_responsable(),
 			'table_grafic' => $this->mreporte->get_table_grafic($condiciones_adicionales),
 			'id_cli' => $this->input->post('cliente'),
 			'id_proy' => $this->input->post('proyecto'),

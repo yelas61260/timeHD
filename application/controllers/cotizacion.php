@@ -41,6 +41,13 @@ class Cotizacion extends CI_Controller {
 		echo '<script>deleted('.$id.', "'.base_url().'cotizacion");</script>';
 	}
 
+	public function conv_proy($id){
+		$this->lib->required_session();
+		echo "<script type='text/javascript' src='".base_url()."recursos/js/jquery-1.7.1.min.js'></script>";
+		echo '<script src="'.base_url().'recursos/js/ajax.js"/></script>';
+		echo '<script>conv_proy('.$id.', "'.base_url().'cotizacion");</script>';
+	}
+
 	public function jdeleted(){
 		$tablas = $this->db_struc->getTablas();
 
@@ -49,6 +56,16 @@ class Cotizacion extends CI_Controller {
 		$id = $this->input->post("id");
 
 		$this->db_con->update_db_datos($tablas[10], [$this->mcotizacion->get_campos()[14]], ["2"],[$this->mcotizacion->get_id()], [$id]);
+	}
+
+	public function jconv_proy(){
+		$tablas = $this->db_struc->getTablas();
+
+		$this->load->model('cotizacion/mcotizacion');
+
+		$id = $this->input->post("id");
+
+		$this->db_con->update_db_datos($tablas[10], [$this->mcotizacion->get_campos()[14]], ["1"],[$this->mcotizacion->get_id()], [$id]);
 	}
 
 	public function jinsert(){
@@ -75,7 +92,7 @@ class Cotizacion extends CI_Controller {
 		$this->db_con->insert_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array);
 
 		$datos_array2 = [];
-		$temp_datos_array2 = explode(";", $this->input->post('actividades'));
+		$temp_datos_array2 = explode(";", $this->input->post('extra'));
 		foreach ($temp_datos_array2 as $value) {
 			$datos_array2[] = explode(",", $value);
 		}
@@ -94,7 +111,7 @@ class Cotizacion extends CI_Controller {
 		$datos = $this->db_con->get_all_records($tablas[11], ["fk_proyecto"], [$id]);
 		$string_actividades_add = "";
 		foreach ($datos as $dato) {
-			$string_actividades_add .= 'read_actividad_cotizacion_edit("'.$dato[$campos_act[6]].'","'.$dato[$campos_act[2]].'","'.$dato[$campos_act[3]].'","'.$dato[$campos_act[4]].'","'.base_url().'actividad");';
+			$string_actividades_add .= 'read_actividad_cotizacion_edit("'.$dato[$campos_act[6]].'","'.$dato[$campos_act[2]].'","'.$dato[$campos_act[3]].'","'.$dato[$campos_act[4]].'","'.base_url().'actividad","'.$id.'");';
 		}
 
 		$data = array(
@@ -120,7 +137,7 @@ class Cotizacion extends CI_Controller {
 		$id = $this->input->post("id");
 
 		$datos = $this->db_con->get_all_records($tablas[10], [$this->mcotizacion->get_id()], [$id]);
-		$datosSTR = ",";
+		$datosSTR = "";
 
 		$etiquetas = $this->mcotizacion->get_campos_read();
 		$tam = count($etiquetas);
@@ -156,16 +173,26 @@ class Cotizacion extends CI_Controller {
 		$this->db_con->update_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array, [$this->mcotizacion->get_id()], [$datos_array[0]]);
 
 		$datos_array2 = [];
-		$temp_datos_array2 = explode(";", $this->input->post('actividades'));
+		$temp_datos_array2 = explode(";", $this->input->post('extra'));
 		foreach ($temp_datos_array2 as $value) {
 			$datos_array2[] = explode(",", $value);
 		}
 		foreach ($datos_array2 as $array_temp) {
 			$array_temp[5] = $datos_array[0];
-			if(!$this->db_con->existe_registro($tablas[11], array_slice($this->mcotizacion->get_campos_actividad(),1,7), array_slice($array_temp,1,7))){
+			if(!$this->db_con->existe_registro($tablas[11], [$this->mcotizacion->get_campos_actividad()[5],$this->mcotizacion->get_campos_actividad()[6]], [$array_temp[5],$array_temp[6]])){
 				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad(), $array_temp);
+			}else{
+				$this->db_con->update_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad_update(), [$array_temp[1],$array_temp[2],$array_temp[3],$array_temp[4]], [$this->mcotizacion->get_campos_actividad()[5],$this->mcotizacion->get_campos_actividad()[6]], [$array_temp[5],$array_temp[6]]);
 			}
 		}
+	}
+
+	public function jdextra(){
+		$tablas = $this->db_struc->getTablas();
+
+		$this->load->model('proyecto/mproyecto');
+
+		$this->db_con->delete_db_datos($tablas[11], [$this->mproyecto->get_campos_actividad()[5], $this->mproyecto->get_campos_actividad()[6]], [$this->input->post("p1_extra"), $this->input->post("p2_extra")]);
 	}
 
 }

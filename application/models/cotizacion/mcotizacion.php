@@ -4,6 +4,7 @@ class mcotizacion extends CI_Model
 	private static $id;
 	private static $campos;
 	private static $campos_actividad;
+	private static $campos_actividad_update;
 	private static $campos_read;
 
 	private static $tablas;
@@ -54,13 +55,18 @@ class mcotizacion extends CI_Model
 		self::$campos_actividad[5] = "fk_proyecto";
 		self::$campos_actividad[6] = "fk_actividad";
 
+		self::$campos_actividad_update[0] = "cantidad_real";
+		self::$campos_actividad_update[1] = "cantidad_estimada";
+		self::$campos_actividad_update[2] = "tiempo_estimado";
+		self::$campos_actividad_update[3] = "costo_estimado";
+
 		self::$tablas = $this->db_struc->getTablas();
 	}
 
 	public function get_table_grafic(){
 		return $this->lib->tabla_generar(self::$tablas[10]." AS t1, ".self::$tablas[2]." AS t2, ".self::$tablas[19]." AS t3",
-				array("Nombre","Fecha inicio estimada","Fecha fin estimada","Cliente","Tipo","",""),
-				array("nombre","fecha_inicio_estimada","fecha_fin_estimada","cliente","tipo","",""),
+				array("Nombre","Fecha inicio estimada","Fecha fin estimada","Cliente","Tipo","","",""),
+				array("nombre","fecha_inicio_estimada","fecha_fin_estimada","cliente","tipo","","",""),
 				["t1.fk_cliente=t2.id","t1.fk_tipo=t3.id","t1.fk_estados=3"],"cotizacion",self::get_id(),
 				["t1.id as id","t1.nombre","t1.fecha_inicio_estimada","t1.fecha_fin_estimada","t2.nombre as cliente","t3.nombre as tipo"]);
 	}
@@ -79,5 +85,9 @@ class mcotizacion extends CI_Model
 
 	public function get_campos_actividad(){
 		return self::$campos_actividad;
+	}
+
+	public function get_campos_actividad_update(){
+		return self::$campos_actividad_update;
 	}
 }

@@ -14,7 +14,6 @@
 		<div id="cont" >
 			<div id="formulario">
 				<form action="" method="post" name="form_usuario" id="form_usuario">
-					<input type="hidden" name="roles" id="roles" value="">
 					<table class="form_header" id="tab_datos">
 						<br>
 						<tr>
@@ -129,7 +128,7 @@
 							</td>
 						</tr>
 					</table>
-					<table style="min-width:300px;" class="tabla_general" border="1">
+					<table id="extra" class="tabla_general" border="1">
 						<thead>
 							<th>Roles</th>
 						</thead>
