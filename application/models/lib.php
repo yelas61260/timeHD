@@ -126,6 +126,7 @@ class lib extends CI_Model
 	  			$content .= '</td>';
 	  			$content .= '</tr>';
 	  		}else{
+	  			$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 3]].'</td>';
 	  			$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 2]].'</td>';
 	  			$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 1]].'</td>';
 	  		}
