@@ -4,17 +4,36 @@ class Reportes extends CI_Controller {
 
 	public function index(){
 		$condiciones_adicionales = array();
+		$post_cli = 0;
 		if(!empty($this->input->post('cliente')) && $this->input->post('cliente') != ''){
 			$condiciones_adicionales[] = 't3.fk_cliente = '.$this->input->post('cliente');
+			$post_cli = $this->input->post('cliente');
 		}
+		$post_pro = 0;
 		if(!empty($this->input->post('proyecto')) && $this->input->post('proyecto') != ''){
 			$condiciones_adicionales[] = 't4.fk_proyecto = '.$this->input->post('proyecto');
+			$post_pro = $this->input->post('proyecto');
 		}
+		$post_rec = 0;
 		if(!empty($this->input->post('recurso')) && $this->input->post('recurso') != ''){
 			$condiciones_adicionales[] = 't4.fk_recursos = '.$this->input->post('recurso');
+			$post_rec = $this->input->post('recurso');
 		}
+		$post_act = 0;
 		if(!empty($this->input->post('actividad')) && $this->input->post('actividad') != ''){
 			$condiciones_adicionales[] = 't4.fk_actividad = '.$this->input->post('actividad');
+			$post_act = $this->input->post('actividad');
+		}
+
+		$post_fi = 0;
+		if(!empty($this->input->post('fecha_ini')) && $this->input->post('fecha_ini') != ''){
+			$condiciones_adicionales[] = 't4.fecha_inicio_date >= "'.$this->input->post('fecha_ini').' 00:00:00"';
+			$post_fi = $this->input->post('fecha_ini');
+		}
+		$post_ff = 0;
+		if(!empty($this->input->post('fecha_fin')) && $this->input->post('fecha_fin') != ''){
+			$condiciones_adicionales[] = 't4.fecha_inicio_date  <= "'.$this->input->post('fecha_fin').' 23:59:59"';
+			$post_ff = $this->input->post('fecha_fin');
 		}
 		if (count($condiciones_adicionales) == 0) {
 			$condiciones_adicionales = null;
@@ -29,28 +48,36 @@ class Reportes extends CI_Controller {
 			'lista_cliente' => $this->renders->get_list_clientes(),
 			'lista_recurso' => $this->renders->get_list_responsable(),
 			'table_grafic' => $this->mreporte->get_table_grafic($condiciones_adicionales),
-			'id_cli' => $this->input->post('cliente'),
-			'id_proy' => $this->input->post('proyecto'),
-			'id_rec' => $this->input->post('recurso'),
-			'id_act' => $this->input->post('actividad'),
+			'id_cli' => $post_cli,
+			'id_proy' => $post_pro,
+			'id_rec' => $post_rec,
+			'id_act' => $post_act,
+			'fecha_ini' => $post_fi,
+			'fecha_fin' => $post_ff,
 			'update_script' => ''
 			);
 		$this->load->view('reporte/v_rep_form',$data);
 	}
 
-	public function report_excel($id_cli, $id_proy, $id_rec, $id_act){
+	public function report_excel($id_cli, $id_proy, $id_rec, $id_act, $fecha_ini, $fecha_fin){
 		$condiciones_adicionales = array();
-		if(!empty($id_cli) && $id_cli != ''){
+		if(!empty($id_cli) && $id_cli != '' && $id_cli != '0'){
 			$condiciones_adicionales[] = 't3.fk_cliente = '.$id_cli;
 		}
-		if(!empty($id_proy) && $id_proy != ''){
+		if(!empty($id_proy) && $id_proy != '' && $id_proy != '0'){
 			$condiciones_adicionales[] = 't4.fk_proyecto = '.$id_proy;
 		}
-		if(!empty($id_rec) && $id_rec != ''){
+		if(!empty($id_rec) && $id_rec != '' && $id_rec != '0'){
 			$condiciones_adicionales[] = 't4.fk_recursos = '.$id_rec;
 		}
-		if(!empty($id_act) && $id_act != ''){
+		if(!empty($id_act) && $id_act != '' && $id_act != '0'){
 			$condiciones_adicionales[] = 't4.fk_actividad = '.$id_act;
+		}
+		if(!empty($fecha_ini) && $fecha_ini != '' && $fecha_ini != '0'){
+			$condiciones_adicionales[] = 't4.fecha_inicio_date >= "'.$fecha_ini.' 00:00:00"';
+		}
+		if(!empty($fecha_fin) && $fecha_fin != '' && $fecha_fin != '0'){
+			$condiciones_adicionales[] = 't4.fecha_inicio_date <= "'.$fecha_fin.' 23:59:59"';
 		}
 		if (count($condiciones_adicionales) == 0) {
 			$condiciones_adicionales = null;
