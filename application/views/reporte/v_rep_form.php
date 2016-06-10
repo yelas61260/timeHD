@@ -71,7 +71,7 @@
 				</div>
 			</div>
 			<div>
-				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel/<?= $id_cli ?>/<?= $id_proy ?>/<?= $id_rec ?>/<?= $id_act ?>');">Exportar</button>
+				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel/<?= $id_cli ?>/<?= $id_proy ?>/<?= $id_rec ?>/<?= $id_act ?>/<?= $fecha_ini ?>/<?= $fecha_fin ?>');">Exportar</button>
 				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_proyectos');">Exportar Proyectos</button>
 				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_actividad');">Exportar Actividades</button>
 				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_recursos');">Exportar Colaboradores</button>

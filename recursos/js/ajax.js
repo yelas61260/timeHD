@@ -17,7 +17,13 @@ function create(param_ruta,param_formName){
 		data: strDAtos,
 		success: function(data) {
 			//alert(data);
-			window.location.reload(true);
+			if(data == "OK"){
+				alertify.alert("Registro exitoso!", function () {
+					window.location.reload(true);
+				});
+			}else{
+				alertify.alert("No se pudo guardar el registro\n"+data);
+			}
 		}
 	});
 }
@@ -45,38 +51,40 @@ function update(param_ruta,param_formName){
 	});
 }
 function deleted(paramId, param_ruta){
-	if (confirm("¿esta seguro de eliminar el registro?")){// validacion de eliminar
-		var strDAtos = "id="+paramId;
-		$.ajax({
-			type: "POST",
-			url: param_ruta+"/jdeleted",
-			datatype: "html",
-			data: strDAtos,
-			success: function(data) {
-				//alert(data);
-				window.location = param_ruta;
-			}
-		});
-	}else{
-		window.location = param_ruta;
-	}
+	alertify.confirm("¿Esta seguro de eliminar el registro?", function (e){
+		if (e){// validacion de eliminar
+			var strDAtos = "id="+paramId;
+			$.ajax({
+				type: "POST",
+				url: param_ruta+"/jdeleted",
+				datatype: "html",
+				data: strDAtos,
+				success: function(data) {
+					//alert(data);
+					window.location.reload(true);
+				}
+			});
+		}else{
+		}
+	});
 }
 function conv_proy(paramId, param_ruta){
-	if (confirm("¿esta seguro de convertir a proyecto?")){// validacion de eliminar
-		var strDAtos = "id="+paramId;
-		$.ajax({
-			type: "POST",
-			url: param_ruta+"/jconv_proy",
-			datatype: "html",
-			data: strDAtos,
-			success: function(data) {
-				//alert(data);
-				window.location = param_ruta;
-			}
-		});
-	}else{
-		window.location = param_ruta;
-	}	
+	alertify.confirm("¿Esta seguro de convertir a proyecto?", function (e){
+		if (e){// validacion de eliminar
+			var strDAtos = "id="+paramId;
+			$.ajax({
+				type: "POST",
+				url: param_ruta+"/jconv_proy",
+				datatype: "html",
+				data: strDAtos,
+				success: function(data) {
+					//alert(data);
+					window.location.reload(true);
+				}
+			});
+		}else{
+		}
+	});
 }
 function abrir_ruta(param_ruta){
 	window.location= param_ruta;

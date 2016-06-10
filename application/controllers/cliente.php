@@ -126,13 +126,6 @@ class Cliente extends CI_Controller {
 		echo $datosSTR;
 	}
 
-	public function deleted($id){
-		$this->lib->required_session();
-		echo "<script type='text/javascript' src='".base_url()."recursos/js/jquery-1.7.1.min.js'></script>";
-		echo '<script src="'.base_url().'recursos/js/ajax.js"/></script>';
-		echo '<script>deleted('.$id.', "'.base_url().'cliente");</script>';
-	}
-
 	public function jdeleted(){
 		$tablas = $this->db_struc->getTablas();
 

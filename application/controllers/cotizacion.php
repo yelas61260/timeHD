@@ -34,20 +34,6 @@ class Cotizacion extends CI_Controller {
 		$this->load->view('cotizacion/v_cot_form',$data);
 	}
 
-	public function deleted($id){
-		$this->lib->required_session();
-		echo "<script type='text/javascript' src='".base_url()."recursos/js/jquery-1.7.1.min.js'></script>";
-		echo '<script src="'.base_url().'recursos/js/ajax.js"/></script>';
-		echo '<script>deleted('.$id.', "'.base_url().'cotizacion");</script>';
-	}
-
-	public function conv_proy($id){
-		$this->lib->required_session();
-		echo "<script type='text/javascript' src='".base_url()."recursos/js/jquery-1.7.1.min.js'></script>";
-		echo '<script src="'.base_url().'recursos/js/ajax.js"/></script>';
-		echo '<script>conv_proy('.$id.', "'.base_url().'cotizacion");</script>';
-	}
-
 	public function jdeleted(){
 		$tablas = $this->db_struc->getTablas();
 
@@ -89,16 +75,23 @@ class Cotizacion extends CI_Controller {
 		$datos_array[13] = $this->input->post("responsable");
 		$datos_array[14] = $this->input->post("estado");
 
-		$this->db_con->insert_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array);
+		if($this->db_con->existe_registro($tablas[10], ["id","nombre","fk_cliente"], [$datos_array[0],$datos_array[1],$datos_array[10]])){
+			echo "El proyecto ya existe.";
+		}else if($this->db_con->existe_registro($tablas[10], ["id"], [$datos_array[0]])){
+			echo "El codigo de proyecto ya existe.";
+		}else{
+			$this->db_con->insert_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array);
 
-		$datos_array2 = [];
-		$temp_datos_array2 = explode(";", $this->input->post('extra'));
-		foreach ($temp_datos_array2 as $value) {
-			$datos_array2[] = explode(",", $value);
-		}
-		foreach ($datos_array2 as $array_temp) {
-			$array_temp[5] = $datos_array[0];
-			$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad(), $array_temp);
+			$datos_array2 = [];
+			$temp_datos_array2 = explode(";", $this->input->post('extra'));
+			foreach ($temp_datos_array2 as $value) {
+				$datos_array2[] = explode(",", $value);
+			}
+			foreach ($datos_array2 as $array_temp) {
+				$array_temp[5] = $datos_array[0];
+				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad(), $array_temp);
+			}
+			echo "OK";
 		}
 	}
 

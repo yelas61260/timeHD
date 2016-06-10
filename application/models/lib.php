@@ -11,8 +11,11 @@ class lib extends CI_Model
 		$content = '';
 		$content .= "<script type='text/javascript' src='".base_url()."recursos/js/jquery-1.7.1.min.js'></script>";
 		$content .= "<script type='text/javascript' src='".base_url()."recursos/js/jquery.js'></script>";
+		$content .= "<script type='text/javascript' src='".base_url()."recursos/js/alertify.js'></script>";
 		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/header.css'/>";
 		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/base.css'/>";
+		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/alertify.core.css' />";
+		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/alertify.default.css' />";
 		$content .= "<div class='header'>";
 		$content .= "<div id='logo_img'><img src='".base_url()."recursos/pix/logo.png'/></div>";
 		$content .= "<div id='logo_texto'>Plataforma de gestión de costos</div>";
@@ -96,7 +99,7 @@ class lib extends CI_Model
 			$sentenciaSQL .= $valoresCondicion[$tamCondicion-1];
 			$datos = $this->db_con->get_sql_records($sentenciaSQL);
 		}
-		//print_r($sentenciaSQL);
+		print_r($sentenciaSQL);
 		//print_r($datos);
 		foreach ($datos as $dato) {
 			$content .= '<tr>';
@@ -106,9 +109,7 @@ class lib extends CI_Model
 			if($nameCampos[$tamcampos - 1] == "" && $nameCampos[$tamcampos - 2] == ""){
 				if($nameCampos[$tamcampos - 3] == ""){	
 		  			$content .= '<td>';
-		  			$content .= '<form action="'.base_url().$URL.'/conv_proy/'.$dato[$id].'" metod="post">';
-					$content .= '<button><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
-		  			$content .= '</form>';
+					$content .= '<button onclick="conv_proy('.$dato[$id].', \''.base_url().$URL.'\');"><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
 		  			$content .= '</td>';
 	  			}else{
 	  				$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 3]].'</td>';
@@ -120,9 +121,7 @@ class lib extends CI_Model
 	  			$content .= '</form>';
 	  			$content .= '</td>';
 	  			$content .= '<td>';
-	  			$content .= '<form action="'.base_url().$URL.'/deleted/'.$dato[$id].'" metod="post">';
-				$content .= '<button><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
-	  			$content .= '</form>';
+				$content .= '<button onclick="deleted('.$dato[$id].', \''.base_url().$URL.'\');"><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
 	  			$content .= '</td>';
 	  			$content .= '</tr>';
 	  		}else{

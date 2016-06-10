@@ -69,8 +69,8 @@ class mproyecto extends CI_Model
 
 	public function get_table_grafic(){
 		return $this->lib->tabla_generar(self::$tablas[10]." AS t1, ".self::$tablas[2]." AS t2, ".self::$tablas[19]." AS t3",
-				array("Nombre","Fecha inicio estimada","Fecha fin estimada","Cliente","Tipo","",""),
-				array("nombre","fecha_inicio_estimada","fecha_fin_estimada","cliente","tipo","",""),
+				array("ID","Nombre","Fecha inicio estimada","Fecha fin estimada","Cliente","Tipo","",""),
+				array("id","nombre","fecha_inicio_estimada","fecha_fin_estimada","cliente","tipo","",""),
 				["t1.fk_cliente=t2.id","t1.fk_tipo=t3.id","t1.fk_estados=1"],"proyecto",self::get_id(),
 				["t1.id as id","t1.nombre","t1.fecha_inicio_estimada","t1.fecha_fin_estimada","t2.nombre as cliente","t3.nombre as tipo"]);
 	}
