@@ -14,11 +14,20 @@ function create(param_ruta,param_formName){
 			strDAtos += "extra="+datosExtra+"&";
 		}
 		for(i=0; i<document.forms[param_formName].length; i++){
-			strDAtos += document.forms[param_formName][i].name+"="+document.forms[param_formName][i].value;
+			if(document.forms[param_formName][i].type != "checkbox"){
+				strDAtos += document.forms[param_formName][i].name+"="+document.forms[param_formName][i].value;
+			}else{
+				if(document.forms[param_formName][i].checked){
+					strDAtos += document.forms[param_formName][i].name+"=1";
+				}else{
+					strDAtos += document.forms[param_formName][i].name+"=0";
+				}
+			}
 			if(i<document.forms[param_formName].length-1){
 				strDAtos += "&";
 			}
 		}
+		alert(strDAtos);
 		$.ajax({
 			type: "POST",
 			url: param_ruta+"/jinsert",
@@ -47,7 +56,15 @@ function update(param_ruta,param_formName){
 			strDAtos += "extra="+datosExtra+"&";
 		}
 		for(i=0; i<document.forms[param_formName].length; i++){
-			strDAtos += document.forms[param_formName][i].name+"="+document.forms[param_formName][i].value;
+			if(document.forms[param_formName][i].type != "checkbox"){
+				strDAtos += document.forms[param_formName][i].name+"="+document.forms[param_formName][i].value;
+			}else{
+				if(document.forms[param_formName][i].checked){
+					strDAtos += document.forms[param_formName][i].name+"=1";
+				}else{
+					strDAtos += document.forms[param_formName][i].name+"=0";
+				}
+			}
 			if(i<document.forms[param_formName].length-1){
 				strDAtos += "&";
 			}

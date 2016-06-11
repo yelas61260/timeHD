@@ -22,7 +22,7 @@
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/GitHub/Local/timeHD/';//Pruebas
+$config['base_url'] = 'http://localhost/GitHub/timeHD/';//Pruebas
 //$config['base_url'] = 'http://ec2-54-174-111-186.compute-1.amazonaws.com/admin/';//Produccion
 /*
 |--------------------------------------------------------------------------

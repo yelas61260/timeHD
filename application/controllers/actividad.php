@@ -25,6 +25,7 @@ class Actividad extends CI_Controller {
 			'lista_fase' => $this->renders->get_list_fase(),
 			'lista_estado' => $this->renders->get_list_estado(),
 			'lista_roles' => $this->renders->get_list_roles(),
+			'lista_unidades' => $this->renders->get_list_unidad(),
 			'update_script' => ''
 			);
 		$this->load->view('actividad/v_act_form.php', $data);
@@ -38,6 +39,16 @@ class Actividad extends CI_Controller {
 		$datos_array1[0] = $this->input->post("nombre");
 		$datos_array1[1] = $this->input->post("fase");
 		$datos_array1[2] = $this->input->post("Estado");
+		if(empty($this->input->post("Cantidad"))){
+			$datos_array1[3] = "0";
+		}else{
+			$datos_array1[3] = $this->input->post("Cantidad");
+		}
+		if(empty($this->input->post("Unidad")) || $this->input->post("Unidad") == ""){
+			$datos_array1[4] = "1";
+		}else{
+			$datos_array1[4] = $this->input->post("Unidad");
+		}
 
 		if($this->db_con->existe_registro($tablas[0], ["nombre"], [$datos_array1[0]])){
 			echo "La actividad ya existe.";
@@ -121,6 +132,7 @@ class Actividad extends CI_Controller {
 			'lista_fase' => $this->renders->get_list_fase(),
 			'lista_estado' => $this->renders->get_list_estado(),
 			'lista_roles' => $this->renders->get_list_roles(),
+			'lista_unidades' => $this->renders->get_list_unidad(),
 			'update_script' => 'read('.$id.', "'.base_url().'actividad", "form_actividad");'.$script_roles
 			);
 		$this->load->view('actividad/v_act_form',$data);
@@ -136,6 +148,16 @@ class Actividad extends CI_Controller {
 		$datos_array1[0] = $this->input->post("nombre");
 		$datos_array1[1] = $this->input->post("fase");
 		$datos_array1[2] = $this->input->post("Estado");
+		if(empty($this->input->post("Cantidad"))){
+			$datos_array1[3] = "0";
+		}else{
+			$datos_array1[3] = $this->input->post("Cantidad");
+		}
+		if(empty($this->input->post("Unidad")) || $this->input->post("Unidad") == ""){
+			$datos_array1[4] = "1";
+		}else{
+			$datos_array1[4] = $this->input->post("Unidad");
+		}
 
 		//Se inserta la actividad
 		$this->db_con->update_db_datos($tablas[0], $this->mactividad->get_campos1(), $datos_array1, [$this->mactividad->get_id()], [$id]);

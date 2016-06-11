@@ -21,6 +21,8 @@ class mactividad extends CI_Model
 		self::$campos1[0] = "nombre";
 		self::$campos1[1] = "fk_fases";
 		self::$campos1[2] = "fk_estados";
+		self::$campos1[3] = "cam_num";
+		self::$campos1[4] = "fk_unidades";
 
 		self::$campos2[0] = "fk_roles";
 		self::$campos2[1] = "fk_tarea";

@@ -61,6 +61,10 @@ class renders extends CI_Model
 		return $this->lib->print_lista(self::$tablas[10], ["id","nombre"]);
 	}
 
+	public function get_list_unidad(){
+		return $this->lib->print_lista(self::$tablas[22], ["id","nombre"]);
+	}
+
 	public function get_list_proyecto_x_cli($id_cli){
 		return $this->lib->print_lista_filtrada(self::$tablas[10], ["id","nombre"], ["id","nombre"], "fk_cliente=".$id_cli);
 	}

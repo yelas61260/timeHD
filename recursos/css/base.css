@@ -12,6 +12,10 @@ button:hover{
 	background:#28323C;
 	cursor:pointer;
 }
+label span{
+	color: red;
+	font-weight: bold;
+}
 .header{
 	background:#28323C;
 }

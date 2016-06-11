@@ -37,6 +37,22 @@
 						<div class="form-input"><select name="Estado" id="Estado" required><?= $lista_estado ?></select></div>
 					</td>
 				</tr>
+
+
+				<tr>
+					<td>
+						<div class="form-label"><label for="Cantidad">Tiene cantidad</label></div>
+						<div class="form-input"><input type="checkbox" name="Cantidad" id="Cantidad" value="1"/></div>
+					</td>
+				</tr>
+
+
+				<tr>
+					<td>
+						<div class="form-label"><label for="Unidad">Unidad</label></div>
+						<div class="form-input"><select name="Unidad" id="Unidad"><?= $lista_unidades ?></select></div>
+					</td>
+				</tr>
 				</table>
 				</form>
 				</div>

@@ -30,6 +30,7 @@ class db_struc extends CI_Model {
 		self::$tablas[19] = "tipo_proyecto";
 		self::$tablas[20] = "estados_proyecto";
 		self::$tablas[21] = "config";
+		self::$tablas[22] = "unidades_actividades";
 	}
 
 	public function getTablas(){
