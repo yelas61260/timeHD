@@ -18,78 +18,78 @@
 					<table class="form_header">
 						<tr>
 							<td>
-								<div class="form-label"><label for="cliente">Cliente:</label></div>
+								<div class="form-label"><label for="cliente">Cliente<span>*</span>:</label></div>
 								<div class="form-input"><select name="cliente" id="cliente" required><?= $lista_clientes ?></select></div>
 							</td>
 							<td>
 								<div class="form-label"><label for="fecha_ini">Fecha estimada de inicio:</label></div>
-								<div class="form-input"><input type="date" name="fecha_ini" id="fecha_ini" size="45" value="" required/></div>
+								<div class="form-input"><input type="date" name="fecha_ini" id="fecha_ini" size="45" value=""/></div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="form-label"><label for="nombre">Nombre del proyecto:</label></div>
+								<div class="form-label"><label for="nombre">Nombre del proyecto<span>*</span>:</label></div>
 								<div class="form-input"><input type="text" name="nombre" id="nombre" size="45" value="" required/></div>
 							</td>
 							<td>
 								<div class="form-label"><label for="fecha_fin_est">Fecha estimada de finalización:</label></div>
-								<div class="form-input"><input type="date" name="fecha_fin_est" id="fecha_fin_est" size="45" value="" required/></div>
+								<div class="form-input"><input type="date" name="fecha_fin_est" id="fecha_fin_est" size="45" value=""/></div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="form-label"><label for="codigo">Código de la cotización:</label></div>
+								<div class="form-label"><label for="codigo">Código de la cotización<span>*</span>:</label></div>
 								<div class="form-input"><input type="text" name="codigo" id="codigo" size="45" value="" required/></div>
 							</td>
 							<td>
 								<div class="form-label"><label for="duracion_est">Duración estimada en minutos del curso:</label></div>
-								<div class="form-input"><input type="text" name="duracion_est" id="duracion_est" size="15" value="" required/></div>
+								<div class="form-input"><input type="text" name="duracion_est" id="duracion_est" size="15" value=""/></div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="form-label"><label for="tipo">Tipo de desarrollo:</label></div>
+								<div class="form-label"><label for="tipo">Tipo de desarrollo<span>*</span>:</label></div>
 								<div class="form-input"><select name="tipo" id="tipo" required><?= $lista_t_desarrollo ?></select></div>
 							</td>
 							<td>
 								<div class="form-label"><label for="modulos_est">No. de módulos estimados:</label></div>
-								<div class="form-input"><input type="text" name="modulos_est" id="modulos_est" size="15" value="" required/></div>
+								<div class="form-input"><input type="text" name="modulos_est" id="modulos_est" size="15" value=""/></div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="form-label"><label for="tecnologia">Tecnología:</label></div>
+								<div class="form-label"><label for="tecnologia">Tecnología<span>*</span>:</label></div>
 								<div class="form-input"><select name="tecnologia" id="tecnologia" required><?= $lista_t_tecnologia ?></select></div>
 							</td>
 							<td>
 								<div class="form-label"><label for="no_escenas">No. de escenas:</label></div>
-								<div class="form-input"><input type="text" name="no_escenas" id="no_escenas" size="15" value="" required/></div>
+								<div class="form-input"><input type="text" name="no_escenas" id="no_escenas" size="15" value=""/></div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="form-label"><label for="responsable">Responsable:</label></div>
+								<div class="form-label"><label for="responsable">Responsable<span>*</span>:</label></div>
 								<div class="form-input"><select name="responsable" id="responsable" required><?= $lista_responsables ?></select></div>
 							</td>
 							<td>
 								<div class="form-label"><label for="no_actividades">No. de actividades:</label></div>
-								<div class="form-input"><input type="text" name="no_actividades" id="no_actividades" size="15" value="" required/></div>
+								<div class="form-input"><input type="text" name="no_actividades" id="no_actividades" size="15" value=""/></div>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="form-label"><label for="comentarios">Comentarios</label></div>
-								<div class="form-input"><textarea name="comentarios" id="comentarios" rows="5" cols="45" pattern="{0,255}" required></textarea></div>
+								<div class="form-input"><textarea name="comentarios" id="comentarios" rows="5" cols="45" pattern="{0,255}"></textarea></div>
 							</td>
 							<td>
 								<div class="form-label"><label for="no_evaluaciones">No. de evaluaciones:</label></div>
-								<div class="form-input"><input type="text" name="no_evaluaciones" id="no_evaluaciones" size="15" value="" required/></div>
+								<div class="form-input"><input type="text" name="no_evaluaciones" id="no_evaluaciones" size="15" value=""/></div>
 							</td>
 						</tr>
 						<tr>
 							<td></td>
 							<td>
-								<div class"form-label"><label for="estado">Estado</label></div>
+								<div class"form-label"><label for="estado">Estado<span>*</span></label></div>
 								<div class="form-input"><select name="estado" id="estado" required><?= $lista_estados_proy ?></select></div>
 							</td>
 						</tr>
@@ -137,6 +137,7 @@
 				</table>
 			</div>
 			<button id="enviar_btn" onclick="create('<?= base_url() ?>cotizacion','form_cotizacion')"/>Enviar</button>
+			<button id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>proyecto')"/>Cancelar</button>
 		</div>
 	</div>
 </body>

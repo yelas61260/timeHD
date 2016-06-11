@@ -75,21 +75,23 @@ class Cotizacion extends CI_Controller {
 		$datos_array[13] = $this->input->post("responsable");
 		$datos_array[14] = $this->input->post("estado");
 
-		if($this->db_con->existe_registro($tablas[10], ["id","nombre","fk_cliente"], [$datos_array[0],$datos_array[1],$datos_array[10]])){
+		if($this->db_con->existe_registro($tablas[10], ["nombre","fk_cliente"], [$datos_array[1],$datos_array[10]])){
 			echo "El proyecto ya existe.";
 		}else if($this->db_con->existe_registro($tablas[10], ["id"], [$datos_array[0]])){
 			echo "El codigo de proyecto ya existe.";
 		}else{
 			$this->db_con->insert_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array);
 
-			$datos_array2 = [];
-			$temp_datos_array2 = explode(";", $this->input->post('extra'));
-			foreach ($temp_datos_array2 as $value) {
-				$datos_array2[] = explode(",", $value);
-			}
-			foreach ($datos_array2 as $array_temp) {
-				$array_temp[5] = $datos_array[0];
-				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad(), $array_temp);
+			if(!empty($this->input->post('extra')) && $this->input->post('extra') != ""){
+				$datos_array2 = [];
+				$temp_datos_array2 = explode(";", $this->input->post('extra'));
+				foreach ($temp_datos_array2 as $value) {
+					$datos_array2[] = explode(",", $value);
+				}
+				foreach ($datos_array2 as $array_temp) {
+					$array_temp[5] = $datos_array[0];
+					$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad(), $array_temp);
+				}
 			}
 			echo "OK";
 		}
@@ -165,19 +167,22 @@ class Cotizacion extends CI_Controller {
 		
 		$this->db_con->update_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array, [$this->mcotizacion->get_id()], [$datos_array[0]]);
 
-		$datos_array2 = [];
-		$temp_datos_array2 = explode(";", $this->input->post('extra'));
-		foreach ($temp_datos_array2 as $value) {
-			$datos_array2[] = explode(",", $value);
-		}
-		foreach ($datos_array2 as $array_temp) {
-			$array_temp[5] = $datos_array[0];
-			if(!$this->db_con->existe_registro($tablas[11], [$this->mcotizacion->get_campos_actividad()[5],$this->mcotizacion->get_campos_actividad()[6]], [$array_temp[5],$array_temp[6]])){
-				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad(), $array_temp);
-			}else{
-				$this->db_con->update_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad_update(), [$array_temp[1],$array_temp[2],$array_temp[3],$array_temp[4]], [$this->mcotizacion->get_campos_actividad()[5],$this->mcotizacion->get_campos_actividad()[6]], [$array_temp[5],$array_temp[6]]);
+		if(!empty($this->input->post('extra')) && $this->input->post('extra') != ""){
+			$datos_array2 = [];
+			$temp_datos_array2 = explode(";", $this->input->post('extra'));
+			foreach ($temp_datos_array2 as $value) {
+				$datos_array2[] = explode(",", $value);
+			}
+			foreach ($datos_array2 as $array_temp) {
+				$array_temp[5] = $datos_array[0];
+				if(!$this->db_con->existe_registro($tablas[11], [$this->mcotizacion->get_campos_actividad()[5],$this->mcotizacion->get_campos_actividad()[6]], [$array_temp[5],$array_temp[6]])){
+					$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad(), $array_temp);
+				}else{
+					$this->db_con->update_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad_update(), [$array_temp[1],$array_temp[2],$array_temp[3],$array_temp[4]], [$this->mcotizacion->get_campos_actividad()[5],$this->mcotizacion->get_campos_actividad()[6]], [$array_temp[5],$array_temp[6]]);
+				}
 			}
 		}
+		echo "OK";
 	}
 
 	public function jdextra(){

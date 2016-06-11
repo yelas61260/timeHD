@@ -19,21 +19,21 @@
 				<br>
 				<tr>
 					<td>
-						<div class="form-label"><label for="nombre">Nombre</label></div>
+						<div class="form-label"><label for="nombre">Nombre<span>*</span></label></div>
 						<div class="form-input"><input type="text" name="nombre" id="nombre" size="25" value="" required/></div>
 					</td>
 				</tr>
 
 				<tr>
 					<td>
-						<div class="form-label"><label for="fase">Fase</label></div>
+						<div class="form-label"><label for="fase">Fase<span>*</span></label></div>
 						<div class="form-input"><select name="fase" id="fase" required><?= $lista_fase ?></select></div>
 					</td>
 				</tr>
 
 				<tr>
 					<td>
-						<div class="form-label"><label for="Estado">Estado</label></div>
+						<div class="form-label"><label for="Estado">Estado<span>*</span></label></div>
 						<div class="form-input"><select name="Estado" id="Estado" required><?= $lista_estado ?></select></div>
 					</td>
 				</tr>
@@ -69,6 +69,7 @@
 					</table>
 				</div>
 				<button id="enviar_btn" onclick="create('<?= base_url() ?>actividad','form_actividad')">Enviar</button>
+			<button id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>actividad')"/>Cancelar</button>
 		</div>
 	</div>
 </body>

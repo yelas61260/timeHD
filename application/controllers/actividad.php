@@ -39,27 +39,35 @@ class Actividad extends CI_Controller {
 		$datos_array1[1] = $this->input->post("fase");
 		$datos_array1[2] = $this->input->post("Estado");
 
-		//Se inserta la actividad
-		$actividad = $this->db_con->insert_db_datos($tablas[0], $this->mactividad->get_campos1(), $datos_array1);
+		if($this->db_con->existe_registro($tablas[0], ["nombre"], [$datos_array1[0]])){
+			echo "La actividad ya existe.";
+		}else{
+			//Se inserta la actividad
+			$actividad = $this->db_con->insert_db_datos($tablas[0], $this->mactividad->get_campos1(), $datos_array1);
 
-		$datos_array2 = [];
-		$temp_datos_array2 = explode(";", $this->input->post('extra'));
-		$rel_tarea_rol = [];
+			if(!empty($this->input->post('extra')) && $this->input->post('extra') != ""){
+				$datos_array2 = [];
+				$temp_datos_array2 = explode(";", $this->input->post('extra'));
+				$rel_tarea_rol = [];
 
-		foreach ($temp_datos_array2 as $value) {
-			$datos_array2[] = explode(",", $value);
-		}
-		foreach ($datos_array2 as $array_temp) {
-			if(!$this->db_con->existe_registro($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$actividad])){
-				$id_tarea = $this->db_con->insert_db_datos($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$actividad]);
+				foreach ($temp_datos_array2 as $value) {
+					$datos_array2[] = explode(",", $value);
+				}
+				foreach ($datos_array2 as $array_temp) {
+					if(!$this->db_con->existe_registro($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$actividad])){
+						$id_tarea = $this->db_con->insert_db_datos($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$actividad]);
+					}
+					$rel_tarea_rol[] = [$array_temp[0],$id_tarea];
+				}
+
+				foreach ($rel_tarea_rol as $datos_relacion) {
+					if(!$this->db_con->existe_registro($tablas[16], $this->mactividad->get_campos2(), $datos_relacion)){
+						$this->db_con->insert_db_datos($tablas[16], $this->mactividad->get_campos2(), $datos_relacion);
+					}
+				}
 			}
-			$rel_tarea_rol[] = [$array_temp[0],$id_tarea];
-		}
 
-		foreach ($rel_tarea_rol as $datos_relacion) {
-			if(!$this->db_con->existe_registro($tablas[16], $this->mactividad->get_campos2(), $datos_relacion)){
-				$this->db_con->insert_db_datos($tablas[16], $this->mactividad->get_campos2(), $datos_relacion);
-			}
+			echo "OK";
 		}
 	}
 
@@ -132,27 +140,30 @@ class Actividad extends CI_Controller {
 		//Se inserta la actividad
 		$this->db_con->update_db_datos($tablas[0], $this->mactividad->get_campos1(), $datos_array1, [$this->mactividad->get_id()], [$id]);
 
-		$datos_array2 = [];
-		$temp_datos_array2 = explode(";", $this->input->post('extra'));
-		$rel_tarea_rol = [];
+		if(!empty($this->input->post('extra'))){
+			$datos_array2 = [];
+			$temp_datos_array2 = explode(";", $this->input->post('extra'));
+			$rel_tarea_rol = [];
 
-		foreach ($temp_datos_array2 as $value) {
-			$datos_array2[] = explode(",", $value);
-		}
-		foreach ($datos_array2 as $array_temp) {
-			if(!$this->db_con->existe_registro($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$id])){
-				$id_tarea = $this->db_con->insert_db_datos($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$id]);
-			}else{
-				$id_tarea = $this->db_con->get_all_records($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$id], ["id"])[0]["id"];
+			foreach ($temp_datos_array2 as $value) {
+				$datos_array2[] = explode(",", $value);
 			}
-			$rel_tarea_rol[] = [$array_temp[0],$id_tarea];
-		}
+			foreach ($datos_array2 as $array_temp) {
+				if(!$this->db_con->existe_registro($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$id])){
+					$id_tarea = $this->db_con->insert_db_datos($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$id]);
+				}else{
+					$id_tarea = $this->db_con->get_all_records($tablas[18], $this->mactividad->get_campos4(), [$array_temp[1],$id], ["id"])[0]["id"];
+				}
+				$rel_tarea_rol[] = [$array_temp[0],$id_tarea];
+			}
 
-		foreach ($rel_tarea_rol as $datos_relacion) {
-			if(!$this->db_con->existe_registro($tablas[16], $this->mactividad->get_campos2(), $datos_relacion)){
-				$this->db_con->insert_db_datos($tablas[16], $this->mactividad->get_campos2(), $datos_relacion);
+			foreach ($rel_tarea_rol as $datos_relacion) {
+				if(!$this->db_con->existe_registro($tablas[16], $this->mactividad->get_campos2(), $datos_relacion)){
+					$this->db_con->insert_db_datos($tablas[16], $this->mactividad->get_campos2(), $datos_relacion);
+				}
 			}
 		}
+		echo "OK";
 		
 	}
 
@@ -162,10 +173,17 @@ class Actividad extends CI_Controller {
 		$this->load->model('actividad/mactividad');
 
 		$id = $this->input->post("id");
+		$cant_est = $this->input->post("cant_est");
 
 		$datos1 = $this->db_con->get_sql_records("SELECT t1.fk_fases, t2.nombre_fase, t1.id, t1.nombre FROM ".$tablas[0]." AS t1 JOIN ".$tablas[4]." AS t2 ON t1.fk_fases = t2.id WHERE t1.id = ".$id);
 		$datos2 = $this->db_con->get_sql_records("SELECT DISTINCT AVG(t4.salario) AS dat1 FROM ".$tablas[18]." AS t1 JOIN ".$tablas[16]." AS t2 ON t2.fk_tarea = t1.id JOIN ".$tablas[13]." AS t3 ON t3.fk_roles = t2.fk_roles JOIN ".$tablas[12]." AS t4 ON t4.cedula = t3.fk_recursos WHERE t1.fk_actividad = ".$id);
-		$datos3 = $this->db_con->get_sql_records("SELECT SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(".$this->mactividad->get_campos_time()[8].", ".$this->mactividad->get_campos_time()[7].")))/SUM(".$this->mactividad->get_campos_time()[6].")) AS dat1 FROM ".$tablas[14]." WHERE ".$this->mactividad->get_campos_time()[11]."=".$id);
+		$datos3 = 0;
+		if($this->db_con->existe_registro($tablas[0], ["id","cam_num"], [$id,"1"])){
+			$datos3 = $this->db_con->get_sql_records("SELECT SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(".$this->mactividad->get_campos_time()[8].", ".$this->mactividad->get_campos_time()[7].")))/SUM(".$this->mactividad->get_campos_time()[6].")) AS dat1 FROM ".$tablas[14]." WHERE ".$this->mactividad->get_campos_time()[11]."=".$id);
+		}else{
+			$cant_est = 1;
+			$datos3 = $this->db_con->get_sql_records("SELECT SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(".$this->mactividad->get_campos_time()[8].", ".$this->mactividad->get_campos_time()[7].")))/(SELECT count(distinct ".$this->mactividad->get_campos_time()[9].") FROM ".$tablas[14]." where ".$this->mactividad->get_campos_time()[11]."=".$id.")) AS dat1 FROM ".$tablas[14]." WHERE ".$this->mactividad->get_campos_time()[11]."=".$id);
+		}
 
 		$valor_actividad_unidad = floor((int)$datos2[0]['dat1']);
 
@@ -177,13 +195,13 @@ class Actividad extends CI_Controller {
 		for($i = 0; $i<$tam-1; $i++) {
 			$datosSTR .= $datos1[0][$etiquetas[$i]].",";
 		}
-		$datosSTR .= $this->mactividad->val_x_act($datos3[0]['dat1'], $valor_actividad_unidad).",".$datos1[0][$etiquetas[$tam-1]].",".$this->input->post("cant_est");
+		$datosSTR .= $this->mactividad->val_x_act($datos3[0]['dat1'], $valor_actividad_unidad).",".$datos1[0][$etiquetas[$tam-1]].",".$cant_est;
 		if(empty($this->input->post("cant_real")) == false){
 			$datosSTR .= ",".$this->input->post("cant_real");
 		}
 		$tiempo_act;
 		if (empty($this->input->post("tiempo_act"))) {
-			$tiempo_act = $this->mactividad->mult_fecha($datos3[0]['dat1'], (int)($this->input->post("cant_est").""));
+			$tiempo_act = $this->mactividad->mult_fecha($datos3[0]['dat1'], (int)($cant_est.""));
 			$datosSTR .=",".$tiempo_act;
 		}else{
 			$tiempo_act = $this->input->post("tiempo_act");
@@ -191,7 +209,7 @@ class Actividad extends CI_Controller {
 		}
 		$val_act;
 		if (empty($this->input->post("val_act"))) {
-			$val_act = floor(($this->mactividad->val_x_act($datos3[0]['dat1'], $valor_actividad_unidad)*(int)($this->input->post("cant_est"))));
+			$val_act = floor(($this->mactividad->val_x_act($datos3[0]['dat1'], $valor_actividad_unidad)*(int)($cant_est)));
 			$datosSTR .=",".$val_act;
 		}else{
 			$val_act = (int)($this->input->post("val_act"));
@@ -207,7 +225,7 @@ class Actividad extends CI_Controller {
 
 		$datos = $this->db_con->get_all_records($tablas[16]." AS t1, ".$tablas[18]." AS t2", [" t1.fk_tarea=t2.id AND t1.fk_roles", "t2.nombre"], [$this->input->post("p2_extra"), $this->input->post("p1_extra")], ["t1.id"]);		
 
-		print_r($datos);
+		//print_r($datos);
 		$this->db_con->delete_db_datos($tablas[16], ["id"], [$datos[0]["id"]]);
 	}
 

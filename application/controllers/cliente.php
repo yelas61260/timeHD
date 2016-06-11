@@ -56,8 +56,16 @@ class Cliente extends CI_Controller {
 			$ciudades = $this->db_con->get_all_records($tablas[1], $this->mcliente->get_campos2(), $datos_array2);
 		}
 
-		$datos_array[8] = $ciudades[0]["id"];
-		$this->db_con->insert_db_datos($tablas[2], $this->mcliente->get_campos(), $datos_array);
+		if($this->db_con->existe_registro($tablas[2], ["id","nombre"], [$datos_array[0],$datos_array[1]])){
+			echo "El cliente ya existe.";
+		}else if($this->db_con->existe_registro($tablas[2], ["id"], [$datos_array[0]])){
+			echo "El codigo del cliente ya existe.";
+		}else{
+			$datos_array[8] = $ciudades[0]["id"];
+			$this->db_con->insert_db_datos($tablas[2], $this->mcliente->get_campos(), $datos_array);
+
+			echo "OK";
+		}
 	}
 
 	public function update($id){
@@ -103,6 +111,8 @@ class Cliente extends CI_Controller {
 
 		$datos_array[8] = $ciudades[0]["id"];
 		$this->db_con->update_db_datos($tablas[2], $this->mcliente->get_campos(), $datos_array, [$this->mcliente->get_id()], [$datos_array[0]]);
+
+		echo "OK";
 	}
 
 	public function jread(){

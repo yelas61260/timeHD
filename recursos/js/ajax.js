@@ -1,54 +1,76 @@
-function create(param_ruta,param_formName){
-	var strDAtos = "";
-	var datosExtra = unirExtra();
-	if(datosExtra != ""){
-		strDAtos += "extra="+datosExtra+"&";
-	}
+function validateData(param_formName){
 	for(i=0; i<document.forms[param_formName].length; i++){
-		strDAtos += document.forms[param_formName][i].name+"="+document.forms[param_formName][i].value;
-		if(i<document.forms[param_formName].length-1){
-			strDAtos += "&";
+		if(document.forms[param_formName][i].value == "" && document.forms[param_formName][i].hasAttribute('required')){
+			return false;
 		}
 	}
-	$.ajax({
-		type: "POST",
-		url: param_ruta+"/jinsert",
-		datatype: "html",
-		data: strDAtos,
-		success: function(data) {
-			//alert(data);
-			if(data == "OK"){
-				alertify.alert("Registro exitoso!", function () {
-					window.location.reload(true);
-				});
-			}else{
-				alertify.alert("No se pudo guardar el registro\n"+data);
+	return true;
+}
+function create(param_ruta,param_formName){
+	if(validateData(param_formName)){
+		var strDAtos = "";
+		var datosExtra = unirExtra();
+		if(datosExtra != ""){
+			strDAtos += "extra="+datosExtra+"&";
+		}
+		for(i=0; i<document.forms[param_formName].length; i++){
+			strDAtos += document.forms[param_formName][i].name+"="+document.forms[param_formName][i].value;
+			if(i<document.forms[param_formName].length-1){
+				strDAtos += "&";
 			}
 		}
-	});
+		$.ajax({
+			type: "POST",
+			url: param_ruta+"/jinsert",
+			datatype: "html",
+			data: strDAtos,
+			success: function(data) {
+				//alert(data);
+				if(data == "OK"){
+					alertify.alert("Registro exitoso!", function () {
+						window.location.reload(true);
+					});
+				}else{
+					alertify.alert("No se pudo guardar el registro<br>"+data);
+				}
+			}
+		});
+	}else{
+		alertify.alert("Hay campos obligatorios sin completar<br>Por favor llene todos los campos.");
+	}
 }
 function update(param_ruta,param_formName){
-	var strDAtos = "";
-	var datosExtra = unirExtra();
-	if(datosExtra != ""){
-		strDAtos += "extra="+datosExtra+"&";
-	}
-	for(i=0; i<document.forms[param_formName].length; i++){
-		strDAtos += document.forms[param_formName][i].name+"="+document.forms[param_formName][i].value;
-		if(i<document.forms[param_formName].length-1){
-			strDAtos += "&";
+	if(validateData(param_formName)){
+		var strDAtos = "";
+		var datosExtra = unirExtra();
+		if(datosExtra != ""){
+			strDAtos += "extra="+datosExtra+"&";
 		}
-	}
-	$.ajax({
-		type: "POST",
-		url: param_ruta+"/jupdate",
-		datatype: "html",
-		data: strDAtos,
-		success: function(data) {
-			//alert(data);
-			window.location = param_ruta+"/";
+		for(i=0; i<document.forms[param_formName].length; i++){
+			strDAtos += document.forms[param_formName][i].name+"="+document.forms[param_formName][i].value;
+			if(i<document.forms[param_formName].length-1){
+				strDAtos += "&";
+			}
 		}
-	});
+		$.ajax({
+			type: "POST",
+			url: param_ruta+"/jupdate",
+			datatype: "html",
+			data: strDAtos,
+			success: function(data) {
+				//alert(data);
+				if(data == "OK"){
+					alertify.alert("Actualización exitosa!", function () {
+						window.location.reload(true);
+					});
+				}else{
+					alertify.alert("No se pudo guardar el registro<br>"+data);
+				}
+			}
+		});
+	}else{
+		alertify.alert("Hay campos obligatorios sin completar<br>Por favor llene todos los campos.");
+	}
 }
 function deleted(paramId, param_ruta){
 	alertify.confirm("¿Esta seguro de eliminar el registro?", function (e){
@@ -172,13 +194,19 @@ function read_actividad_cotizacion(param_ruta){
 			var content = "<tr id='ext_"+datosArray[2]+"' valor='"+arreglo+"'>";
 			for(i=0; i<datosArray.length; i++){
 				if(i==5){
-					content += "<td style='text-align: center;'><input id='input_ext_"+datosArray[2]+"' name='ext_"+datosArray[2]+"' type='text' size='10' value='"+datosArray[i]+"' required/></td>";
+					if(datosArray[i] == "1"){
+						content += "<td style='text-align: center;'>"+datosArray[i]+"</td>";
+					}else{
+						content += "<td style='text-align: center;'><input id='input_ext_"+datosArray[2]+"' name='ext_"+datosArray[2]+"' type='text' size='10' value='"+datosArray[i]+"' required/></td>";
+					}
 				}else{
 					content += "<td>"+datosArray[i]+"</td>";
 				}
 			}
 
-			content += "<td><button onclick='calcularAct("+datosArray[2]+");'>Recalcular</button></td>";
+			if(datosArray[5] != "1"){
+				content += "<td><button onclick='calcularAct("+datosArray[2]+");'>Recalcular</button></td>";
+			}
 			content += "<td><button onclick='quitar("+datosArray[2]+", "+0+");'>Quitar</button></td>";
 			content += "</tr>";
 
@@ -212,12 +240,18 @@ function read_actividad_cotizacion_edit(id_act,cant_est,tiempo_act,val_act,param
 			var content = "<tr id='ext_"+id_act+"' valor='"+arreglo+"'>";
 			for(i=0; i<datosArray.length; i++){
 				if(i==5){
-					content += "<td style='text-align: center;'><input id='input_ext_"+id_act+"' name='ext_"+id_act+"' type='text' size='10' value='"+datosArray[i]+"' required/></td>";
+					if(datosArray[i] == "1"){
+						content += "<td style='text-align: center;'>"+datosArray[i]+"</td>";
+					}else{
+						content += "<td style='text-align: center;'><input id='input_ext_"+id_act+"' name='ext_"+id_act+"' type='text' size='10' value='"+datosArray[i]+"' required/></td>";
+					}
 				}else{
 					content += "<td>"+datosArray[i]+"</td>";
 				}
 			}
-			content += "<td><button onclick='calcularAct("+id_act+");'>Recalcular</button></td>";
+			if(datosArray[5] != "1"){
+				content += "<td><button onclick='calcularAct("+id_act+");'>Recalcular</button></td>";
+			}
 			content += "<td><button onclick='quitar("+id_act+", "+id_prin+");'>Quitar</button></td>";
 			content += "</tr>";
 

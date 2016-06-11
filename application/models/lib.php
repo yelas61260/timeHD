@@ -99,7 +99,7 @@ class lib extends CI_Model
 			$sentenciaSQL .= $valoresCondicion[$tamCondicion-1];
 			$datos = $this->db_con->get_sql_records($sentenciaSQL);
 		}
-		print_r($sentenciaSQL);
+		//print_r($sentenciaSQL);
 		//print_r($datos);
 		foreach ($datos as $dato) {
 			$content .= '<tr>';

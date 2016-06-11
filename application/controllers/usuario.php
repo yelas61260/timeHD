@@ -53,22 +53,31 @@ class Usuario extends CI_Controller {
 		$datos_array2[0] = $this->input->post("ciudad");
 		$datos_array2[1] = $this->input->post("pais");
 
-		$ciudades = $this->db_con->get_all_records($tablas[1], $this->musuario->get_campos2(), $datos_array2);
-
-		if(count($ciudades)<=0 || count($ciudades[0])<=1){
-			$this->db_con->insert_db_datos($tablas[1], $this->musuario->get_campos2(), $datos_array2);
+		if($this->db_con->existe_registro($tablas[12], ["cedula"], [$datos_array[0]])){
+			echo "La cedula ya existe.";
+		}else if($this->db_con->existe_registro($tablas[12], ["usuario"], [$datos_array[7]])){
+			echo "El usuario ya existe.";
+		}else{
 			$ciudades = $this->db_con->get_all_records($tablas[1], $this->musuario->get_campos2(), $datos_array2);
-		}
-		$datos_array[13] = $ciudades[0]["id"];
-		$this->db_con->insert_db_datos($tablas[12], $this->musuario->get_campos(), $datos_array);
 
-		//roles
-		$datos_array = explode(";", $this->input->post('extra'));
-
-		foreach ($datos_array as $dato_rol) {
-			if($dato_rol != ""){
-				$this->db_con->insert_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
+			if(count($ciudades)<=0 || count($ciudades[0])<=1){
+				$this->db_con->insert_db_datos($tablas[1], $this->musuario->get_campos2(), $datos_array2);
+				$ciudades = $this->db_con->get_all_records($tablas[1], $this->musuario->get_campos2(), $datos_array2);
 			}
+			$datos_array[13] = $ciudades[0]["id"];
+			$this->db_con->insert_db_datos($tablas[12], $this->musuario->get_campos(), $datos_array);
+
+			if(!empty($this->input->post('extra')) && $this->input->post('extra')!=""){
+				//roles
+				$datos_array = explode(";", $this->input->post('extra'));
+
+				foreach ($datos_array as $dato_rol) {
+					if($dato_rol != ""){
+						$this->db_con->insert_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
+					}
+				}
+			}
+			echo "OK";
 		}
 	}
 
@@ -161,15 +170,18 @@ class Usuario extends CI_Controller {
 		$this->db_con->update_db_datos($tablas[12], $this->musuario->get_campos(), $datos_array, [$this->musuario->get_campos()[0]], [$this->input->post("cedula")]);
 
 		//roles
-		$datos_array = explode(";", $this->input->post('extra'));
-		//$this->db_con->delete_db_datos($tablas[13], [$this->musuario->get_campos3()[0]], [$this->input->post("cedula")]);
+		if(!empty($this->input->post('extra'))){
+			$datos_array = explode(";", $this->input->post('extra'));
+			//$this->db_con->delete_db_datos($tablas[13], [$this->musuario->get_campos3()[0]], [$this->input->post("cedula")]);
 
-		foreach ($datos_array as $dato_rol) {
-			$rol = $this->db_con->get_all_records($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
-			if(count($rol)<=0 || count($rol[0])<=1){
-				$this->db_con->insert_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
+			foreach ($datos_array as $dato_rol) {
+				$rol = $this->db_con->get_all_records($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
+				if(count($rol)<=0 || count($rol[0])<=1){
+					$this->db_con->insert_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
+				}
 			}
 		}
+		echo "OK";
 	}
 
 	public function jdextra(){
