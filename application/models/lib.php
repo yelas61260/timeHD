@@ -47,9 +47,13 @@ class lib extends CI_Model
 		return $content;
 	}
 
-	public function print_lista($tabla, $campo){
+	public function print_lista($tabla, $campo, $order_by=null){
 		$content = '<option value="">Seleccionar</option>';
-		$datos = $this->db_con->get_all_records_tabla($tabla, $campo);
+		if ($order_by == null) {
+			$datos = $this->db_con->get_all_records_tabla($tabla, $campo);
+		}else{
+			$datos = $this->db_con->get_all_records_tabla($tabla, $campo, $order_by);
+		}
 		foreach ($datos as $valor) {
 			$content .= '<option value="'.$valor[$campo[0]].'">'.$valor[$campo[1]].'</option>';
 		}
@@ -57,9 +61,13 @@ class lib extends CI_Model
 	}
 
 
-	public function print_lista_filtrada($tabla, $campo, $get_campo, $condiciones){
+	public function print_lista_filtrada($tabla, $campo, $get_campo, $condiciones, $order_by=null){
 		$content = '<option value="">Seleccionar</option>';
-		$datos = $this->db_con->get_all_records_tabla_where($tabla, $get_campo, $condiciones);
+		if($order_by == null){
+			$datos = $this->db_con->get_all_records_tabla_where($tabla, $get_campo, $condiciones);
+		}else{
+			$datos = $this->db_con->get_all_records_tabla_where($tabla, $get_campo, $condiciones, $order_by);
+		}
 		foreach ($datos as $valor) {
 			$content .= '<option value="'.$valor[$campo[0]].'">'.$valor[$campo[1]].'</option>';
 		}

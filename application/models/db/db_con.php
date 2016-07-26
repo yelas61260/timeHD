@@ -22,7 +22,7 @@ class db_con extends CI_Model {
 			return false;
 		}
 	}
-	public function get_all_records($tabla, $parametros, $valores, $campos_get=null){
+	public function get_all_records($tabla, $parametros, $valores, $campos_get=null, $order_by=null){
 		$sentenciaSQL = "SELECT ";
 		if($campos_get == null){
 			$sentenciaSQL .= "*";
@@ -38,13 +38,18 @@ class db_con extends CI_Model {
 		for($i=0; $i<$tamParam-1; $i++){
 			$sentenciaSQL .= " ".$parametros[$i]."='".$valores[$i]."' AND";
 		}
-		$sentenciaSQL .= " ".$parametros[$tamParam-1]."='".$valores[$tamParam-1]."';";
+		$sentenciaSQL .= " ".$parametros[$tamParam-1]."='".$valores[$tamParam-1]."'";
+		if ($order_by == null) {
+			$sentenciaSQL .= ";";
+		}else{
+			$sentenciaSQL .= " ORDER BY ".$order_by." ASC;";
+		}
 		//print_r($sentenciaSQL);
 		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 
 		return $sql1->result_array();
 	}
-	public function get_all_records_tabla($tabla, $parametros){
+	public function get_all_records_tabla($tabla, $parametros, $order_by=null){
 		$sentenciaSQL = "SELECT ";
 		$tamParam = count($parametros);
 		for($i=0; $i<$tamParam-1; $i++){
@@ -53,12 +58,18 @@ class db_con extends CI_Model {
 		$sentenciaSQL .= $parametros[$tamParam-1]." ";
 		
 		$sentenciaSQL .= "FROM $tabla";
-		
+
+		if ($order_by == null) {
+			$sentenciaSQL .= ";";
+		}else{
+			$sentenciaSQL .= " ORDER BY ".$order_by." ASC;";
+		}
+		//print_r($sentenciaSQL);
 		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 		
 		return $sql1->result_array();
 	}
-	public function get_all_records_tabla_where($tabla, $parametros, $condicion){
+	public function get_all_records_tabla_where($tabla, $parametros, $condicion, $order_by=null){
 		$sentenciaSQL = "SELECT DISTINCT";
 		$tamParam = count($parametros);
 		for($i=0; $i<$tamParam-1; $i++){
@@ -67,7 +78,13 @@ class db_con extends CI_Model {
 		$sentenciaSQL .= " ".$parametros[$tamParam-1]." ";
 		
 		$sentenciaSQL .= " FROM $tabla WHERE ".$condicion;
-		
+
+		if ($order_by == null) {
+			$sentenciaSQL .= ";";
+		}else{
+			$sentenciaSQL .= " ORDER BY ".$order_by." ASC;";
+		}
+		//print_r($sentenciaSQL);
 		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 		
 		return $sql1->result_array();
