@@ -57,6 +57,10 @@ class renders extends CI_Model
 		return $this->lib->print_lista(self::$tablas[0], ["id","nombre"], "nombre");
 	}
 
+	public function get_list_tareas(){
+		return $this->lib->print_lista(self::$tablas[18], ["id","nombre"], "nombre");
+	}
+
 	public function get_list_proyecto(){
 		return $this->lib->print_lista(self::$tablas[10], ["id","nombre"]);
 	}

@@ -344,6 +344,12 @@ function read_tarea_act(){
 	document.getElementById("cont_roles_tareas").innerHTML += content;
 }
 
+function read_tarea_rol(){
+	var content = "<tr id='ext_"+document.getElementById("tarea").value+"' valor='"+document.getElementById("tarea").value+"'><td>"+document.getElementById("tarea").options[document.getElementById("tarea").value].innerHTML+"</td>";
+	content += "<td><button onclick='quitar("+document.getElementById("tarea").value+", "+0+");'>Quitar</button></td></tr>";
+	document.getElementById("cont_tarea").innerHTML += content;
+}
+
 function read_tarea_act_edit(id_rol, nom_tarea){
 	var content = "<tr id='ext_"+id_rol+"' valor='"+id_rol+","+nom_tarea+"'><td>"+document.getElementById("roles").options[id_rol].innerHTML+"</td>";
 	content += "<td>"+nom_tarea+"</td>";

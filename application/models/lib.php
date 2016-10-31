@@ -86,7 +86,7 @@ class lib extends CI_Model
 		$content .= '</tr></thead>';
 
 		$content .= '<tbody>';
-		if(empty($valoresCondicion)){
+		if($valoresCondicion == null || empty($valoresCondicion)){
 			$datos = $this->db_con->get_all_records_tabla($tabla, ['*']);
 		}else{
 			$sentenciaSQL = "SELECT ";
