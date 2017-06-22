@@ -84,3 +84,9 @@ label span{
 .list_reporte{
 	width:250px;
 }
+.tbl_act{
+	min-width: 100%;
+}
+.tbl_ter{
+	min-width: 40%;
+}

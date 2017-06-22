@@ -195,49 +195,32 @@ class Actividad extends CI_Controller {
 		$this->load->model('actividad/mactividad');
 
 		$id = $this->input->post("id");
-		$cant_est = $this->input->post("cant_est");
 
-		$datos1 = $this->db_con->get_sql_records("SELECT t1.fk_fases, t2.nombre_fase, t1.id, t1.nombre FROM ".$tablas[0]." AS t1 JOIN ".$tablas[4]." AS t2 ON t1.fk_fases = t2.id WHERE t1.id = ".$id);
-		$datos2 = $this->db_con->get_sql_records("SELECT DISTINCT AVG(t4.salario) AS dat1 FROM ".$tablas[18]." AS t1 JOIN ".$tablas[16]." AS t2 ON t2.fk_tarea = t1.id JOIN ".$tablas[13]." AS t3 ON t3.fk_roles = t2.fk_roles JOIN ".$tablas[12]." AS t4 ON t4.cedula = t3.fk_recursos WHERE t1.fk_actividad = ".$id);
-		$datos3 = 0;
-		if($this->db_con->existe_registro($tablas[0], ["id","cam_num"], [$id,"1"])){
-			$datos3 = $this->db_con->get_sql_records("SELECT SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(".$this->mactividad->get_campos_time()[8].", ".$this->mactividad->get_campos_time()[7].")))/SUM(".$this->mactividad->get_campos_time()[6].")) AS dat1 FROM ".$tablas[14]." WHERE ".$this->mactividad->get_campos_time()[11]."=".$id);
-		}else{
-			$cant_est = 1;
-			$datos3 = $this->db_con->get_sql_records("SELECT SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(".$this->mactividad->get_campos_time()[8].", ".$this->mactividad->get_campos_time()[7].")))/(SELECT count(distinct ".$this->mactividad->get_campos_time()[9].") FROM ".$tablas[14]." where ".$this->mactividad->get_campos_time()[11]."=".$id.")) AS dat1 FROM ".$tablas[14]." WHERE ".$this->mactividad->get_campos_time()[11]."=".$id);
-		}
-
-		$valor_actividad_unidad = floor((int)$datos2[0]['dat1']);
-
+		$datos1 = $this->db_con->get_sql_records("SELECT DISTINCT t1.fk_fases, t2.nombre_fase, t1.id, t1.nombre FROM actividad AS t1 JOIN fases_proyecto AS t2 ON t1.fk_fases = t2.id JOIN tarea t3 ON t1.id = t3.fk_actividad JOIN rol_tarea t4 ON t4.fk_tarea = t3.id JOIN roles t5 ON t5.id = t4.fk_roles WHERE t1.id =".$id);
+		
 		$datosSTR = "";
 
 		$etiquetas = $this->mactividad->get_campos3();
 		$tam = count($etiquetas);
 
-		for($i = 0; $i<$tam-1; $i++) {
-			$datosSTR .= $datos1[0][$etiquetas[$i]].",";
-		}
-		$datosSTR .= $this->mactividad->val_x_act($datos3[0]['dat1'], $valor_actividad_unidad).",".$datos1[0][$etiquetas[$tam-1]].",".$cant_est;
-		if(empty($this->input->post("cant_real")) == false){
-			$datosSTR .= ",".$this->input->post("cant_real");
-		}
-		$tiempo_act;
-		if (empty($this->input->post("tiempo_act"))) {
-			$tiempo_act = $this->mactividad->mult_fecha($datos3[0]['dat1'], (int)($cant_est.""));
-			$datosSTR .=",".$tiempo_act;
-		}else{
-			$tiempo_act = $this->input->post("tiempo_act");
-			$datosSTR .=",".$this->input->post("tiempo_act");
-		}
-		$val_act;
-		if (empty($this->input->post("val_act"))) {
-			$val_act = floor(($this->mactividad->val_x_act($datos3[0]['dat1'], $valor_actividad_unidad)*(int)($cant_est)));
-			$datosSTR .=",".$val_act;
-		}else{
-			$val_act = (int)($this->input->post("val_act"));
-			$datosSTR .=",".$this->input->post("val_act");
+		for($i = 0; $i<$tam; $i++) {
+			if ($i>0) {
+				$datosSTR .= "|";
+			}
+			$datosSTR .= $datos1[0][$etiquetas[$i]]."";
 		}
 		echo $datosSTR;
+	}
+
+	public function read_cost_act(){
+		$tablas = $this->db_struc->getTablas();
+		$this->lib->required_session();
+		$this->load->model('actividad/mactividad');
+
+		$id = $this->input->post("id");
+
+		$datos1 = $this->db_con->get_sql_records("SELECT DISTINCT AVG(t4.salario) AS dat1 FROM tarea AS t1 JOIN rol_tarea AS t2 ON t2.fk_tarea = t1.id JOIN recurso_rol AS t3 ON t3.fk_roles = t2.fk_roles JOIN recursos AS t4 ON t4.cedula = t3.fk_recursos WHERE t1.fk_actividad =".$id);
+		echo $datos1[0]["dat1"];
 	}
 
 	public function jdextra(){
@@ -249,6 +232,12 @@ class Actividad extends CI_Controller {
 
 		//print_r($datos);
 		$this->db_con->delete_db_datos($tablas[16], ["id"], [$datos[0]["id"]]);
+	}
+
+	public function read_list_act_x_rol($id){
+		$tablas = $this->db_struc->getTablas();
+		$this->lib->required_session();
+		echo $this->renders->get_list_actividad_x_rol($id);
 	}
 
 }

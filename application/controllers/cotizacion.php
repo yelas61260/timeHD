@@ -29,6 +29,8 @@ class Cotizacion extends CI_Controller {
 			'lista_responsables' => $this->renders->get_list_responsable(),
 			'lista_estados_proy' => $this->renders->get_list_estado_proy(),
 			'lista_actividades' => $this->renders->get_list_actividades(),
+			'lista_roles' => $this->renders->get_list_roles(),
+			'lista_plantilla' => $this->renders->get_list_plantilla(),
 			'update_script' => ''
 			);
 		$this->load->view('cotizacion/v_cot_form',$data);
@@ -59,40 +61,43 @@ class Cotizacion extends CI_Controller {
 
 		$this->load->model('cotizacion/mcotizacion');
 
-		$datos_array[0] = $this->input->post("codigo");
-		$datos_array[1] = $this->input->post("nombre");
-		$datos_array[2] = $this->input->post("fecha_ini");
-		$datos_array[3] = $this->input->post("fecha_fin_est");
-		$datos_array[4] = $this->input->post("duracion_est");
-		$datos_array[5] = $this->input->post("comentarios");
-		$datos_array[6] = $this->input->post("modulos_est");
-		$datos_array[7] = $this->input->post("no_escenas");
-		$datos_array[8] = $this->input->post("no_actividades");
-		$datos_array[9] = $this->input->post("no_evaluaciones");
-		$datos_array[10] = $this->input->post("cliente");
-		$datos_array[11] = $this->input->post("tipo");
-		$datos_array[12] = $this->input->post("tecnologia");
-		$datos_array[13] = $this->input->post("responsable");
-		$datos_array[14] = $this->input->post("estado");
+		$datos_array[0] = $this->input->post("nombre");
+		$datos_array[1] = $this->input->post("fecha_ini");
+		$datos_array[2] = $this->input->post("fecha_fin_est");
+		$datos_array[3] = $this->input->post("duracion_est");
+		$datos_array[4] = $this->input->post("comentarios");
+		$datos_array[5] = $this->input->post("modulos_est");
+		$datos_array[6] = $this->input->post("no_escenas");
+		$datos_array[7] = $this->input->post("no_actividades");
+		$datos_array[8] = $this->input->post("no_evaluaciones");
+		$datos_array[9] = $this->input->post("cliente");
+		$datos_array[10] = $this->input->post("tipo");
+		$datos_array[11] = $this->input->post("tecnologia");
+		$datos_array[12] = $this->input->post("responsable");
+		$datos_array[13] = $this->input->post("estado");
 
-		if($this->db_con->existe_registro($tablas[10], ["nombre","fk_cliente"], [$datos_array[1],$datos_array[10]])){
+		$datos_actividades = json_decode($this->input->post("actividades"));
+		$datos_terceros = json_decode($this->input->post("terceros"));
+
+		if($this->db_con->existe_registro($tablas[10], ["nombre","fk_cliente"], [$datos_array[0],$datos_array[9]])){
 			echo "El proyecto ya existe.";
-		}else if($this->db_con->existe_registro($tablas[10], ["id"], [$datos_array[0]])){
-			echo "El codigo de proyecto ya existe.";
 		}else{
-			$this->db_con->insert_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array);
+			$id = $this->db_con->insert_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array);
 
-			if(!empty($this->input->post('extra')) && $this->input->post('extra') != ""){
-				$datos_array2 = [];
-				$temp_datos_array2 = explode(";", $this->input->post('extra'));
-				foreach ($temp_datos_array2 as $value) {
-					$datos_array2[] = explode(",", $value);
-				}
-				foreach ($datos_array2 as $array_temp) {
-					$array_temp[5] = $datos_array[0];
-					$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad(), $array_temp);
-				}
+			foreach ($datos_actividades->act_p as $value) {
+				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 0]);
 			}
+			foreach ($datos_actividades->act_s as $value) {
+				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 1]);
+			}
+
+			foreach ($datos_terceros->ter_p as $value) {
+				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
+			}
+			foreach ($datos_terceros->ter_s as $value) {
+				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
+			}
+
 			echo "OK";
 		}
 	}
@@ -100,15 +105,6 @@ class Cotizacion extends CI_Controller {
 	public function update($id){
 		$this->lib->required_session();
 		$this->load->model('cotizacion/mcotizacion');
-		$tablas = $this->db_struc->getTablas();
-
-		$campos_act = $this->mcotizacion->get_campos_actividad();
-		$datos = $this->db_con->get_all_records($tablas[11], ["fk_proyecto"], [$id]);
-		$string_actividades_add = "";
-		foreach ($datos as $dato) {
-			$string_actividades_add .= 'read_actividad_cotizacion_edit("'.$dato[$campos_act[6]].'","'.$dato[$campos_act[2]].'","'.$dato[$campos_act[3]].'","'.$dato[$campos_act[4]].'","'.base_url().'actividad","'.$id.'");';
-		}
-
 		$data = array(
 			'titulo' => 'Editar Cotizacion',
 			'header' => $this->lib->print_header(),
@@ -119,7 +115,9 @@ class Cotizacion extends CI_Controller {
 			'lista_responsables' => $this->renders->get_list_responsable(),
 			'lista_estados_proy' => $this->renders->get_list_estado_proy(),
 			'lista_actividades' => $this->renders->get_list_actividades(),
-			'update_script' => 'read('.$id.', "'.base_url().'cotizacion", "form_cotizacion");'.$string_actividades_add
+			'lista_roles' => $this->renders->get_list_roles(),
+			'lista_plantilla' => $this->renders->get_list_plantilla(),
+			'update_script' => 'read_pcp("'.base_url().'cotizacion", '.$id.', "'.base_url().'actividad");'
 			);
 		$this->load->view('cotizacion/v_cot_form',$data);
 	}
@@ -128,20 +126,16 @@ class Cotizacion extends CI_Controller {
 		$tablas = $this->db_struc->getTablas();
 
 		$this->load->model('cotizacion/mcotizacion');
-
 		$id = $this->input->post("id");
 
-		$datos = $this->db_con->get_all_records($tablas[10], [$this->mcotizacion->get_id()], [$id]);
-		$datosSTR = "";
+		$objEstandar = $this->mcotizacion->get_datos($id);
 
-		$etiquetas = $this->mcotizacion->get_campos_read();
-		$tam = count($etiquetas);
+		$objEstandar->act_p = $this->mcotizacion->get_actividades_principales($id);
+		$objEstandar->act_s = $this->mcotizacion->get_actividades_secundarias($id);
+		$objEstandar->ter_p = $this->mcotizacion->get_tercero_principales($id);
+		$objEstandar->ter_s = $this->mcotizacion->get_tercero_secundarias($id);
 
-		for($i = 0; $i<$tam-1; $i++) {
-			$datosSTR .= $datos[0][$etiquetas[$i]].",";
-		}
-		$datosSTR .= $datos[0][$etiquetas[$tam-1]]."";
-		echo $datosSTR;
+		echo json_encode($objEstandar);
 	}
 
 	public function jupdate(){
@@ -149,37 +143,54 @@ class Cotizacion extends CI_Controller {
 
 		$this->load->model('cotizacion/mcotizacion');
 
-		$datos_array[0] = $this->input->post("codigo");
-		$datos_array[1] = $this->input->post("nombre");
-		$datos_array[2] = $this->input->post("fecha_ini");
-		$datos_array[3] = $this->input->post("fecha_fin_est");
-		$datos_array[4] = $this->input->post("duracion_est");
-		$datos_array[5] = $this->input->post("comentarios");
-		$datos_array[6] = $this->input->post("modulos_est");
-		$datos_array[7] = $this->input->post("no_escenas");
-		$datos_array[8] = $this->input->post("no_actividades");
-		$datos_array[9] = $this->input->post("no_evaluaciones");
-		$datos_array[10] = $this->input->post("cliente");
-		$datos_array[11] = $this->input->post("tipo");
-		$datos_array[12] = $this->input->post("tecnologia");
-		$datos_array[13] = $this->input->post("responsable");
-		$datos_array[14] = $this->input->post("estado");
-		
-		$this->db_con->update_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array, [$this->mcotizacion->get_id()], [$datos_array[0]]);
+		$id = $this->input->post("id");
 
-		if(!empty($this->input->post('extra')) && $this->input->post('extra') != ""){
-			$datos_array2 = [];
-			$temp_datos_array2 = explode(";", $this->input->post('extra'));
-			foreach ($temp_datos_array2 as $value) {
-				$datos_array2[] = explode(",", $value);
+		$datos_array[0] = $this->input->post("nombre");
+		$datos_array[1] = $this->input->post("fecha_ini");
+		$datos_array[2] = $this->input->post("fecha_fin_est");
+		$datos_array[3] = $this->input->post("duracion_est");
+		$datos_array[4] = $this->input->post("comentarios");
+		$datos_array[5] = $this->input->post("modulos_est");
+		$datos_array[6] = $this->input->post("no_escenas");
+		$datos_array[7] = $this->input->post("no_actividades");
+		$datos_array[8] = $this->input->post("no_evaluaciones");
+		$datos_array[9] = $this->input->post("cliente");
+		$datos_array[10] = $this->input->post("tipo");
+		$datos_array[11] = $this->input->post("tecnologia");
+		$datos_array[12] = $this->input->post("responsable");
+		$datos_array[13] = $this->input->post("estado");
+
+		$datos_actividades = json_decode($this->input->post("actividades"));
+		$datos_terceros = json_decode($this->input->post("terceros"));
+		
+		$this->db_con->update_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array, [$this->mcotizacion->get_id()], [$id]);
+
+		foreach ($datos_actividades->act_p as $value) {
+			if($value->idObj == 0){
+				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 0]);
+			}else{
+				$this->db_con->update_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 0], ["id"], [$value->idObj]);
 			}
-			foreach ($datos_array2 as $array_temp) {
-				$array_temp[5] = $datos_array[0];
-				if(!$this->db_con->existe_registro($tablas[11], [$this->mcotizacion->get_campos_actividad()[5],$this->mcotizacion->get_campos_actividad()[6]], [$array_temp[5],$array_temp[6]])){
-					$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad(), $array_temp);
-				}else{
-					$this->db_con->update_db_datos($tablas[11], $this->mcotizacion->get_campos_actividad_update(), [$array_temp[1],$array_temp[2],$array_temp[3],$array_temp[4]], [$this->mcotizacion->get_campos_actividad()[5],$this->mcotizacion->get_campos_actividad()[6]], [$array_temp[5],$array_temp[6]]);
-				}
+		}
+		foreach ($datos_actividades->act_s as $value) {
+			if($value->idObj == 0){
+				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 1]);
+			}else{
+				$this->db_con->update_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 1], ["id"], [$value->idObj]);
+			}
+		}
+		foreach ($datos_terceros->ter_p as $value) {
+			if ($value->idObj == 0) {
+				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
+			}else{
+				$this->db_con->update_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 0], ["id"], [$value->idObj]);
+			}
+		}
+		foreach ($datos_terceros->ter_s as $value) {
+			if ($value->idObj == 0) {
+				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
+			}else{
+				$this->db_con->update_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 1], ["id"], [$value->idObj]);
 			}
 		}
 		echo "OK";

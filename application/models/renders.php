@@ -69,6 +69,10 @@ class renders extends CI_Model
 		return $this->lib->print_lista(self::$tablas[22], ["id","nombre"]);
 	}
 
+	public function get_list_plantilla(){
+		return $this->lib->print_lista(self::$tablas[8], ["id","nombre"]);
+	}
+
 	public function get_list_proyecto_x_cli($id_cli){
 		return $this->lib->print_lista_filtrada(self::$tablas[10], ["id","nombre"], ["id","nombre"], "fk_cliente=".$id_cli, "nombre");
 	}
@@ -79,5 +83,9 @@ class renders extends CI_Model
 
 	public function get_list_actividad_x_rec($id_rec){
 		return $this->lib->print_lista_filtrada(self::$tablas[14].' AS t1, '.self::$tablas[0].' AS t2', ["id","nombre"], ["t2.id","t2.nombre"], "t1.fk_actividad = t2.id AND t1.fk_recursos = ".$id_rec, "nombre");
+	}
+
+	public function get_list_actividad_x_rol($id_rol){
+		return $this->lib->print_lista_filtrada(self::$tablas[0].' AS t1, '.self::$tablas[18].' AS t2, '.self::$tablas[16].' AS t3, '.self::$tablas[15].' AS t4', ["id","nombre"], ["t1.id","t1.nombre"], "t1.id = t2.fk_actividad AND t2.id = t3.fk_tarea AND t3.fk_roles = t4.id AND t4.id = ".$id_rol, "nombre");
 	}
 }

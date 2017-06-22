@@ -50,9 +50,9 @@ $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';//Pruebas
 //$db['default']['hostname'] = 'timedb.cutuw7adzv33.us-east-1.rds.amazonaws.com';//Produccion
-$db['default']['username'] = 'root';//Pruebas
+$db['default']['username'] = 'time';//Pruebas
 //$db['default']['username'] = 'HemisferioD';//Produccion
-$db['default']['password'] = '';//Pruebas
+$db['default']['password'] = 'time';//Pruebas
 //$db['default']['password'] = 'Hemisferio-2010';//Produccion
 $db['default']['database'] = 'emphemis_costos_v9';//Pruebas
 //$db['default']['database'] = 'time_HD';//Produccion

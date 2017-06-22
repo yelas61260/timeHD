@@ -23,9 +23,10 @@ class mreporte extends CI_Model
 		self::$encabezados[8] = "Fase";
 		self::$encabezados[9] = "Actividad";
 		self::$encabezados[10] = "Cantidad";
-		self::$encabezados[11] = "Inicio";
-		self::$encabezados[12] = "Finalización";
-		self::$encabezados[13] = "Duración";
+		self::$encabezados[11] = "Unidad";
+		self::$encabezados[12] = "Inicio";
+		self::$encabezados[13] = "Finalización";
+		self::$encabezados[14] = "Duración";
 
 		self::$etiquetas_get[0] = "id_cliente";
 		self::$etiquetas_get[1] = "nombre_cliente";
@@ -38,9 +39,10 @@ class mreporte extends CI_Model
 		self::$etiquetas_get[8] = "nombre_fase";
 		self::$etiquetas_get[9] = "nombre_actividad";
 		self::$etiquetas_get[10] = "cantidad";
-		self::$etiquetas_get[11] = "inicio_de_actividad";
-		self::$etiquetas_get[12] = "finalizacion_de_actividad";
-		self::$etiquetas_get[13] = "duracion";
+		self::$etiquetas_get[11] = "unidad";
+		self::$etiquetas_get[12] = "inicio_de_actividad";
+		self::$etiquetas_get[13] = "finalizacion_de_actividad";
+		self::$etiquetas_get[14] = "duracion";
 		
 		self::$etiquetas_set[0] = "t1.id AS id_cliente";
 		self::$etiquetas_set[1] = "t1.nombre AS nombre_cliente";
@@ -53,9 +55,10 @@ class mreporte extends CI_Model
 		self::$etiquetas_set[8] = "t8.nombre_fase AS nombre_fase";
 		self::$etiquetas_set[9] = "t7.nombre AS nombre_actividad";
 		self::$etiquetas_set[10] = "t4.num_escenas AS cantidad";
-		self::$etiquetas_set[11] = "t4.fecha_inicio_date AS inicio_de_actividad";
-		self::$etiquetas_set[12] = "t4.fecha_finalizacion_date AS finalizacion_de_actividad";
-		self::$etiquetas_set[13] = "TIMEDIFF(t4.fecha_finalizacion_date,t4.fecha_inicio_date) AS duracion";
+		self::$etiquetas_set[11] = "t9.nombre AS unidad";
+		self::$etiquetas_set[12] = "t4.fecha_inicio_date AS inicio_de_actividad";
+		self::$etiquetas_set[13] = "t4.fecha_finalizacion_date AS finalizacion_de_actividad";
+		self::$etiquetas_set[14] = "TIMEDIFF(t4.fecha_finalizacion_date,t4.fecha_inicio_date) AS duracion";
 
 		self::$condicionales[0] = "t4.fk_proyecto = t3.id";
 		self::$condicionales[1] = "t4.fk_recursos = t6.cedula";
@@ -64,6 +67,7 @@ class mreporte extends CI_Model
 		self::$condicionales[4] = "t3.fk_estados = t2.id";
 		self::$condicionales[5] = "t3.fk_tipo = t5.id";
 		self::$condicionales[6] = "t7.fk_fases = t8.id";
+		self::$condicionales[7] = "t7.fk_unidades = t9.id";
 
 		self::$tablas = $this->db_struc->getTablas();
 	}
@@ -76,7 +80,7 @@ class mreporte extends CI_Model
 			}
 			self::$condicionales = array_merge(self::$condicionales, $cond_temp);
 		}
-		return $this->lib->tabla_generar(self::$tablas[2]." AS t1, ".self::$tablas[20]." AS t2, ".self::$tablas[10]." AS t3, ".self::$tablas[14]." AS t4, ".self::$tablas[19]." AS t5, ".self::$tablas[12]." AS t6, ".self::$tablas[0]." AS t7, ".self::$tablas[4]." AS t8",
+		return $this->lib->tabla_generar(self::$tablas[2]." AS t1, ".self::$tablas[20]." AS t2, ".self::$tablas[10]." AS t3, ".self::$tablas[14]." AS t4, ".self::$tablas[19]." AS t5, ".self::$tablas[12]." AS t6, ".self::$tablas[0]." AS t7, ".self::$tablas[4]." AS t8, ".self::$tablas[22]." AS t9",
 				self::$encabezados,self::$etiquetas_get,self::$condicionales,"","",self::$etiquetas_set);
 	}
 }

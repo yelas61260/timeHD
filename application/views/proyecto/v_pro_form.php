@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?= $titulo ?></title>
+	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/highcharts.js'/></script>
+	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/exporting.js'/></script>
+	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/pro_avance.js'/></script>
 </head>
 
 <body>
@@ -14,7 +17,8 @@
 	<div class="form_general">
 		<div id="cont" >
 			<div id="formulario">
-				<form method="post" id="form_proyecto" name="form_proyecto">
+				<form method="post" id="form_proyecto_view" name="form_proyecto_view">
+				<input type="hidden" name="id" id="id" value="">
 					<table class="form_header">
 						<tr>
 							<td>
@@ -38,8 +42,6 @@
 						</tr>
 						<tr>
 							<td>
-								<div class="form-label"><label for="codigo">Código de la cotización<span>*</span>:</label></div>
-								<div class="form-input"><input type="text" name="codigo" id="codigo" size="45" value="" required/></div>
 							</td>
 							<td>
 								<div class="form-label"><label for="no_escenas">No. de escenas:</label></div>
@@ -113,29 +115,34 @@
 			<div class="cont_tbl_act">
 				<table>
 					<tr>
-						<td><div class="form-label"><label for="comentarios">Actividad</label></td>
-						<td><select name="act" id="act" required><?= $lista_actividades ?></select></td>
+						<td><div class="form-label"><label>Rol</label></td>
+						<td><select name="rol" id="rol" onchange="read_list_act_x_rol('<?= base_url() ?>', this.value)"><?= $lista_roles ?></select></td>
 					</tr>
 					<tr>
-						<td><div class="form-label"><label for="comentarios">Cantidad Estimada</label></td>
-						<td><div class="form-input"><input type="text" name="cant_est_act" id="cant_est_act" size="15" value="" required/></div></td>
+						<td><div class="form-label"><label>Actividad</label></td>
+						<td><select name="act" id="act"></select></td>
 					</tr>
 					<tr>
-						<td><button onclick="read_actividad_cotizacion('<?= base_url() ?>actividad')">Agregar Actividad</button></td>
+						<td><button onclick="read_actividad_cotizacion('<?= base_url() ?>actividad', 'act_p')">Agregar Actividad Principal</button></td>
+						<td><button onclick="read_actividad_cotizacion('<?= base_url() ?>actividad', 'act_s')">Agregar Actividad Secundaria</button></td>
 					</tr>
 				</table>
-				<table class="tabla_general" id="extra" border="1">
+				<br>
+				<table class="tabla_general tbl_act" id="act_p" border="1" borrar="">
+					<thead><th>Actividades Principales</th></thead>
 					<thead>
+						<th>ID Rol</th>
+						<th>Rol</th>
 						<th>Fase No.</th>
 						<th>Fase</th>
 						<th>Act. No.</th>
-						<th>Costo de desarrollo interno</th>
 						<th>Actividad</th>
-						<th>Cantidad Estimada</th>
 						<th>Horas Estimadas</th>
-						<th>Costo</th>
+						<th>Horas Reportadas</th>
+						<th>Costo Estimado</th>
+						<th>Costo Produccion</th>
 					</thead>
-					<tbody id="cont_acti">
+					<tbody id="cont">
 					</tbody>
 					<tfoot>
 						<th></th>
@@ -144,12 +151,81 @@
 						<th></th>
 						<th></th>
 						<th>Totales</th>
+						<th id="total_tiempo_est">00:00:00</th>
 						<th id="total_tiempo">00:00:00</th>
+						<th id="total_costo_est">0</th>
+						<th id="total_costo">0</th>
+					</tfoot>
+				</table>
+				<table class="tabla_general tbl_act" id="act_s" border="1" borrar="">
+					<thead><th>Actividades Secundarias</th></thead>
+					<thead>
+						<th>ID Rol</th>
+						<th>Rol</th>
+						<th>Fase No.</th>
+						<th>Fase</th>
+						<th>Act. No.</th>
+						<th>Actividad</th>
+						<th>Horas Estimadas</th>
+						<th>Horas Reportadas</th>
+						<th>Costo Estimado</th>
+						<th>Costo Produccion</th>
+					</thead>
+					<tbody id="cont">
+					</tbody>
+					<tfoot>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th>Totales</th>
+						<th id="total_tiempo_est">00:00:00</th>
+						<th id="total_tiempo">00:00:00</th>
+						<th id="total_costo_est">0</th>
+						<th id="total_costo">0</th>
+					</tfoot>
+				</table>
+				<br>
+				<table>
+					<tr>
+						<td><div class="form-label"><label for="ter">Actividad</label></td>
+						<td><input type="text" name="ter" id="ter" size="15" value=""/></td>
+					</tr>
+					<tr>
+						<td><button onclick="read_tercero_cotizacion('<?= base_url() ?>actividad', 'ter_p')">Agregar Actividad Principal</button></td>
+						<td><button onclick="read_tercero_cotizacion('<?= base_url() ?>actividad', 'ter_s')">Agregar Actividad Secundaria</button></td>
+					</tr>
+				</table>
+				<table class="tabla_general tbl_ter" id="ter_p" border="1" borrar="">
+					<thead><th>Terceros Principales</th></thead>
+					<thead>
+						<th>Nombre</th>
+						<th>Costo</th>
+					</thead>
+					<tbody id="cont">
+					</tbody>
+					<tfoot>
+						<th>Total</th>
+						<th id="total_costo">0</th>
+					</tfoot>
+				</table>
+
+				<table class="tabla_general tbl_ter" id="ter_s" border="1" borrar="">
+					<thead><th>Terceros Secundarios</th></thead>
+					<thead>
+						<th>Nombre</th>
+						<th>Costo</th>
+					</thead>
+					<tbody id="cont">
+					</tbody>
+					<tfoot>
+						<th>Total</th>
 						<th id="total_costo">0</th>
 					</tfoot>
 				</table>
 			</div>
-			<button id="enviar_btn" onclick="create('<?= base_url() ?>cotizacion','form_cotizacion')"/>Enviar</button>
+			<button id="enviar_btn" onclick="create('<?= base_url() ?>proyecto','form_proyecto_view')"/>Enviar</button>
 			<button id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>proyecto')"/>Cancelar</button>
 		</div>
 	</div>

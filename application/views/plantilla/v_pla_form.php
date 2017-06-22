@@ -19,91 +19,31 @@
 					<table class="form_header">
 						<tr>
 							<td>
-								<div class="form-label"><label for="cliente">Cliente<span>*</span>:</label></div>
-								<div class="form-input"><select name="cliente" id="cliente" required><?= $lista_clientes ?></select></div>
-							</td>
-							<td>
-								<div class="form-label"><label for="fecha_ini">Fecha estimada de inicio:</label></div>
-								<div class="form-input"><input type="date" name="fecha_ini" id="fecha_ini" size="45" value=""/></div>
+								<div class="form-label"><label for="codigo">Codigo<span>*</span>:</label></div>
+								<div class="form-input"><input type="text" name="codigo" id="codigo" size="45" value="" required/></div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="form-label"><label for="nombre">Nombre del proyecto<span>*</span>:</label></div>
+								<div class="form-label"><label for="nombre">Nombre<span>*</span>:</label></div>
 								<div class="form-input"><input type="text" name="nombre" id="nombre" size="45" value="" required/></div>
 							</td>
+						</tr>
+						<tr>
 							<td>
-								<div class="form-label"><label for="fecha_fin_est">Fecha estimada de finalización:</label></div>
-								<div class="form-input"><input type="date" name="fecha_fin_est" id="fecha_fin_est" size="45" value=""/></div>
+								<div class="form-label"><label for="tipo">Tipo<span>*</span>:</label></div>
+								<div class="form-input"><select name="tipo" id="tipo" required><?= $lista_tipo ?></select></div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-							</td>
-							<td>
-								<div class="form-label"><label for="duracion_est">Duración estimada en minutos del curso:</label></div>
-								<div class="form-input"><input type="text" name="duracion_est" id="duracion_est" size="15" value=""/></div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="form-label"><label for="tipo">Tipo de desarrollo<span>*</span>:</label></div>
-								<div class="form-input"><select name="tipo" id="tipo" required><?= $lista_t_desarrollo ?></select></div>
-							</td>
-							<td>
-								<div class="form-label"><label for="modulos_est">No. de módulos estimados:</label></div>
-								<div class="form-input"><input type="text" name="modulos_est" id="modulos_est" size="15" value=""/></div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="form-label"><label for="tecnologia">Tecnología<span>*</span>:</label></div>
-								<div class="form-input"><select name="tecnologia" id="tecnologia" required><?= $lista_t_tecnologia ?></select></div>
-							</td>
-							<td>
-								<div class="form-label"><label for="no_escenas">No. de escenas:</label></div>
-								<div class="form-input"><input type="text" name="no_escenas" id="no_escenas" size="15" value=""/></div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="form-label"><label for="responsable">Responsable<span>*</span>:</label></div>
-								<div class="form-input"><select name="responsable" id="responsable" required><?= $lista_responsables ?></select></div>
-							</td>
-							<td>
-								<div class="form-label"><label for="no_actividades">No. de actividades:</label></div>
-								<div class="form-input"><input type="text" name="no_actividades" id="no_actividades" size="15" value=""/></div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="form-label"><label for="comentarios">Comentarios</label></div>
-								<div class="form-input"><textarea name="comentarios" id="comentarios" rows="5" cols="45" pattern="{0,255}"></textarea></div>
-							</td>
-							<td>
-								<div class="form-label"><label for="no_evaluaciones">No. de evaluaciones:</label></div>
-								<div class="form-input"><input type="text" name="no_evaluaciones" id="no_evaluaciones" size="15" value=""/></div>
-							</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td>
-								<div class"form-label"><label for="estado">Estado<span>*</span></label></div>
-								<div class="form-input"><select name="estado" id="estado" required><?= $lista_estados_proy ?></select></div>
+								<div class="form-label"><label for="descripcion">Descripción<span>*</span>:</label></div>
+								<div class="form-input"><input type="text" name="descripcion" id="descripcion" size="45" value="" required/></div>
 							</td>
 						</tr>
 					</table>
 				</form>
 			</div>
-			<table>
-				<tbody>
-					<tr>
-						<td><div class"form-label"><label>Plantillas</label></div></td>
-						<td><div class="form-input"><select id="plantillas"><?= $lista_plantilla ?></select></div></td>
-						<td><button onclick="cargar_Plantilla('<?= base_url() ?>estandar', '<?= base_url() ?>actividad');">Cargar Plantilla</button></td>
-					</tr>
-				</tbody>
-			</table>
 			<hr>
 			<div class="cont_tbl_act">
 				<table>
@@ -210,8 +150,8 @@
 					</tfoot>
 				</table>
 			</div>
-			<button id="enviar_btn" onclick="create('<?= base_url() ?>cotizacion','form_proyecto')"/>Enviar</button>
-			<button id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>cotizacion')"/>Cancelar</button>
+			<button id="enviar_btn" onclick="create('<?= base_url() ?>estandar','form_proyecto')"/>Enviar</button>
+			<button id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>estandar')"/>Cancelar</button>
 		</div>
 	</div>
 </body>

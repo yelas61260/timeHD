@@ -3,9 +3,10 @@ class mproyecto extends CI_Model
 {
 	private static $id;
 	private static $campos;
-	private static $campos_actividad;
-	private static $campos_actividad_update;
 	private static $campos_read;
+
+	private static $camposAct;
+	private static $camposTer;
 
 	private static $tablas;
 
@@ -15,23 +16,22 @@ class mproyecto extends CI_Model
 
 		self::$id = "id";
 
-		self::$campos[0] = "id";
-		self::$campos[1] = "nombre";
-		self::$campos[2] = "fecha_inicio_estimada";
-		self::$campos[3] = "fecha_fin_estimada";
-		self::$campos[4] = "fecha_inicio_real";
-		self::$campos[5] = "fecha_fin_real";
-		self::$campos[6] = "duracion_minutos";
-		self::$campos[7] = "comentarios";
-		self::$campos[8] = "no_modulos";
-		self::$campos[9] = "no_escenas";
-		self::$campos[10] = "no_actividades";
-		self::$campos[11] = "no_evaluaciones";
-		self::$campos[12] = "fk_cliente";
-		self::$campos[13] = "fk_tipo";
-		self::$campos[14] = "fk_tecnologia";
-		self::$campos[15] = "fk_recursos";
-		self::$campos[16] = "fk_estados";
+		self::$campos[0] = "nombre";
+		self::$campos[1] = "fecha_inicio_estimada";
+		self::$campos[2] = "fecha_fin_estimada";
+		self::$campos[3] = "fecha_inicio_real";
+		self::$campos[4] = "fecha_fin_real";
+		self::$campos[5] = "duracion_minutos";
+		self::$campos[6] = "comentarios";
+		self::$campos[7] = "no_modulos";
+		self::$campos[8] = "no_escenas";
+		self::$campos[9] = "no_actividades";
+		self::$campos[10] = "no_evaluaciones";
+		self::$campos[11] = "fk_cliente";
+		self::$campos[12] = "fk_tipo";
+		self::$campos[13] = "fk_tecnologia";
+		self::$campos[14] = "fk_recursos";
+		self::$campos[15] = "fk_estados";
 
 		self::$campos_read[0] = "fk_cliente";
 		self::$campos_read[1] = "duracion_minutos";
@@ -51,18 +51,17 @@ class mproyecto extends CI_Model
 		self::$campos_read[15] = "fecha_fin_real";
 		self::$campos_read[16] = "comentarios";
 
-		self::$campos_actividad[0] = "id";
-		self::$campos_actividad[1] = "cantidad_real";
-		self::$campos_actividad[2] = "cantidad_estimada";
-		self::$campos_actividad[3] = "tiempo_estimado";
-		self::$campos_actividad[4] = "costo_estimado";
-		self::$campos_actividad[5] = "fk_proyecto";
-		self::$campos_actividad[6] = "fk_actividad";
+		self::$camposAct[0] = "fk_proyecto";
+		self::$camposAct[1] = "fk_roles";
+		self::$camposAct[2] = "fk_actividad";
+		self::$camposAct[3] = "tiempo_cotizado";
+		self::$camposAct[4] = "costo_cotizado";
+		self::$camposAct[5] = "opcional";
 
-		self::$campos_actividad_update[0] = "cantidad_real";
-		self::$campos_actividad_update[1] = "cantidad_estimada";
-		self::$campos_actividad_update[2] = "tiempo_estimado";
-		self::$campos_actividad_update[3] = "costo_estimado";
+		self::$camposTer[0] = "nombre";
+		self::$camposTer[1] = "fk_proyecto";
+		self::$camposTer[2] = "costo";
+		self::$camposTer[3] = "opcional";
 
 		self::$tablas = $this->db_struc->getTablas();
 	}
@@ -87,11 +86,94 @@ class mproyecto extends CI_Model
 		return self::$campos_read;
 	}
 
-	public function get_campos_actividad(){
-		return self::$campos_actividad;
+	public function get_campos_act(){
+		return self::$camposAct;
 	}
 
-	public function get_campos_actividad_update(){
-		return self::$campos_actividad_update;
+	public function get_campos_ter(){
+		return self::$camposTer;
+	}
+
+	public function getRecordProyectoXRol($id_proyecto, $id_rol){
+		$datos1 = $this->db_con->get_sql_records("SELECT CONCAT(YEAR(t1.fecha_inicio_date), '/', MONTH(t1.fecha_inicio_date), '/', DAY(t1.fecha_inicio_date)) fecha, (hour(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date)))))+(minute(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date)))))/60)) tiempo
+			FROM registro_actividad_proyecto_recurso t1
+			JOIN recursos t2 ON t2.cedula = t1.fk_recursos
+			JOIN recurso_rol t3 ON t3.fk_recursos = t2.cedula
+			JOIN roles t4 ON t4.id = t3.fk_roles
+			WHERE t1.fk_proyecto=".$id_proyecto." AND t4.nombre = '".$id_rol."'
+			GROUP BY fecha
+			ORDER by fecha");
+		return $datos1;
+	}
+
+	public function getFechasProyecto($id_proyecto){
+		$datos1 = $this->db_con->get_sql_records("SELECT DISTINCT CONCAT(YEAR(t1.fecha_inicio_date), '/', MONTH(t1.fecha_inicio_date), '/', DAY(t1.fecha_inicio_date)) fecha
+			FROM registro_actividad_proyecto_recurso t1
+			WHERE t1.fk_proyecto=".$id_proyecto."
+			ORDER by fecha");
+		return $datos1;
+	}
+
+	public function get_datos($id){
+		$objEstandar = new stdClass();
+		$objDatos = new stdClass();
+		$result = $this->db_con->get_sql_records("SELECT id, nombre, fecha_inicio_estimada fecha_ini, fecha_fin_estimada fecha_fin_est, fecha_inicio_real fecha_ini_real, fecha_fin_real, duracion_minutos duracion_est, comentarios, no_modulos modulos_est, no_escenas, no_actividades, no_evaluaciones, fk_cliente cliente, fk_tipo tipo, fk_tecnologia tecnologia, fk_recursos responsable, fk_estados estado FROM ".self::$tablas[10]." WHERE id = ".$id);
+		foreach ($result[0] as $key => $value) {
+			$objDatos->$key = $value;
+		}
+		$objEstandar->datos = $objDatos;
+		return $objEstandar;
+	}
+
+	public function get_actividades_principales($id){
+		$objActPrin = array();
+		$result = $this->db_con->get_sql_records("SELECT DISTINCT t5.id idRol, t5.nombre nombreRol, t2.id idObj, t7.id faseN, t7.nombre_fase fase, t3.id actN, t3.nombre actividad, t2.tiempo_cotizado tiempo_est, t2.costo_cotizado costo_est FROM proyecto t1 JOIN proyecto_actividad t2 on t2.fk_proyecto = t1.id JOIN actividad t3 ON t3.id = t2.fk_actividad JOIN tarea t4 ON t3.id = t4.fk_actividad JOIN roles t5 ON t5.id = t2.fk_roles JOIN fases_proyecto t7 ON t7.id = t3.fk_fases WHERE t2.opcional = 0 AND t1.id =".$id);
+		foreach ($result as $valueAct) {
+			$objAct = new stdClass();
+			foreach ($valueAct as $key => $value) {
+				$objAct->$key = $value;
+			}
+			$objActPrin[] = $objAct;
+		}
+		return $objActPrin;
+	}
+
+	public function get_actividades_secundarias($id){
+		$objActSec = array();
+		$result = $this->db_con->get_sql_records("SELECT DISTINCT t5.id idRol, t5.nombre nombreRol, t2.id idObj, t7.id faseN, t7.nombre_fase fase, t3.id actN, t3.nombre actividad, t2.tiempo_cotizado tiempo, t2.costo_cotizado costo FROM proyecto t1 JOIN proyecto_actividad t2 on t2.fk_proyecto = t1.id JOIN actividad t3 ON t3.id = t2.fk_actividad JOIN tarea t4 ON t3.id = t4.fk_actividad JOIN roles t5 ON t5.id = t2.fk_roles JOIN fases_proyecto t7 ON t7.id = t3.fk_fases WHERE t2.opcional = 1 AND t1.id =".$id);
+		foreach ($result as $valueAct) {
+			$objAct = new stdClass();
+			foreach ($valueAct as $key => $value) {
+				$objAct->$key = $value;
+			}
+			$objActSec[] = $objAct;
+		}
+		return $objActSec;
+	}
+
+	public function get_tercero_principales($id){
+		$objTerPrin = array();
+		$result = $this->db_con->get_sql_records("SELECT * FROM ".self::$tablas[24]." WHERE ".self::$camposTer[1]." = ".$id." AND ".self::$camposTer[3]." = 0");
+		foreach ($result as $valueAct) {
+			$objAct = new stdClass();
+			foreach ($valueAct as $key => $value) {
+				$objAct->$key = $value;
+			}
+			$objTerPrin[] = $objAct;
+		}
+		return $objTerPrin;
+	}
+
+	public function get_tercero_secundarias($id){
+		$objTerSec = array();
+		$result = $this->db_con->get_sql_records("SELECT * FROM ".self::$tablas[24]." WHERE ".self::$camposTer[1]." = ".$id." AND ".self::$camposTer[3]." = 1");
+		foreach ($result as $valueAct) {
+			$objAct = new stdClass();
+			foreach ($valueAct as $key => $value) {
+				$objAct->$key = $value;
+			}
+			$objTerSec[] = $objAct;
+		}
+		return $objTerSec;
 	}
 }

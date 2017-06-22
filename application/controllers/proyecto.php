@@ -29,14 +29,6 @@ class Proyecto extends CI_Controller {
 	public function update($id){
 		$this->lib->required_session();
 		$this->load->model('proyecto/mproyecto');
-		$tablas = $this->db_struc->getTablas();
-
-		$campos_act = $this->mproyecto->get_campos_actividad();
-		$datos = $this->db_con->get_all_records($tablas[11], ["fk_proyecto"], [$id]);
-		$string_actividades_add = "";
-		foreach ($datos as $dato) {
-			$string_actividades_add .= 'read_actividad_cotizacion_edit("'.$dato[$campos_act[6]].'","'.$dato[$campos_act[2]].'","'.$dato[$campos_act[3]].'","'.$dato[$campos_act[4]].'","'.base_url().'actividad", "'.$id.'");';
-		}
 
 		$data = array(
 			'titulo' => 'Editar Cotizacion',
@@ -48,29 +40,27 @@ class Proyecto extends CI_Controller {
 			'lista_responsables' => $this->renders->get_list_responsable(),
 			'lista_estados_proy' => $this->renders->get_list_estado_proy(),
 			'lista_actividades' => $this->renders->get_list_actividades(),
-			'update_script' => 'read('.$id.', "'.base_url().'proyecto", "form_proyecto");'.$string_actividades_add
+			'lista_roles' => $this->renders->get_list_roles(),
+			'update_script' => 'read_pcp("'.base_url().'proyecto", '.$id.', "'.base_url().'actividad", 2, "form_proyecto_view");'
 			);
 		$this->load->view('proyecto/v_pro_form',$data);
 	}
 
 	public function jread(){
+		
 		$tablas = $this->db_struc->getTablas();
 
 		$this->load->model('proyecto/mproyecto');
-
 		$id = $this->input->post("id");
 
-		$datos = $this->db_con->get_all_records($tablas[10], [$this->mproyecto->get_id()], [$id]);
-		$datosSTR = "";
+		$objEstandar = $this->mproyecto->get_datos($id);
 
-		$etiquetas = $this->mproyecto->get_campos_read();
-		$tam = count($etiquetas);
+		$objEstandar->act_p = $this->mproyecto->get_actividades_principales($id);
+		$objEstandar->act_s = $this->mproyecto->get_actividades_secundarias($id);
+		$objEstandar->ter_p = $this->mproyecto->get_tercero_principales($id);
+		$objEstandar->ter_s = $this->mproyecto->get_tercero_secundarias($id);
 
-		for($i = 0; $i<$tam-1; $i++) {
-			$datosSTR .= $datos[0][$etiquetas[$i]].",";
-		}
-		$datosSTR .= $datos[0][$etiquetas[$tam-1]]."";
-		echo $datosSTR;
+		echo json_encode($objEstandar);
 	}
 
 	public function jupdate(){
@@ -78,41 +68,59 @@ class Proyecto extends CI_Controller {
 
 		$this->load->model('proyecto/mproyecto');
 
-		$datos_array[0] = $this->input->post("codigo");
-		$datos_array[1] = $this->input->post("nombre");
-		$datos_array[2] = $this->input->post("fecha_ini");
-		$datos_array[3] = $this->input->post("fecha_fin_est");
-		$datos_array[4] = $this->input->post("fecha_ini_real");
-		$datos_array[5] = $this->input->post("fecha_fin_real");
-		$datos_array[6] = $this->input->post("duracion_est");
-		$datos_array[7] = $this->input->post("comentarios");
-		$datos_array[8] = $this->input->post("modulos_est");
-		$datos_array[9] = $this->input->post("no_escenas");
-		$datos_array[10] = $this->input->post("no_actividades");
-		$datos_array[11] = $this->input->post("no_evaluaciones");
-		$datos_array[12] = $this->input->post("cliente");
-		$datos_array[13] = $this->input->post("tipo");
-		$datos_array[14] = $this->input->post("tecnologia");
-		$datos_array[15] = $this->input->post("responsable");
-		$datos_array[16] = $this->input->post("estado");
-		
-		$this->db_con->update_db_datos($tablas[10], $this->mproyecto->get_campos(), $datos_array, [$this->mproyecto->get_id()], [$datos_array[0]]);
+		$id = $this->input->post("id");
 
-		if(!empty($this->input->post('extra'))){
-			$datos_array2 = [];
-			$temp_datos_array2 = explode(";", $this->input->post('extra'));
-			foreach ($temp_datos_array2 as $value) {
-				$datos_array2[] = explode(",", $value);
-			}
-			foreach ($datos_array2 as $array_temp) {
-				$array_temp[5] = $datos_array[0];
-				if(!$this->db_con->existe_registro($tablas[11], [$this->mproyecto->get_campos_actividad()[5],$this->mproyecto->get_campos_actividad()[6]], [$array_temp[5],$array_temp[6]])){
-					$this->db_con->insert_db_datos($tablas[11], $this->mproyecto->get_campos_actividad(), $array_temp);
-				}else{
-					$this->db_con->update_db_datos($tablas[11], $this->mproyecto->get_campos_actividad_update(), [$array_temp[1],$array_temp[2],$array_temp[3],$array_temp[4]], [$this->mproyecto->get_campos_actividad()[5],$this->mproyecto->get_campos_actividad()[6]], [$array_temp[5],$array_temp[6]]);
-				}
+		$datos_array[0] = $this->input->post("nombre");
+		$datos_array[1] = $this->input->post("fecha_ini");
+		$datos_array[2] = $this->input->post("fecha_fin_est");
+		$datos_array[3] = $this->input->post("fecha_ini_real");
+		$datos_array[4] = $this->input->post("fecha_fin_real");
+		$datos_array[5] = $this->input->post("duracion_est");
+		$datos_array[6] = $this->input->post("comentarios");
+		$datos_array[7] = $this->input->post("modulos_est");
+		$datos_array[8] = $this->input->post("no_escenas");
+		$datos_array[9] = $this->input->post("no_actividades");
+		$datos_array[10] = $this->input->post("no_evaluaciones");
+		$datos_array[11] = $this->input->post("cliente");
+		$datos_array[12] = $this->input->post("tipo");
+		$datos_array[13] = $this->input->post("tecnologia");
+		$datos_array[14] = $this->input->post("responsable");
+		$datos_array[15] = $this->input->post("estado");
+
+		$datos_actividades = json_decode($this->input->post("actividades"));
+		$datos_terceros = json_decode($this->input->post("terceros"));
+		
+		$this->db_con->update_db_datos($tablas[10], $this->mproyecto->get_campos(), $datos_array, [$this->mproyecto->get_id()], [$id]);
+
+		foreach ($datos_actividades->act_p as $value) {
+			if($value->idObj == 0){
+				$this->db_con->insert_db_datos($tablas[11], $this->mproyecto->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 0]);
+			}else{
+				$this->db_con->update_db_datos($tablas[11], $this->mproyecto->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 0], ["id"], [$value->idObj]);
 			}
 		}
+		foreach ($datos_actividades->act_s as $value) {
+			if($value->idObj == 0){
+				$this->db_con->insert_db_datos($tablas[11], $this->mproyecto->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 1]);
+			}else{
+				$this->db_con->update_db_datos($tablas[11], $this->mproyecto->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 1], ["id"], [$value->idObj]);
+			}
+		}
+		foreach ($datos_terceros->ter_p as $value) {
+			if ($value->idObj == 0) {
+				$this->db_con->insert_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
+			}else{
+				$this->db_con->update_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, 0], ["id"], [$value->idObj]);
+			}
+		}
+		foreach ($datos_terceros->ter_s as $value) {
+			if ($value->idObj == 0) {
+				$this->db_con->insert_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
+			}else{
+				$this->db_con->update_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, 1], ["id"], [$value->idObj]);
+			}
+		}
+		
 		echo "OK";
 	}
 
@@ -124,5 +132,22 @@ class Proyecto extends CI_Controller {
 		$this->db_con->delete_db_datos($tablas[11], [$this->mproyecto->get_campos_actividad()[5], $this->mproyecto->get_campos_actividad()[6]], [$this->input->post("p1_extra"), $this->input->post("p2_extra")]);
 	}
 
+	public function getRecordProyectoXRol(){
+		//$this->lib->required_session();
+		$this->load->model('proyecto/mproyecto');
+
+		$id = $this->input->post("id");
+
+		$datos = new stdclass();
+
+		$datos->fechas = $this->mproyecto->getFechasProyecto($id);
+
+		$roles = $this->db_con->get_sql_records("SELECT * FROM roles");
+		foreach ($roles as $rol) {
+			$datos->$rol["nombre"] = $this->mproyecto->getRecordProyectoXRol($id, $rol["nombre"]);
+		}
+
+		echo json_encode($datos, JSON_UNESCAPED_UNICODE);
+	}
 
 }
