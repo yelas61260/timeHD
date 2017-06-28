@@ -282,11 +282,20 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 				filaTemp.append($("<td>").html(val["fase"]));
 				filaTemp.append($("<td>").html(val["actN"]));
 				filaTemp.append($("<td>").html(val["actividad"]));
-				filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["tiempo"]+"' onkeyup='if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
-				filaTemp.append($("<td>").html("0"));
-				filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+				if (notFrame == 2) {
+					filaTemp.append($("<td>").html(val["tiempo_est"]));
+					filaTemp.append($("<td>").html(val["tiempo_fac"]));
+					filaTemp.append($("<td>").html(val["costo_est"]));
+					filaTemp.append($("<td>").html(val["costo_fac"]));
+				}else{
+					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["tiempo"]+"' onkeyup='if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
+					filaTemp.append($("<td>").html("0"));
+					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+				}
 				$("#act_s").append(filaTemp);
-				calcularAct(param_ruta2, $($(filaTemp).children()[6]).children()[0]);
+				if (notFrame != 2) {
+					calcularAct(param_ruta2, $($(filaTemp).children()[6]).children()[0]);
+				}
 			});
 
 			jQuery.each(datosJSON["ter_p"], function(i, val){
