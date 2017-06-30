@@ -264,7 +264,7 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 					filaTemp.append($("<td>").html(val["costo_est"]));
 					filaTemp.append($("<td>").html(val["costo_fac"]));
 				}else{
-					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["tiempo"]+"' onkeyup='if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
+					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
 					filaTemp.append($("<td>").html("0"));
 					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
 				}
@@ -288,7 +288,7 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 					filaTemp.append($("<td>").html(val["costo_est"]));
 					filaTemp.append($("<td>").html(val["costo_fac"]));
 				}else{
-					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["tiempo"]+"' onkeyup='if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
+					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
 					filaTemp.append($("<td>").html("0"));
 					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
 				}
