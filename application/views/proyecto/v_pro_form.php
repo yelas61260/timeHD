@@ -113,21 +113,6 @@
 			</div>
 			<hr>
 			<div class="cont_tbl_act">
-				<table>
-					<tr>
-						<td><div class="form-label"><label>Rol</label></td>
-						<td><select name="rol" id="rol" onchange="read_list_act_x_rol('<?= base_url() ?>', this.value)"><?= $lista_roles ?></select></td>
-					</tr>
-					<tr>
-						<td><div class="form-label"><label>Actividad</label></td>
-						<td><select name="act" id="act"></select></td>
-					</tr>
-					<tr>
-						<td><button onclick="read_actividad_cotizacion('<?= base_url() ?>actividad', 'act_p')">Agregar Actividad Principal</button></td>
-						<td><button onclick="read_actividad_cotizacion('<?= base_url() ?>actividad', 'act_s')">Agregar Actividad Secundaria</button></td>
-					</tr>
-				</table>
-				<br>
 				<table class="tabla_general tbl_act" id="act_p" border="1" borrar="">
 					<thead><th>Actividades Principales</th></thead>
 					<thead>
@@ -187,16 +172,6 @@
 					</tfoot>
 				</table>
 				<br>
-				<table>
-					<tr>
-						<td><div class="form-label"><label for="ter">Actividad</label></td>
-						<td><input type="text" name="ter" id="ter" size="15" value=""/></td>
-					</tr>
-					<tr>
-						<td><button onclick="read_tercero_cotizacion('<?= base_url() ?>actividad', 'ter_p')">Agregar Actividad Principal</button></td>
-						<td><button onclick="read_tercero_cotizacion('<?= base_url() ?>actividad', 'ter_s')">Agregar Actividad Secundaria</button></td>
-					</tr>
-				</table>
 				<table class="tabla_general tbl_ter" id="ter_p" border="1" borrar="">
 					<thead><th>Terceros Principales</th></thead>
 					<thead>
@@ -210,7 +185,6 @@
 						<th id="total_costo">0</th>
 					</tfoot>
 				</table>
-
 				<table class="tabla_general tbl_ter" id="ter_s" border="1" borrar="">
 					<thead><th>Terceros Secundarios</th></thead>
 					<thead>

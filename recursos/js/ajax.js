@@ -315,7 +315,7 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 				$("#ter_s").append(filaTemp);
 			});
 			if (notFrame != 0) {
-				document.getElementById("enviar_btn").onclick = function(){update(param_ruta,"form_proyecto");};
+				document.getElementById("enviar_btn").onclick = function(){update(param_ruta,frame);};
 			}
 		}
 	});

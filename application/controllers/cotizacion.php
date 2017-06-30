@@ -84,18 +84,21 @@ class Cotizacion extends CI_Controller {
 		}else{
 			$id = $this->db_con->insert_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array);
 
-			foreach ($datos_actividades->act_p as $value) {
-				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 0]);
+			if ($datos_actividades != null) {
+				foreach ($datos_actividades->act_p as $value) {
+					$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 0]);
+				}
+				foreach ($datos_actividades->act_s as $value) {
+					$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 1]);
+				}
 			}
-			foreach ($datos_actividades->act_s as $value) {
-				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 1]);
-			}
-
-			foreach ($datos_terceros->ter_p as $value) {
-				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
-			}
-			foreach ($datos_terceros->ter_s as $value) {
-				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
+			if ($datos_terceros != null) {
+				foreach ($datos_terceros->ter_p as $value) {
+					$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
+				}
+				foreach ($datos_terceros->ter_s as $value) {
+					$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
+				}
 			}
 
 			echo "OK";
