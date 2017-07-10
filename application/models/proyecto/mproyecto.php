@@ -54,9 +54,8 @@ class mproyecto extends CI_Model
 		self::$camposAct[0] = "fk_proyecto";
 		self::$camposAct[1] = "fk_roles";
 		self::$camposAct[2] = "fk_actividad";
-		self::$camposAct[3] = "tiempo_cotizado";
-		self::$camposAct[4] = "costo_cotizado";
-		self::$camposAct[5] = "opcional";
+		self::$camposAct[3] = "costo_facturado";
+		self::$camposAct[4] = "opcional";
 
 		self::$camposTer[0] = "nombre";
 		self::$camposTer[1] = "fk_proyecto";

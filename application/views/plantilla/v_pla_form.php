@@ -46,6 +46,7 @@
 			</div>
 			<hr>
 			<div class="cont_tbl_act">
+				<input type="hidden" name="duracion_est" id="duracion_est" value="1">
 				<table>
 					<tr>
 						<td><div class="form-label"><label>Rol</label></td>

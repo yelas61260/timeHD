@@ -214,12 +214,13 @@ class Actividad extends CI_Controller {
 
 	public function read_cost_act(){
 		$tablas = $this->db_struc->getTablas();
-		$this->lib->required_session();
+		//$this->lib->required_session();
 		$this->load->model('actividad/mactividad');
 
 		$id = $this->input->post("id");
+		$rol = $this->input->post("rol");
 
-		$datos1 = $this->db_con->get_sql_records("SELECT DISTINCT AVG(t4.salario) AS dat1 FROM tarea AS t1 JOIN rol_tarea AS t2 ON t2.fk_tarea = t1.id JOIN recurso_rol AS t3 ON t3.fk_roles = t2.fk_roles JOIN recursos AS t4 ON t4.cedula = t3.fk_recursos WHERE t1.fk_actividad =".$id);
+		$datos1 = $this->db_con->get_sql_records("SELECT DISTINCT AVG(t4.salario) AS dat1 FROM tarea AS t1 JOIN rol_tarea AS t2 ON t2.fk_tarea = t1.id JOIN recurso_rol AS t3 ON t3.fk_roles = t2.fk_roles JOIN recursos AS t4 ON t4.cedula = t3.fk_recursos WHERE t4.fk_estados = 1 AND t1.fk_actividad =".$id." AND t2.fk_roles =".$rol);
 		echo $datos1[0]["dat1"];
 	}
 

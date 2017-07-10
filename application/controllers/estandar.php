@@ -63,20 +63,22 @@ class Estandar extends CI_Controller {
 		}else{
 			$id = $this->db_con->insert_db_datos($tablas[8], $this->mestandar->get_campos(), $datos_array);
 
-			foreach ($datos_actividades->act_p as $value) {
-				$this->db_con->insert_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 0]);
+			if ($datos_actividades != null) {
+				foreach ($datos_actividades->act_p as $value) {
+					$this->db_con->insert_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 0]);
+				}
+				foreach ($datos_actividades->act_s as $value) {
+					$this->db_con->insert_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 1]);
+				}
 			}
-			foreach ($datos_actividades->act_s as $value) {
-				$this->db_con->insert_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 1]);
+			if ($datos_terceros != null) {
+				foreach ($datos_terceros->ter_p as $value) {
+					$this->db_con->insert_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
+				}
+				foreach ($datos_terceros->ter_s as $value) {
+					$this->db_con->insert_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
+				}
 			}
-
-			foreach ($datos_terceros->ter_p as $value) {
-				$this->db_con->insert_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
-			}
-			foreach ($datos_terceros->ter_s as $value) {
-				$this->db_con->insert_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
-			}
-
 			echo "OK";
 		}
 	}
@@ -117,33 +119,37 @@ class Estandar extends CI_Controller {
 
 		$this->db_con->update_db_datos($tablas[8], $this->mestandar->get_campos(), $datos_array, ["id"], [$id]);
 
-		print_r($datos_actividades);
-		foreach ($datos_actividades->act_p as $value) {
-			if($value->idObj == 0){
-				$this->db_con->insert_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 0]);
-			}else{
-				$this->db_con->update_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 0], ["id"], [$value->idObj]);
+//		print_r($datos_actividades);
+		if ($datos_actividades != null) {
+			foreach ($datos_actividades->act_p as $value) {
+				if($value->idObj == 0){
+					$this->db_con->insert_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 0]);
+				}else{
+					$this->db_con->update_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 0], ["id"], [$value->idObj]);
+				}
+			}
+			foreach ($datos_actividades->act_s as $value) {
+				if($value->idObj == 0){
+					$this->db_con->insert_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 1]);
+				}else{
+					$this->db_con->update_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 1], ["id"], [$value->idObj]);
+				}
 			}
 		}
-		foreach ($datos_actividades->act_s as $value) {
-			if($value->idObj == 0){
-				$this->db_con->insert_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 1]);
-			}else{
-				$this->db_con->update_db_datos($tablas[9], $this->mestandar->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, 1], ["id"], [$value->idObj]);
+		if ($datos_terceros != null) {
+			foreach ($datos_terceros->ter_p as $value) {
+				if ($value->idObj == 0) {
+					$this->db_con->insert_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
+				}else{
+					$this->db_con->update_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 0], ["id"], [$value->idObj]);
+				}
 			}
-		}
-		foreach ($datos_terceros->ter_p as $value) {
-			if ($value->idObj == 0) {
-				$this->db_con->insert_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
-			}else{
-				$this->db_con->update_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 0], ["id"], [$value->idObj]);
-			}
-		}
-		foreach ($datos_terceros->ter_s as $value) {
-			if ($value->idObj == 0) {
-				$this->db_con->insert_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
-			}else{
-				$this->db_con->update_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 1], ["id"], [$value->idObj]);
+			foreach ($datos_terceros->ter_s as $value) {
+				if ($value->idObj == 0) {
+					$this->db_con->insert_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
+				}else{
+					$this->db_con->update_db_datos($tablas[23], $this->mestandar->get_campos_ter(), [$value->nombre, $id, $value->costo, 1], ["id"], [$value->idObj]);
+				}
 			}
 		}
 		echo "OK";

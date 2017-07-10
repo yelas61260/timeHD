@@ -250,6 +250,7 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 				});
 			}
 			jQuery.each(datosJSON["act_p"], function(i, val){
+				console.log(val);
 				var filaTemp = $("<tr>");
 				filaTemp.attr("idObj", val["idObj"]);
 				filaTemp.append($("<td>").html(val["idRol"]));
@@ -263,6 +264,7 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 					filaTemp.append($("<td>").html(val["tiempo_fac"]));
 					filaTemp.append($("<td>").html(val["costo_est"]));
 					filaTemp.append($("<td>").html(val["costo_fac"]));
+					filaTemp.append($("<td>").html("<input type='text' size='10' value='0' />"));
 				}else{
 					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
 					filaTemp.append($("<td>").html("0"));
@@ -287,6 +289,7 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 					filaTemp.append($("<td>").html(val["tiempo_fac"]));
 					filaTemp.append($("<td>").html(val["costo_est"]));
 					filaTemp.append($("<td>").html(val["costo_fac"]));
+					filaTemp.append($("<td>").html("<input type='text' size='10' value='0' />"));
 				}else{
 					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
 					filaTemp.append($("<td>").html("0"));
@@ -373,7 +376,7 @@ function calcularAct(param_ruta, param_obj){
 		type: "POST",
 		url: param_ruta+"/read_cost_act",
 		datatype: "html",
-		data: "id="+$($(param_obj).parent().parent().children()[4]).html(),
+		data: "id="+$($(param_obj).parent().parent().children()[4]).html()+"&rol="+$($(param_obj).parent().parent().children()[0]).html(),
 		success: function(data) {
 			$($(param_obj).parent().parent().children()[7]).html(parseInt(data)*$(param_obj).val());
 		}
@@ -435,8 +438,12 @@ function unirActividadesValor(){
 		returnVal += '"idObj":'+$(this).attr("idObj");
 		returnVal += ',"rolID":'+$($(this).children()[0]).html();
 		returnVal += ',"actID":'+$($(this).children()[4]).html();
-		returnVal += ',"horas":'+$($($(this).children()[6]).children()[0]).val();
-		returnVal += ',"costo":'+$($(this).children()[7]).html();
+		if ($("#form_proyecto_view").length) {
+			returnVal += ',"costo_fac":'+$($($(this).children()[10]).children()[0]).val();			
+		}else{
+			returnVal += ',"horas":'+$($($(this).children()[6]).children()[0]).val();
+			returnVal += ',"costo":'+$($(this).children()[7]).html();
+		}
 		returnVal += '}';
 		if (index != $(this).parent().children().length-1) {
 			returnVal += ',';
@@ -449,14 +456,19 @@ function unirActividadesValor(){
 		returnVal += '"idObj":'+$(this).attr("idObj");
 		returnVal += ',"rolID":'+$($(this).children()[0]).html();
 		returnVal += ',"actID":'+$($(this).children()[4]).html();
-		returnVal += ',"horas":'+$($($(this).children()[6]).children()[0]).val();
-		returnVal += ',"costo":'+$($(this).children()[7]).html();
+		if ($("#form_proyecto_view").length) {
+			returnVal += ',"costo_fac":'+$($($(this).children()[10]).children()[0]).val();			
+		}else{
+			returnVal += ',"horas":'+$($($(this).children()[6]).children()[0]).val();
+			returnVal += ',"costo":'+$($(this).children()[7]).html();
+		}
 		returnVal += '}';
 		if (index != $(this).parent().children().length-1) {
 			returnVal += ",";
 		}
 	});
 	returnVal += ']}';
+	console.log(returnVal);
 	return returnVal;
 }
 function unirTercerosValor(){

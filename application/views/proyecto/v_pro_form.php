@@ -126,6 +126,7 @@
 						<th>Horas Reportadas</th>
 						<th>Costo Estimado</th>
 						<th>Costo Produccion</th>
+						<th>Costo Facturado</th>
 					</thead>
 					<tbody id="cont">
 					</tbody>
@@ -140,6 +141,7 @@
 						<th id="total_tiempo">00:00:00</th>
 						<th id="total_costo_est">0</th>
 						<th id="total_costo">0</th>
+						<th id="total_factu">0</th>
 					</tfoot>
 				</table>
 				<table class="tabla_general tbl_act" id="act_s" border="1" borrar="">
@@ -155,6 +157,7 @@
 						<th>Horas Reportadas</th>
 						<th>Costo Estimado</th>
 						<th>Costo Produccion</th>
+						<th>Costo Facturado</th>
 					</thead>
 					<tbody id="cont">
 					</tbody>
@@ -169,6 +172,7 @@
 						<th id="total_tiempo">00:00:00</th>
 						<th id="total_costo_est">0</th>
 						<th id="total_costo">0</th>
+						<th id="total_factu">0</th>
 					</tfoot>
 				</table>
 				<br>

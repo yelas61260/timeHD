@@ -46,7 +46,7 @@ class renders extends CI_Model
 	}
 
 	public function get_list_responsable(){
-		return $this->lib->print_lista(self::$tablas[12], ["cedula","CONCAT(nombre,' ',apellido)"], "CONCAT(nombre,' ',apellido)");
+		return $this->lib->print_lista_filtrada(self::$tablas[12], ["cedula","nombre_completo"], ["cedula","CONCAT(nombre,' ',apellido) nombre_completo"], "fk_estados=1", "nombre");
 	}
 
 	public function get_list_estado_proy(){
