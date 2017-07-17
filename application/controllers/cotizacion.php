@@ -168,32 +168,22 @@ class Cotizacion extends CI_Controller {
 		
 		$this->db_con->update_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array, [$this->mcotizacion->get_id()], [$id]);
 
-		foreach ($datos_actividades->act_p as $value) {
-			if($value->idObj == 0){
+		$this->db_con->delete_db_datos($tablas[11], ["fk_proyecto"], [$id]);
+		if ($datos_actividades != null) {
+			foreach ($datos_actividades->act_p as $value) {
 				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 0]);
-			}else{
-				$this->db_con->update_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 0], ["id"], [$value->idObj]);
 			}
-		}
-		foreach ($datos_actividades->act_s as $value) {
-			if($value->idObj == 0){
+			foreach ($datos_actividades->act_s as $value) {
 				$this->db_con->insert_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 1]);
-			}else{
-				$this->db_con->update_db_datos($tablas[11], $this->mcotizacion->get_campos_act(), [$id, $value->rolID, $value->actID, $value->horas, $value->costo, 1], ["id"], [$value->idObj]);
 			}
 		}
-		foreach ($datos_terceros->ter_p as $value) {
-			if ($value->idObj == 0) {
+		$this->db_con->delete_db_datos($tablas[24], ["fk_proyecto"], [$id]);
+		if ($datos_terceros != null) {
+			foreach ($datos_terceros->ter_p as $value) {
 				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
-			}else{
-				$this->db_con->update_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 0], ["id"], [$value->idObj]);
 			}
-		}
-		foreach ($datos_terceros->ter_s as $value) {
-			if ($value->idObj == 0) {
+			foreach ($datos_terceros->ter_s as $value) {
 				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
-			}else{
-				$this->db_con->update_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 1], ["id"], [$value->idObj]);
 			}
 		}
 		echo "OK";

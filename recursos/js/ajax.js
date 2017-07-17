@@ -67,6 +67,7 @@ function update(param_ruta,param_formName){
 				}
 			}
 		}
+		console.log(strDAtos);
 		$.ajax({
 			type: "POST",
 			url: param_ruta+"/jupdate",
@@ -207,12 +208,13 @@ function read_actividad_cotizacion(param_ruta, param_table){
 				filaTemp.append(cellTemp);
 			}
 			var cellHora = $("<td>");
-			cellHora.html("<input type='text' size='10' value='0' onkeyup='if(event.keyCode == 13) calcularAct(\""+param_ruta+"\", this);'/>");
+			cellHora.html("<input type='text' size='10' value='0' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta+"\", this);'/>");
 			filaTemp.append(cellHora);
 			filaTemp.append($("<td>").html("0"));
 			filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
 
 			$('#'+param_table).append(filaTemp);
+			totales_tabla_tiempo_costo();
 		}
 	});
 }
@@ -220,9 +222,10 @@ function read_tercero_cotizacion(param_ruta, param_table){
 	var filaTemp = $("<tr>");
 	filaTemp.attr("idObj", "0");
 	filaTemp.append($("<td>").html($("#ter").val()));
-	filaTemp.append($("<td>").html("<input type='text' size='10' value='0'/>"));
+	filaTemp.append($("<td>").html("<input type='text' size='10' value='0' onkeyup='totales_tabla_tiempo_costo();'/>"));
 	filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
 	$("#"+param_table).append(filaTemp);
+	totales_tabla_tiempo_costo();
 }
 function removeElement(param_obj){
 	if($(param_obj).parent().parent().attr("idObj") != "0"){
@@ -231,6 +234,7 @@ function removeElement(param_obj){
 		$(param_obj).parent().parent().parent().parent().attr("borrar",listaBorrar);
 	}
 	$(param_obj).parent().parent().remove();
+	totales_tabla_tiempo_costo();
 }
 function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proyecto'){
 	$.ajax({
@@ -252,7 +256,11 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 			jQuery.each(datosJSON["act_p"], function(i, val){
 				console.log(val);
 				var filaTemp = $("<tr>");
-				filaTemp.attr("idObj", val["idObj"]);
+				if(notFrame != 0){
+					filaTemp.attr("idObj", val["idObj"]);
+				}else{
+					filaTemp.attr("idObj", 0);
+				}
 				filaTemp.append($("<td>").html(val["idRol"]));
 				filaTemp.append($("<td>").html(val["nombreRol"]));
 				filaTemp.append($("<td>").html(val["faseN"]));
@@ -266,7 +274,7 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 					filaTemp.append($("<td>").html(val["costo_fac"]));
 					filaTemp.append($("<td>").html("<input type='text' size='10' value='0' />"));
 				}else{
-					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
+					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
 					filaTemp.append($("<td>").html("0"));
 					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
 				}
@@ -277,7 +285,11 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 			});
 			jQuery.each(datosJSON["act_s"], function(i, val){
 				var filaTemp = $("<tr>");
-				filaTemp.attr("idObj", val["idObj"]);
+				if(notFrame != 0){
+					filaTemp.attr("idObj", val["idObj"]);
+				}else{
+					filaTemp.attr("idObj", 0);
+				}
 				filaTemp.append($("<td>").html(val["idRol"]));
 				filaTemp.append($("<td>").html(val["nombreRol"]));
 				filaTemp.append($("<td>").html(val["faseN"]));
@@ -291,7 +303,7 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 					filaTemp.append($("<td>").html(val["costo_fac"]));
 					filaTemp.append($("<td>").html("<input type='text' size='10' value='0' />"));
 				}else{
-					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
+					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
 					filaTemp.append($("<td>").html("0"));
 					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
 				}
@@ -303,71 +315,32 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 
 			jQuery.each(datosJSON["ter_p"], function(i, val){
 				var filaTemp = $("<tr>");
-				filaTemp.attr("idObj", val["id"]);
+				if(notFrame != 0){
+					filaTemp.attr("idObj", val["id"]);
+				}else{
+					filaTemp.attr("idObj", 0);
+				}
 				filaTemp.append($("<td>").html(val["nombre"]));
-				filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["costo"]+"'/>"));
+				filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["costo"]+"' onkeyup='totales_tabla_tiempo_costo();'/>"));
 				filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
 				$("#ter_p").append(filaTemp);
 			});
 			jQuery.each(datosJSON["ter_s"], function(i, val){
 				var filaTemp = $("<tr>");
-				filaTemp.attr("idObj", val["id"]);
+				if(notFrame != 0){
+					filaTemp.attr("idObj", val["id"]);
+				}else{
+					filaTemp.attr("idObj", 0);
+				}
 				filaTemp.append($("<td>").html(val["nombre"]));
-				filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["costo"]+"'/>"));
+				filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["costo"]+"' onkeyup='totales_tabla_tiempo_costo();'/>"));
 				filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
 				$("#ter_s").append(filaTemp);
 			});
+			totales_tabla_tiempo_costo();
 			if (notFrame != 0) {
 				document.getElementById("enviar_btn").onclick = function(){update(param_ruta,frame);};
 			}
-		}
-	});
-}
-function read_actividad_cotizacion_edit(id_act,cant_est,tiempo_act,val_act,param_ruta,id_prin){
-	var strDAtos = "id="+id_act+"&cant_est="+cant_est+"&tiempo_act="+tiempo_act+"&val_act="+val_act;
-	strDAtos += "&total_tiempo="+document.getElementById("total_tiempo").innerHTML+"&total_costo="+document.getElementById("total_costo").innerHTML;
-	var datosArray;
-	$.ajax({
-		type: "POST",
-		url: param_ruta+"/read_data_act",
-		datatype: "html",
-		data: strDAtos,
-		success: function(data) {
-			var arreglo = [null];
-
-			datosArray = data.split(",");
-
-			arreglo.push("0");
-			arreglo.push(datosArray[5]);
-			arreglo.push(datosArray[6]);
-			arreglo.push(datosArray[7]);
-			arreglo.push(null);
-			arreglo.push(datosArray[2]);
-
-			var content = "<tr id='ext_"+id_act+"' valor='"+arreglo+"'>";
-			for(i=0; i<datosArray.length; i++){
-				if(i==5){
-					if(datosArray[i] == "1"){
-						content += "<td style='text-align: center;'>"+datosArray[i]+"</td>";
-					}else{
-						content += "<td style='text-align: center;'><input id='input_ext_"+id_act+"' name='ext_"+id_act+"' type='text' size='10' value='"+datosArray[i]+"' required/></td>";
-					}
-				}else{
-					content += "<td>"+datosArray[i]+"</td>";
-				}
-			}
-			if(datosArray[5] != "1"){
-				content += "<td><button onclick='calcularAct("+id_act+");'>Recalcular</button></td>";
-			}
-			content += "<td><button onclick='quitar("+id_act+", "+id_prin+");'>Quitar</button></td>";
-			content += "</tr>";
-
-			document.getElementById("total_tiempo").innerHTML = totales_tabla_cotizacion(document.getElementById("total_tiempo").innerHTML, datosArray[6]);
-			document.getElementById("total_costo").innerHTML = parseInt(document.getElementById("total_costo").innerHTML)+parseInt(datosArray[7]);
-
-			document.getElementById("cont_acti").innerHTML += content;
-
-			totales_tabla_tiempo_costo();
 		}
 	});
 }
@@ -378,11 +351,13 @@ function calcularAct(param_ruta, param_obj){
 		datatype: "html",
 		data: "id="+$($(param_obj).parent().parent().children()[4]).html()+"&rol="+$($(param_obj).parent().parent().children()[0]).html(),
 		success: function(data) {
+			console.log(data);
 			$($(param_obj).parent().parent().children()[7]).html(parseInt(data)*$(param_obj).val());
+			totales_tabla_tiempo_costo();
 		}
 	});
 }
-function totales_tabla_cotizacion(param_fecha1,param_fecha2){
+function sumar_tiempo(param_fecha1,param_fecha2){
 	var fecha_sep1 = (param_fecha1+"").split(":");
 	var fecha_sep2 = (param_fecha2+"").split(":");
 	var fecha_res = [0,0,0];
@@ -524,14 +499,57 @@ function quitar(id_ext, id_ext_parent){
 	totales_tabla_tiempo_costo();
 }
 function totales_tabla_tiempo_costo(){
+	if($("#form_proyecto").length){
+		var total_tiempo_esti = "00:00:00";
+		var total_costo_esti = 0;
+
+		jQuery.each($("#act_p #cont tr"), function(i, val){
+			total_tiempo_esti = sumar_tiempo($($($(val).children()[6]).children()[0]).val()+":00:00", total_tiempo_esti);
+			total_costo_esti = parseInt($($(val).children()[7]).html()) + total_costo_esti;
+		});
+		$("#act_p #total_tiempo").html(total_tiempo_esti);
+		$("#act_p #total_costo").html(total_costo_esti);
+
+		total_tiempo_esti = "00:00:00";
+		total_costo_esti = 0;
+		jQuery.each($("#act_s #cont tr"), function(i, val){
+			total_tiempo_esti = sumar_tiempo($($($(val).children()[6]).children()[0]).val()+":00:00", total_tiempo_esti);
+			total_costo_esti = parseInt($($(val).children()[7]).html()) + total_costo_esti;
+		});
+		$("#act_s #total_tiempo").html(total_tiempo_esti);
+		$("#act_s #total_costo").html(total_costo_esti);
+
+		var total_tercero = 0;
+		jQuery.each($("#ter_p #cont tr"), function(i, val){
+			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val()) + total_tercero;
+		});
+		$("#ter_p #total_costo").html(total_tercero);
+
+		total_tercero = 0;
+		jQuery.each($("#ter_s #cont tr"), function(i, val){
+			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val()) + total_tercero;
+		});
+		$("#ter_s #total_costo").html(total_tercero);
+	}else if($("#form_proyecto_view").length){
+
+	}
+	/*
+	var total_costo_esti = 0;
+	var total_costo_prod = 0;
+	var total_costo_fact = 0;
+
+	
+	var total_tiempo_prod = "00:00:00";
+
 	var total_costo = 0;
 	var total_tiempo = "00:00:00";
 	$("#cont_acti tr").each(function(index){
 		total_costo += parseInt($(this).children()[7].innerHTML);
-		total_tiempo = totales_tabla_cotizacion(total_tiempo, $(this).children()[6].innerHTML);
+		total_tiempo = sumar_tiempo(total_tiempo, $(this).children()[6].innerHTML);
 	});
 	$("#total_costo").html(total_costo);
 	$("#total_tiempo").html(total_tiempo);
+	*/
 }
 function read_list_act_x_rol(baseUrl, idRol){
 	$.ajax({

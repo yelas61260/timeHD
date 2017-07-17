@@ -70,7 +70,7 @@ class renders extends CI_Model
 	}
 
 	public function get_list_plantilla(){
-		return $this->lib->print_lista(self::$tablas[8], ["id","nombre"]);
+		return $this->lib->print_lista(self::$tablas[8], ["id","nombre"], "nombre");
 	}
 
 	public function get_list_proyecto_x_cli($id_cli){

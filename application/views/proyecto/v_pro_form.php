@@ -131,17 +131,45 @@
 					<tbody id="cont">
 					</tbody>
 					<tfoot>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th>Totales</th>
-						<th id="total_tiempo_est">00:00:00</th>
-						<th id="total_tiempo">00:00:00</th>
-						<th id="total_costo_est">0</th>
-						<th id="total_costo">0</th>
-						<th id="total_factu">0</th>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th>Totales</th>
+							<th id="total_tiempo_est">00:00:00</th>
+							<th id="total_tiempo">00:00:00</th>
+							<th id="total_costo_est">0</th>
+							<th id="total_costo">0</th>
+							<th id="total_factu">0</th>
+						</tr>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th>Contribución</th>
+							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+						</tr>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th>Precio</th>
+							<th id="val_precio">0</th>
+						</tr>
 					</tfoot>
 				</table>
 				<table class="tabla_general tbl_act" id="act_s" border="1" borrar="">
@@ -162,17 +190,45 @@
 					<tbody id="cont">
 					</tbody>
 					<tfoot>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th>Totales</th>
-						<th id="total_tiempo_est">00:00:00</th>
-						<th id="total_tiempo">00:00:00</th>
-						<th id="total_costo_est">0</th>
-						<th id="total_costo">0</th>
-						<th id="total_factu">0</th>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th>Totales</th>
+							<th id="total_tiempo_est">00:00:00</th>
+							<th id="total_tiempo">00:00:00</th>
+							<th id="total_costo_est">0</th>
+							<th id="total_costo">0</th>
+							<th id="total_factu">0</th>
+						</tr>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th>Contribución</th>
+							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+						</tr>
+						<tr>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th>Precio</th>
+							<th id="val_precio">0</th>
+						</tr>
 					</tfoot>
 				</table>
 				<br>
@@ -185,8 +241,18 @@
 					<tbody id="cont">
 					</tbody>
 					<tfoot>
-						<th>Total</th>
-						<th id="total_costo">0</th>
+						<tr>
+							<th>Total</th>
+							<th id="total_costo">0</th>
+						</tr>
+						<tr>
+							<th>Contribución</th>
+							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+						</tr>
+						<tr>
+							<th>Precio</th>
+							<th id="val_precio">0</th>
+						</tr>
 					</tfoot>
 				</table>
 				<table class="tabla_general tbl_ter" id="ter_s" border="1" borrar="">
@@ -198,9 +264,25 @@
 					<tbody id="cont">
 					</tbody>
 					<tfoot>
-						<th>Total</th>
-						<th id="total_costo">0</th>
+						<tr>
+							<th>Total</th>
+							<th id="total_costo">0</th>
+						</tr>
+						<tr>
+							<th>Contribución</th>
+							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+						</tr>
+						<tr>
+							<th>Precio</th>
+							<th id="val_precio">0</th>
+						</tr>
 					</tfoot>
+				</table>
+				<br>
+				<br>
+				<br>
+				<table class="tabla_general" id="totales" border="1">
+					<thead><th></th></thead>
 				</table>
 			</div>
 			<button id="enviar_btn" onclick="create('<?= base_url() ?>proyecto','form_proyecto_view')"/>Enviar</button>
