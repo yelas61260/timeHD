@@ -10,8 +10,12 @@ class lib extends CI_Model
 	public function print_header(){
 		$content = '';
 		$content .= "<script type='text/javascript' src='".base_url()."recursos/js/jquery-1.7.1.min.js'></script>";
+		$content .= "<script type='text/javascript' src='".base_url()."recursos/js/jquery.js'></script>";
+		$content .= "<script type='text/javascript' src='".base_url()."recursos/js/alertify.js'></script>";
 		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/header.css'/>";
 		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/base.css'/>";
+		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/alertify.core.css' />";
+		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/alertify.default.css' />";
 		$content .= "<div class='header'>";
 		$content .= "<div id='logo_img'><img src='".base_url()."recursos/pix/logo.png'/></div>";
 		$content .= "<div id='logo_texto'>Plataforma de gestión de costos</div>";
@@ -43,9 +47,27 @@ class lib extends CI_Model
 		return $content;
 	}
 
-	public function print_lista($tabla, $campo){
+	public function print_lista($tabla, $campo, $order_by=null){
 		$content = '<option value="">Seleccionar</option>';
-		$datos = $this->db_con->get_all_records_tabla($tabla, $campo);
+		if ($order_by == null) {
+			$datos = $this->db_con->get_all_records_tabla($tabla, $campo);
+		}else{
+			$datos = $this->db_con->get_all_records_tabla($tabla, $campo, $order_by);
+		}
+		foreach ($datos as $valor) {
+			$content .= '<option value="'.$valor[$campo[0]].'">'.$valor[$campo[1]].'</option>';
+		}
+		return $content;
+	}
+
+
+	public function print_lista_filtrada($tabla, $campo, $get_campo, $condiciones, $order_by=null){
+		$content = '<option value="">Seleccionar</option>';
+		if($order_by == null){
+			$datos = $this->db_con->get_all_records_tabla_where($tabla, $get_campo, $condiciones);
+		}else{
+			$datos = $this->db_con->get_all_records_tabla_where($tabla, $get_campo, $condiciones, $order_by);
+		}
 		foreach ($datos as $valor) {
 			$content .= '<option value="'.$valor[$campo[0]].'">'.$valor[$campo[1]].'</option>';
 		}
@@ -64,7 +86,7 @@ class lib extends CI_Model
 		$content .= '</tr></thead>';
 
 		$content .= '<tbody>';
-		if(empty($valoresCondicion)){
+		if($valoresCondicion == null || empty($valoresCondicion)){
 			$datos = $this->db_con->get_all_records_tabla($tabla, ['*']);
 		}else{
 			$sentenciaSQL = "SELECT ";
@@ -89,20 +111,32 @@ class lib extends CI_Model
 		//print_r($datos);
 		foreach ($datos as $dato) {
 			$content .= '<tr>';
-			for($j = 0; $j<$tamcampos - 2; $j++){
+			for($j = 0; $j<$tamcampos - 3; $j++){
 				$content .= '<td id="campo">'.$dato[$nameCampos[$j]].'</td>';
 			}
-			$content .= '<td>';
-			$content .= '<form action="'.base_url().$URL.'/update/'.$dato[$id].'" metod="post">';
-			$content .= '<button><img src="'.base_url().'recursos/pix/modificar.jpg" width="25" height="25"></button>';
-  			$content .= '</form>';
-  			$content .= '</td>';
-  			$content .= '<td>';
-  			$content .= '<form action="'.base_url().$URL.'/deleted/'.$dato[$id].'" metod="post">';
-			$content .= '<button><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
-  			$content .= '</form>';
-  			$content .= '</td>';
-  			$content .= '</tr>';
+			if($nameCampos[$tamcampos - 1] == "" && $nameCampos[$tamcampos - 2] == ""){
+				if($nameCampos[$tamcampos - 3] == ""){	
+		  			$content .= '<td>';
+					$content .= '<button onclick="conv_proy('.$dato[$id].', \''.base_url().$URL.'\');"><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
+		  			$content .= '</td>';
+	  			}else{
+	  				$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 3]].'</td>';
+	  			}
+
+				$content .= '<td>';
+				$content .= '<form action="'.base_url().$URL.'/update/'.$dato[$id].'" metod="post">';
+				$content .= '<button><img src="'.base_url().'recursos/pix/modificar.jpg" width="25" height="25"></button>';
+	  			$content .= '</form>';
+	  			$content .= '</td>';
+	  			$content .= '<td>';
+				$content .= '<button onclick="deleted('.$dato[$id].', \''.base_url().$URL.'\');"><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
+	  			$content .= '</td>';
+	  			$content .= '</tr>';
+	  		}else{
+	  			$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 3]].'</td>';
+	  			$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 2]].'</td>';
+	  			$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 1]].'</td>';
+	  		}
 		}
 		$content .= '</tbody>';
 
@@ -125,6 +159,17 @@ class lib extends CI_Model
 		$content .="<script type='text/javascript' src='".base_url()."recursos/js/jquery.dataTables.min.js'></script>";
 		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/jquery.dataTables.css'>";
 		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/jquery.dataTables.min.css'>";
+		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/estilotabla.css'>";
+		return $content;
+	}
+
+	public function css_js_tables_responsive(){
+		$content = '';
+		$content .="<script type='text/javascript' src='".base_url()."recursos/js/responsive/jquery-1.12.0.min.js'></script>";
+		$content .="<script type='text/javascript' src='".base_url()."recursos/js/responsive/jquery.dataTables.min.js'></script>";
+		$content .="<script type='text/javascript' src='".base_url()."recursos/js/responsive/dataTables.responsive.min.js'></script>";
+		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/responsive/responsive.dataTables.min.css'>";
+		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/responsive/jquery.dataTables.min.css'>";
 		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/estilotabla.css'>";
 		return $content;
 	}

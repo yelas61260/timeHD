@@ -1,6 +1,21 @@
 body {
 	background:#CCC;
 }
+button{
+	background:#7EC000;
+	border-radius:5px;
+	color:#FFF;
+	font-weight:bold;
+	padding:5px;
+}
+button:hover{
+	background:#28323C;
+	cursor:pointer;
+}
+label span{
+	color: red;
+	font-weight: bold;
+}
 .header{
 	background:#28323C;
 }
@@ -65,4 +80,13 @@ body {
 	border-color:#28323C;
 	color:#fff;
 	font-weight:bold;
+}
+.list_reporte{
+	width:250px;
+}
+.tbl_act{
+	min-width: 100%;
+}
+.tbl_ter{
+	min-width: 40%;
 }

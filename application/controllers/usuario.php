@@ -6,7 +6,7 @@ class Usuario extends CI_Controller {
 		$this->lib->required_session();
 		$this->load->model('usuario/musuario');
 		$data = array(
-			'css_js_tables' => $this->lib->css_js_tables(),
+			'css_js_tables' => $this->lib->css_js_tables_responsive(),
 			'header' => $this->lib->print_header(),
 			'menu' => $this->lib->print_menu(),
 			'table_grafic' => $this->musuario->get_table_grafic(),
@@ -53,28 +53,32 @@ class Usuario extends CI_Controller {
 		$datos_array2[0] = $this->input->post("ciudad");
 		$datos_array2[1] = $this->input->post("pais");
 
-		$ciudades = $this->db_con->get_all_records($tablas[1], $this->musuario->get_campos2(), $datos_array2);
-
-		if(count($ciudades)<=0 || count($ciudades[0])<=1){
-			$this->db_con->insert_db_datos($tablas[1], $this->musuario->get_campos2(), $datos_array2);
+		if($this->db_con->existe_registro($tablas[12], ["cedula"], [$datos_array[0]])){
+			echo "La cedula ya existe.";
+		}else if($this->db_con->existe_registro($tablas[12], ["usuario"], [$datos_array[7]])){
+			echo "El usuario ya existe.";
+		}else{
 			$ciudades = $this->db_con->get_all_records($tablas[1], $this->musuario->get_campos2(), $datos_array2);
+
+			if(count($ciudades)<=0 || count($ciudades[0])<=1){
+				$this->db_con->insert_db_datos($tablas[1], $this->musuario->get_campos2(), $datos_array2);
+				$ciudades = $this->db_con->get_all_records($tablas[1], $this->musuario->get_campos2(), $datos_array2);
+			}
+			$datos_array[13] = $ciudades[0]["id"];
+			$this->db_con->insert_db_datos($tablas[12], $this->musuario->get_campos(), $datos_array);
+
+			if(!empty($this->input->post('extra')) && $this->input->post('extra')!=""){
+				//roles
+				$datos_array = explode(";", $this->input->post('extra'));
+
+				foreach ($datos_array as $dato_rol) {
+					if($dato_rol != ""){
+						$this->db_con->insert_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
+					}
+				}
+			}
+			echo "OK";
 		}
-		$datos_array[13] = $ciudades[0]["id"];
-		$this->db_con->insert_db_datos($tablas[12], $this->musuario->get_campos(), $datos_array);
-
-		//roles
-		$datos_array = explode(";", $this->input->post('roles'));
-
-		foreach ($datos_array as $dato_rol) {
-			$this->db_con->insert_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
-		}
-	}
-
-	public function deleted($id){
-		$this->lib->required_session();
-		echo "<script type='text/javascript' src='".base_url()."recursos/js/jquery-1.7.1.min.js'></script>";
-		echo '<script src="'.base_url().'recursos/js/ajax.js"/></script>';
-		echo '<script>deleted('.$id.', "'.base_url().'usuario");</script>';
 	}
 
 	public function jdeleted(){
@@ -98,14 +102,14 @@ class Usuario extends CI_Controller {
 
 		$datos_get = array("t1.cedula","t1.nombre AS nombre_usu","t1.apellido","t1.direccion","t1.telefono_uno","t1.telefono_dos","t1.correo","t2.nombre AS ciudad_nombre","t2.fk_pais AS id_pais","t1.titulo","t1.cargo","t1.salario","t1.usuario","t1.password","t1.fk_estados");
 		$datos = $this->db_con->get_all_records($tablas[12]." AS t1, ".$tablas[1]." AS t2", [" t1.fk_ciudad = t2.id AND t1.cedula"], [$id], $datos_get);
-		$datosSTR = ",";
+		$datosSTR = "";
 
 		$tam = count($etiquetas);
 
 		for($i = 0; $i<$tam-1; $i++) {
-			$datosSTR .= utf8_encode($datos[0][$etiquetas[$i]]).",";
+			$datosSTR .= $datos[0][$etiquetas[$i]].",";
 		}
-		$datosSTR .= utf8_encode($datos[0][$etiquetas[$tam-1]])."";
+		$datosSTR .= $datos[0][$etiquetas[$tam-1]]."";
 		echo $datosSTR;
 	}
 
@@ -118,7 +122,7 @@ class Usuario extends CI_Controller {
 		$script_roles = '';
 		$datos = $this->db_con->get_all_records($tablas[13], ["fk_recursos"], [$id]);
 		foreach ($datos as $dato) {
-			$script_roles .= 'read_roles_usuario_edit('.$dato["fk_roles"].');';
+			$script_roles .= 'read_roles_usuario_edit('.$dato["fk_roles"].', '.$id.');';
 		}
 
 		$data = array(
@@ -166,14 +170,26 @@ class Usuario extends CI_Controller {
 		$this->db_con->update_db_datos($tablas[12], $this->musuario->get_campos(), $datos_array, [$this->musuario->get_campos()[0]], [$this->input->post("cedula")]);
 
 		//roles
-		$datos_array = explode(";", $this->input->post('roles'));
+		if(!empty($this->input->post('extra'))){
+			$datos_array = explode(";", $this->input->post('extra'));
+			//$this->db_con->delete_db_datos($tablas[13], [$this->musuario->get_campos3()[0]], [$this->input->post("cedula")]);
 
-		foreach ($datos_array as $dato_rol) {
-			$rol = $this->db_con->get_all_records($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
-			if(count($rol)<=0 || count($rol[0])<=1){
-				$this->db_con->insert_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
+			foreach ($datos_array as $dato_rol) {
+				$rol = $this->db_con->get_all_records($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
+				if(count($rol)<=0 || count($rol[0])<=1){
+					$this->db_con->insert_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("cedula"), $dato_rol]);
+				}
 			}
 		}
+		echo "OK";
+	}
+
+	public function jdextra(){
+		$tablas = $this->db_struc->getTablas();
+
+		$this->load->model('usuario/musuario');
+
+		$this->db_con->delete_db_datos($tablas[13], $this->musuario->get_campos3(), [$this->input->post("p1_extra"), $this->input->post("p2_extra")]);
 	}
 
 }

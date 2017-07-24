@@ -3,8 +3,8 @@ class mestandar extends CI_Model
 {
 	private static $id;
 	private static $campos;
-	private static $campos_actividad;
-	private static $campos_read;
+	private static $camposAct;
+	private static $camposTer;
 
 	private static $tablas;
 
@@ -14,59 +14,93 @@ class mestandar extends CI_Model
 
 		self::$id = "id";
 
-		self::$campos[0] = "id";
+		self::$campos[0] = "codigo";
 		self::$campos[1] = "nombre";
-		self::$campos[2] = "fecha_inicio_estimada";
-		self::$campos[3] = "fecha_fin_estimada";
-		self::$campos[4] = "fecha_inicio_real";
-		self::$campos[5] = "fecha_fin_real";
-		self::$campos[6] = "duracion_minutos";
-		self::$campos[7] = "comentarios";
-		self::$campos[8] = "no_modulos";
-		self::$campos[9] = "no_escenas";
-		self::$campos[10] = "no_actividades";
-		self::$campos[11] = "no_evaluaciones";
-		self::$campos[12] = "fk_cliente";
-		self::$campos[13] = "fk_tipo";
-		self::$campos[14] = "fk_tecnologia";
-		self::$campos[15] = "fk_recursos";
-		self::$campos[16] = "fk_estados";
+		self::$campos[2] = "fk_tipo";
+		self::$campos[3] = "descripcion";
 
-		self::$campos_read[0] = "fk_cliente";
-		self::$campos_read[1] = "duracion_minutos";
-		self::$campos_read[2] = "nombre";
-		self::$campos_read[3] = "no_modulos";
-		self::$campos_read[4] = "id";
-		self::$campos_read[5] = "no_escenas";
-		self::$campos_read[6] = "fk_tipo";
-		self::$campos_read[7] = "no_actividades";
-		self::$campos_read[8] = "fk_tecnologia";
-		self::$campos_read[9] = "no_evaluaciones";
-		self::$campos_read[10] = "fk_recursos";
-		self::$campos_read[11] = "fk_estados";
-		self::$campos_read[12] = "fecha_inicio_estimada";
-		self::$campos_read[13] = "fecha_fin_estimada";
-		self::$campos_read[14] = "fecha_inicio_real";
-		self::$campos_read[15] = "fecha_fin_real";
-		self::$campos_read[16] = "comentarios";
+		self::$camposAct[0] = "fk_plantillas";
+		self::$camposAct[1] = "fk_roles";
+		self::$camposAct[2] = "fk_actividad";
+		self::$camposAct[3] = "tiempo";
+		self::$camposAct[4] = "opcional";
 
-		self::$campos_actividad[0] = "id";
-		self::$campos_actividad[1] = "cantidad_real";
-		self::$campos_actividad[2] = "cantidad_estimada";
-		self::$campos_actividad[3] = "tiempo_estimado";
-		self::$campos_actividad[4] = "costo_estimado";
-		self::$campos_actividad[5] = "fk_proyecto";
-		self::$campos_actividad[6] = "fk_actividad";
+		self::$camposTer[0] = "nombre";
+		self::$camposTer[1] = "fk_plantilla";
+		self::$camposTer[2] = "costo";
+		self::$camposTer[3] = "opcional";
 
 		self::$tablas = $this->db_struc->getTablas();
 	}
 
 	public function get_table_grafic(){
-		return $this->lib->tabla_generar(self::$tablas[10]." AS t1, ".self::$tablas[2]." AS t2, ".self::$tablas[19]." AS t3",
-				array("Nombre","Fecha inicio estimada","Fecha fin estimada","Cliente","Tipo","",""),
-				array("nombre","fecha_inicio_estimada","fecha_fin_estimada","cliente","tipo","",""),
-				["t1.fk_cliente=t2.id","t1.fk_tipo=t3.id","t1.fk_estados=1"],"estandar",self::get_id(),
-				["t1.id as id","t1.nombre","t1.fecha_inicio_estimada","t1.fecha_fin_estimada","t2.nombre as cliente","t3.nombre as tipo"]);
+		return $this->lib->tabla_generar(self::$tablas[8]." AS t1, ".self::$tablas[19]." AS t2",
+				array("Nombre","Descripción","Tipo","",""),
+				array("nombre","descripcion","tipo","",""),
+				["t1.fk_tipo=t2.id"],"estandar",self::get_id(),
+				["t1.id as id","t1.nombre","t1.descripcion","t2.nombre as tipo"]);
+	}
+	public function get_datos($id){
+		$objEstandar = new stdClass();
+		$objDatos = new stdClass();
+		$result = $this->db_con->get_sql_records("SELECT id, codigo, nombre, fk_tipo tipo, descripcion FROM ".self::$tablas[8]." WHERE id = ".$id);
+		foreach ($result[0] as $key => $value) {
+			$objDatos->$key = $value;
+		}
+		$objEstandar->datos = $objDatos;
+		return $objEstandar;
+	}
+
+	public function get_actividades_principales($id){
+		$objActPrin = array();
+		$result = $this->db_con->get_sql_records("SELECT DISTINCT t5.id idRol, t5.nombre nombreRol, t2.id idObj, t7.id faseN, t7.nombre_fase fase, t3.id actN, t3.nombre actividad, t2.tiempo FROM plantillas t1 JOIN plantilla_actividad t2 on t2.fk_plantillas = t1.id JOIN actividad t3 ON t3.id = t2.fk_actividad JOIN tarea t4 ON t3.id = t4.fk_actividad JOIN roles t5 ON t5.id = t2.fk_roles JOIN fases_proyecto t7 ON t7.id = t3.fk_fases WHERE t2.opcional = 0 AND t1.id = ".$id);
+		foreach ($result as $valueAct) {
+			$objAct = new stdClass();
+			foreach ($valueAct as $key => $value) {
+				$objAct->$key = $value;
+			}
+			$objActPrin[] = $objAct;
+		}
+		return $objActPrin;
+	}
+
+	public function get_actividades_secundarias($id){
+		$objActSec = array();
+		$result = $this->db_con->get_sql_records("SELECT DISTINCT t5.id idRol, t5.nombre nombreRol, t2.id idObj, t7.id faseN, t7.nombre_fase fase, t3.id actN, t3.nombre actividad, t2.tiempo FROM plantillas t1 JOIN plantilla_actividad t2 on t2.fk_plantillas = t1.id JOIN actividad t3 ON t3.id = t2.fk_actividad JOIN tarea t4 ON t3.id = t4.fk_actividad JOIN roles t5 ON t5.id = t2.fk_roles JOIN fases_proyecto t7 ON t7.id = t3.fk_fases WHERE t2.opcional = 1 AND t1.id = ".$id);
+		foreach ($result as $valueAct) {
+			$objAct = new stdClass();
+			foreach ($valueAct as $key => $value) {
+				$objAct->$key = $value;
+			}
+			$objActSec[] = $objAct;
+		}
+		return $objActSec;
+	}
+
+	public function get_tercero_principales($id){
+		$objTerPrin = array();
+		$result = $this->db_con->get_sql_records("SELECT * FROM ".self::$tablas[23]." WHERE ".self::$camposTer[1]." = ".$id." AND ".self::$camposTer[3]." = 0");
+		foreach ($result as $valueAct) {
+			$objAct = new stdClass();
+			foreach ($valueAct as $key => $value) {
+				$objAct->$key = $value;
+			}
+			$objTerPrin[] = $objAct;
+		}
+		return $objTerPrin;
+	}
+
+	public function get_tercero_secundarias($id){
+		$objTerSec = array();
+		$result = $this->db_con->get_sql_records("SELECT * FROM ".self::$tablas[23]." WHERE ".self::$camposTer[1]." = ".$id." AND ".self::$camposTer[3]." = 1");
+		foreach ($result as $valueAct) {
+			$objAct = new stdClass();
+			foreach ($valueAct as $key => $value) {
+				$objAct->$key = $value;
+			}
+			$objTerSec[] = $objAct;
+		}
+		return $objTerSec;
 	}
 
 	public function get_id(){
@@ -77,11 +111,11 @@ class mestandar extends CI_Model
 		return self::$campos;
 	}
 
-	public function get_campos_read(){
-		return self::$campos_read;
+	public function get_campos_act(){
+		return self::$camposAct;
 	}
 
-	public function get_campos_actividad(){
-		return self::$campos_actividad;
+	public function get_campos_ter(){
+		return self::$camposTer;
 	}
 }

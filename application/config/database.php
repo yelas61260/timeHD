@@ -48,10 +48,14 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'root';
-$db['default']['password'] = '';
-$db['default']['database'] = 'emphemis_costos_v1';
+$db['default']['hostname'] = 'localhost';//Pruebas
+//$db['default']['hostname'] = 'timedb.cutuw7adzv33.us-east-1.rds.amazonaws.com';//Produccion
+$db['default']['username'] = 'time';//Pruebas
+//$db['default']['username'] = 'HemisferioD';//Produccion
+$db['default']['password'] = 'time';//Pruebas
+//$db['default']['password'] = 'Hemisferio-2010';//Produccion
+$db['default']['database'] = 'emphemis_costos_v9';//Pruebas
+//$db['default']['database'] = 'time_HD';//Produccion
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

@@ -6,7 +6,7 @@ class Cliente extends CI_Controller {
 		$this->lib->required_session();
 		$this->load->model('cliente/mcliente');
 		$data = array(
-			'css_js_tables' => $this->lib->css_js_tables(),
+			'css_js_tables' => $this->lib->css_js_tables_responsive(),
 			'header' => $this->lib->print_header(),
 			'menu' => $this->lib->print_menu(),
 			'table_grafic' => $this->mcliente->get_table_grafic(),
@@ -56,8 +56,16 @@ class Cliente extends CI_Controller {
 			$ciudades = $this->db_con->get_all_records($tablas[1], $this->mcliente->get_campos2(), $datos_array2);
 		}
 
-		$datos_array[8] = $ciudades[0]["id"];
-		$this->db_con->insert_db_datos($tablas[2], $this->mcliente->get_campos(), $datos_array);
+		if($this->db_con->existe_registro($tablas[2], ["id","nombre"], [$datos_array[0],$datos_array[1]])){
+			echo "El cliente ya existe.";
+		}else if($this->db_con->existe_registro($tablas[2], ["id"], [$datos_array[0]])){
+			echo "El codigo del cliente ya existe.";
+		}else{
+			$datos_array[8] = $ciudades[0]["id"];
+			$this->db_con->insert_db_datos($tablas[2], $this->mcliente->get_campos(), $datos_array);
+
+			echo "OK";
+		}
 	}
 
 	public function update($id){
@@ -103,6 +111,8 @@ class Cliente extends CI_Controller {
 
 		$datos_array[8] = $ciudades[0]["id"];
 		$this->db_con->update_db_datos($tablas[2], $this->mcliente->get_campos(), $datos_array, [$this->mcliente->get_id()], [$datos_array[0]]);
+
+		echo "OK";
 	}
 
 	public function jread(){
@@ -120,17 +130,10 @@ class Cliente extends CI_Controller {
 		$tam = count($etiquetas);
 
 		for($i = 0; $i<$tam-1; $i++) {
-			$datosSTR .= utf8_encode($datos[0][$etiquetas[$i]]).",";
+			$datosSTR .= $datos[0][$etiquetas[$i]].",";
 		}
-		$datosSTR .= utf8_encode($datos[0][$etiquetas[$tam-1]])."";
+		$datosSTR .= $datos[0][$etiquetas[$tam-1]]."";
 		echo $datosSTR;
-	}
-
-	public function deleted($id){
-		$this->lib->required_session();
-		echo "<script type='text/javascript' src='".base_url()."recursos/js/jquery-1.7.1.min.js'></script>";
-		echo '<script src="'.base_url().'recursos/js/ajax.js"/></script>';
-		echo '<script>deleted('.$id.', "'.base_url().'cliente");</script>';
 	}
 
 	public function jdeleted(){
