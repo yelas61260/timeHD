@@ -124,31 +124,63 @@ class mproyecto extends CI_Model
 		return $objEstandar;
 	}
 
+	public function get_contribucion($id){
+		$objDatos = new stdClass();
+		$result = $this->db_con->get_sql_records("SELECT cap, cas, ctp, cts FROM ".self::$tablas[10]." WHERE id = ".$id);
+		foreach ($result[0] as $key => $value) {
+			$objDatos->$key = $value;
+		}
+		return $objDatos;
+	}
+
 	public function get_actividades_principales($id){
 		$this->load->model('actividad/mactividad');
 		$objActPrin = array();
-		$result = $this->db_con->get_sql_records("SELECT DISTINCT t5.id idRol, t5.nombre nombreRol, t2.id idObj, t7.id faseN, t7.nombre_fase fase, t3.id actN, t3.nombre actividad, SEC_TO_TIME(t2.tiempo_cotizado*3600) tiempo_est, '00:00:00' tiempo_fac, t2.costo_cotizado costo_est, 0 costo_fac FROM proyecto t1 JOIN proyecto_actividad t2 on t2.fk_proyecto = t1.id JOIN actividad t3 ON t3.id = t2.fk_actividad JOIN tarea t4 ON t3.id = t4.fk_actividad JOIN roles t5 ON t5.id = t2.fk_roles JOIN fases_proyecto t7 ON t7.id = t3.fk_fases WHERE t2.opcional = 0 AND t1.id =".$id);
+		$objActSecu = array();
+		$isSecunda = false;
+		$result = $this->db_con->get_sql_records("SELECT DISTINCT t5.id idRol, t5.nombre nombreRol, t2.id idObj, t7.id faseN, t7.nombre_fase fase, t3.id actN, t3.nombre actividad, SEC_TO_TIME(t2.tiempo_cotizado*3600) tiempo_est, '00:00:00' tiempo_fac, t2.costo_cotizado costo_est, 0 costo_fac, t2.opcional opcional FROM proyecto t1 JOIN proyecto_actividad t2 on t2.fk_proyecto = t1.id JOIN actividad t3 ON t3.id = t2.fk_actividad JOIN tarea t4 ON t3.id = t4.fk_actividad JOIN roles t5 ON t5.id = t2.fk_roles JOIN fases_proyecto t7 ON t7.id = t3.fk_fases WHERE t1.id =".$id);
 		foreach ($result as $valueAct) {
-			$objAct = new stdClass();
-			foreach ($valueAct as $key => $value) {
-				$objAct->$key = $value;
+			if ($valueAct["opcional"] == 0) {
+				$objAct = new stdClass();
+				foreach ($valueAct as $key => $value) {
+					if($key != "opcional"){
+						$objAct->$key = $value;
+					}
+				}
+				$objActPrin[] = $objAct;
+			}else{
+				$objAct = new stdClass();
+				foreach ($valueAct as $key => $value) {
+					if($key != "opcional"){
+						$objAct->$key = $value;
+					}
+				}
+				$objActSecu[] = $objAct;
 			}
-			$objActPrin[] = $objAct;
 		}
 		$result_fac = $this->db_con->get_sql_records("SELECT t1.fk_roles idRol, COALESCE((SELECT nombre FROM roles WHERE id = t1.fk_roles), 'No definido') nombreRol, -1 idObj, t3.id faseN, t3.nombre_fase fase, t1.fk_actividad actN, t2.nombre actividad, '00:00:00' tiempo_est, TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date) tiempo_fac, 0 costo_est, ROUND((TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date))/3600)*(SELECT DISTINCT AVG(t40.salario) AS dat1 FROM tarea AS t10 JOIN rol_tarea AS t20 ON t20.fk_tarea = t10.id JOIN recurso_rol AS t30 ON t30.fk_roles = t20.fk_roles JOIN recursos AS t40 ON t40.cedula = t30.fk_recursos WHERE t10.fk_actividad = t1.fk_actividad)) costo_fac FROM registro_actividad_proyecto_recurso t1 JOIN actividad t2 ON t1.fk_actividad = t2.id JOIN fases_proyecto t3 ON t2.fk_fases = t3.id WHERE t1.fk_proyecto = ".$id);
 		foreach ($result_fac as $valueAct_fac) {
 			$objAct = new stdClass();
+			$isSecunda = false;
 			foreach ($valueAct_fac as $key_fac => $value_fac) {
 				$objAct->$key_fac = $value_fac;
 			}
-			foreach ($objActPrin as $key_f => $value_f) {
-				if ($value_f->idRol == $objAct->idRol && $value_f->actN == $objAct->actN) {
-					$value_f->tiempo_fac = $this->mactividad->suma_fecha($value_f->tiempo_fac, $objAct->tiempo_fac);
-					$value_f->costo_fac = $value_f->costo_fac + $objAct->costo_fac;
+			foreach ($objActSecu as $key => $value_s) {
+				if ($value_s->idRol == $objAct->idRol && $value_s->actN == $objAct->actN) {
+					$isSecunda = true;
 					continue 2;
 				}
 			}
-			$objActPrin[] = $objAct;
+			if (!$isSecunda) {
+				foreach ($objActPrin as $key_f => $value_f) {
+					if ($value_f->idRol == $objAct->idRol && $value_f->actN == $objAct->actN) {
+						$value_f->tiempo_fac = $this->mactividad->suma_fecha($value_f->tiempo_fac, $objAct->tiempo_fac);
+						$value_f->costo_fac = $value_f->costo_fac + $objAct->costo_fac;
+						continue 2;
+					}
+				}
+				$objActPrin[] = $objAct;
+			}
 		}
 		return $objActPrin;
 	}
@@ -162,6 +194,20 @@ class mproyecto extends CI_Model
 				$objAct->$key = $value;
 			}
 			$objActSec[] = $objAct;
+		}
+		$result_fac = $this->db_con->get_sql_records("SELECT t1.fk_roles idRol, COALESCE((SELECT nombre FROM roles WHERE id = t1.fk_roles), 'No definido') nombreRol, -1 idObj, t3.id faseN, t3.nombre_fase fase, t1.fk_actividad actN, t2.nombre actividad, '00:00:00' tiempo_est, TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date) tiempo_fac, 0 costo_est, ROUND((TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date))/3600)*(SELECT DISTINCT AVG(t40.salario) AS dat1 FROM tarea AS t10 JOIN rol_tarea AS t20 ON t20.fk_tarea = t10.id JOIN recurso_rol AS t30 ON t30.fk_roles = t20.fk_roles JOIN recursos AS t40 ON t40.cedula = t30.fk_recursos WHERE t10.fk_actividad = t1.fk_actividad)) costo_fac FROM registro_actividad_proyecto_recurso t1 JOIN actividad t2 ON t1.fk_actividad = t2.id JOIN fases_proyecto t3 ON t2.fk_fases = t3.id WHERE t1.fk_proyecto = ".$id);
+		foreach ($result_fac as $valueAct_fac) {
+			$objAct = new stdClass();
+			foreach ($valueAct_fac as $key_fac => $value_fac) {
+				$objAct->$key_fac = $value_fac;
+			}
+			foreach ($objActSec as $key_f => $value_f) {
+				if ($value_f->idRol == $objAct->idRol && $value_f->actN == $objAct->actN) {
+					$value_f->tiempo_fac = $this->mactividad->suma_fecha($value_f->tiempo_fac, $objAct->tiempo_fac);
+					$value_f->costo_fac = $value_f->costo_fac + $objAct->costo_fac;
+					continue 2;
+				}
+			}
 		}
 		return $objActSec;
 	}

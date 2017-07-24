@@ -152,10 +152,10 @@
 							<th></th>
 							<th></th>
 							<th></th>
-							<th></th>
-							<th></th>
 							<th>Contribución</th>
-							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+							<th><div id="val_contribucion"></div></th>
+							<th></th>
+							<th></th>
 						</tr>
 						<tr>
 							<th></th>
@@ -165,10 +165,10 @@
 							<th></th>
 							<th></th>
 							<th></th>
-							<th></th>
-							<th></th>
 							<th>Precio</th>
 							<th id="val_precio">0</th>
+							<th></th>
+							<th></th>
 						</tr>
 					</tfoot>
 				</table>
@@ -211,10 +211,10 @@
 							<th></th>
 							<th></th>
 							<th></th>
-							<th></th>
-							<th></th>
 							<th>Contribución</th>
-							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+							<th><div id="val_contribucion"></div></th>
+							<th></th>
+							<th></th>
 						</tr>
 						<tr>
 							<th></th>
@@ -224,10 +224,10 @@
 							<th></th>
 							<th></th>
 							<th></th>
-							<th></th>
-							<th></th>
 							<th>Precio</th>
 							<th id="val_precio">0</th>
+							<th></th>
+							<th></th>
 						</tr>
 					</tfoot>
 				</table>
@@ -247,7 +247,7 @@
 						</tr>
 						<tr>
 							<th>Contribución</th>
-							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+							<th><div id="val_contribucion"></div></th>
 						</tr>
 						<tr>
 							<th>Precio</th>
@@ -270,7 +270,7 @@
 						</tr>
 						<tr>
 							<th>Contribución</th>
-							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+							<th><div id="val_contribucion"></div></th>
 						</tr>
 						<tr>
 							<th>Precio</th>

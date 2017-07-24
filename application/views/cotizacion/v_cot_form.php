@@ -154,7 +154,7 @@
 							<th></th>
 							<th></th>
 							<th>Contribución</th>
-							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+							<th><input type="text" name="contribucion" id="val_contribucion" onkeyup="calcularContribucion(this);" /></th>
 						</tr>
 						<tr>
 							<th></th>
@@ -201,7 +201,7 @@
 							<th></th>
 							<th></th>
 							<th>Contribución</th>
-							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+							<th><input type="text" name="contribucion" id="val_contribucion" onkeyup="calcularContribucion(this);" /></th>
 						</tr>
 						<tr>
 							<th></th>
@@ -241,7 +241,7 @@
 						</tr>
 						<tr>
 							<th>Contribución</th>
-							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+							<th><input type="text" name="contribucion" id="val_contribucion" onkeyup="calcularContribucion(this);" /></th>
 						</tr>
 						<tr>
 							<th>Precio</th>
@@ -265,7 +265,7 @@
 						</tr>
 						<tr>
 							<th>Contribución</th>
-							<th><input type="text" name="contribucion" id="val_contribucion" /></th>
+							<th><input type="text" name="contribucion" id="val_contribucion" onkeyup="calcularContribucion(this);" /></th>
 						</tr>
 						<tr>
 							<th>Precio</th>

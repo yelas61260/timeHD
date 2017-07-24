@@ -75,6 +75,10 @@ class Cotizacion extends CI_Controller {
 		$datos_array[11] = $this->input->post("tecnologia");
 		$datos_array[12] = $this->input->post("responsable");
 		$datos_array[13] = $this->input->post("estado");
+		$datos_array[14] = $this->input->post("cap");
+		$datos_array[15] = $this->input->post("cas");
+		$datos_array[16] = $this->input->post("ctp");
+		$datos_array[17] = $this->input->post("cts");
 
 		$datos_actividades = json_decode($this->input->post("actividades"));
 		$datos_terceros = json_decode($this->input->post("terceros"));
@@ -133,6 +137,7 @@ class Cotizacion extends CI_Controller {
 
 		$objEstandar = $this->mcotizacion->get_datos($id);
 
+		$objEstandar->contr = $this->mcotizacion->get_contribucion($id);
 		$objEstandar->act_p = $this->mcotizacion->get_actividades_principales($id);
 		$objEstandar->act_s = $this->mcotizacion->get_actividades_secundarias($id);
 		$objEstandar->ter_p = $this->mcotizacion->get_tercero_principales($id);
@@ -162,6 +167,10 @@ class Cotizacion extends CI_Controller {
 		$datos_array[11] = $this->input->post("tecnologia");
 		$datos_array[12] = $this->input->post("responsable");
 		$datos_array[13] = $this->input->post("estado");
+		$datos_array[14] = $this->input->post("cap");
+		$datos_array[15] = $this->input->post("cas");
+		$datos_array[16] = $this->input->post("ctp");
+		$datos_array[17] = $this->input->post("cts");
 
 		$datos_actividades = json_decode($this->input->post("actividades"));
 		$datos_terceros = json_decode($this->input->post("terceros"));

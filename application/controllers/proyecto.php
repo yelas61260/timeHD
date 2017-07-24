@@ -55,6 +55,7 @@ class Proyecto extends CI_Controller {
 
 		$objEstandar = $this->mproyecto->get_datos($id);
 
+		$objEstandar->contr = $this->mproyecto->get_contribucion($id);
 		$objEstandar->act_p = $this->mproyecto->get_actividades_principales($id);
 		$objEstandar->act_s = $this->mproyecto->get_actividades_secundarias($id);
 		$objEstandar->ter_p = $this->mproyecto->get_tercero_principales($id);

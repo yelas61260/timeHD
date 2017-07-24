@@ -13,6 +13,10 @@ function create(param_ruta,param_formName){
 		if(param_formName=="form_proyecto"){
 			strDAtos["actividades"] = unirActividadesValor();
 			strDAtos["terceros"] = unirTercerosValor();
+			strDAtos["cap"] = $("#act_p #val_contribucion").val();
+			strDAtos["cas"] = $("#act_s #val_contribucion").val();
+			strDAtos["ctp"] = $("#ter_p #val_contribucion").val();
+			strDAtos["cts"] = $("#ter_s #val_contribucion").val();
 		}else if(datosExtra != ""){
 			strDAtos["extra"] = datosExtra+"";
 		}
@@ -53,6 +57,10 @@ function update(param_ruta,param_formName){
 		if(param_formName=="form_proyecto"){
 			strDAtos["actividades"] = unirActividadesValor();
 			strDAtos["terceros"] = unirTercerosValor();
+			strDAtos["cap"] = $("#act_p #val_contribucion").val();
+			strDAtos["cas"] = $("#act_s #val_contribucion").val();
+			strDAtos["ctp"] = $("#ter_p #val_contribucion").val();
+			strDAtos["cts"] = $("#ter_s #val_contribucion").val();
 		}else if(datosExtra != ""){
 			strDAtos["extra"] = datosExtra+"";
 		}
@@ -243,7 +251,9 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 		datatype: "html",
 		data: "id="+id,
 		success: function(data) {
+			console.log(data);
 			var datosJSON = jQuery.parseJSON(data+"");
+			console.log(datosJSON);
 			if (notFrame != 0) {
 				var posForm = 0;
 				jQuery.each(datosJSON["datos"], function(i, val){
@@ -252,6 +262,17 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 						posForm++;
 					}
 				});
+				if (notFrame==1) {
+					$("#act_p #val_contribucion").val(datosJSON["contr"]["cap"]);
+					$("#act_s #val_contribucion").val(datosJSON["contr"]["cas"]);
+					$("#ter_p #val_contribucion").val(datosJSON["contr"]["ctp"]);
+					$("#ter_s #val_contribucion").val(datosJSON["contr"]["cts"]);
+				}else if (notFrame == 2) {
+					$("#act_p #val_contribucion").html(datosJSON["contr"]["cap"]);
+					$("#act_s #val_contribucion").html(datosJSON["contr"]["cas"]);
+					$("#ter_p #val_contribucion").html(datosJSON["contr"]["ctp"]);
+					$("#ter_s #val_contribucion").html(datosJSON["contr"]["cts"]);
+				}
 			}
 			jQuery.each(datosJSON["act_p"], function(i, val){
 				console.log(val);
@@ -273,8 +294,12 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 					filaTemp.append($("<td>").html(val["costo_est"]));
 					filaTemp.append($("<td>").html(val["costo_fac"]));
 					filaTemp.append($("<td>").html("<input type='text' size='10' value='0' />"));
-				}else{
+				}else if(notFrame == 0){
 					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
+					filaTemp.append($("<td>").html("0"));
+					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+				}else{
+					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"])+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
 					filaTemp.append($("<td>").html("0"));
 					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
 				}
@@ -302,8 +327,12 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 					filaTemp.append($("<td>").html(val["costo_est"]));
 					filaTemp.append($("<td>").html(val["costo_fac"]));
 					filaTemp.append($("<td>").html("<input type='text' size='10' value='0' />"));
-				}else{
+				}else if(notFrame == 0){
 					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
+					filaTemp.append($("<td>").html("0"));
+					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+				}else{
+					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"])+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
 					filaTemp.append($("<td>").html("0"));
 					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
 				}
@@ -338,6 +367,7 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 				$("#ter_s").append(filaTemp);
 			});
 			totales_tabla_tiempo_costo();
+
 			if (notFrame != 0) {
 				document.getElementById("enviar_btn").onclick = function(){update(param_ruta,frame);};
 			}
@@ -531,25 +561,63 @@ function totales_tabla_tiempo_costo(){
 		});
 		$("#ter_s #total_costo").html(total_tercero);
 	}else if($("#form_proyecto_view").length){
+		var total_tiempo_esti = "00:00:00";
+		var total_costo_esti = 0;
+		var total_tiempo_prod = "00:00:00";
+		var total_costo_prod = 0;
 
+		jQuery.each($("#act_p #cont tr"), function(i, val){
+			total_tiempo_esti = sumar_tiempo($($(val).children()[6]).html()+"", total_tiempo_esti);
+			total_costo_esti = parseInt($($(val).children()[8]).html()) + total_costo_esti;
+		});
+		$("#act_p #total_tiempo_est").html(total_tiempo_esti);
+		$("#act_p #total_costo_est").html(total_costo_esti);
+
+		jQuery.each($("#act_p #cont tr"), function(i, val){
+			total_tiempo_prod = sumar_tiempo($($(val).children()[7]).html()+"", total_tiempo_prod);
+			total_costo_prod = parseInt($($(val).children()[9]).html()) + total_costo_prod;
+		});
+		$("#act_p #total_tiempo").html(total_tiempo_prod);
+		$("#act_p #total_costo").html(total_costo_prod);
+
+//////////////////////////////////////////////////////////////////
+		total_tiempo_esti = "00:00:00";
+		total_costo_esti = 0;
+		total_tiempo_prod = "00:00:00";
+		total_costo_prod = 0;
+		jQuery.each($("#act_s #cont tr"), function(i, val){
+			total_tiempo_esti = sumar_tiempo($($(val).children()[6]).html()+"", total_tiempo_esti);
+			total_costo_esti = parseInt($($(val).children()[8]).html()) + total_costo_esti;
+		});
+		$("#act_s #total_tiempo_est").html(total_tiempo_esti);
+		$("#act_s #total_costo_est").html(total_costo_esti);
+
+		jQuery.each($("#act_s #cont tr"), function(i, val){
+			total_tiempo_prod = sumar_tiempo($($(val).children()[7]).html()+"", total_tiempo_prod);
+			total_costo_prod = parseInt($($(val).children()[9]).html()) + total_costo_prod;
+		});
+		$("#act_s #total_tiempo").html(total_tiempo_prod);
+		$("#act_s #total_costo").html(total_costo_prod);
+
+///////////////////////////////////////////////////////////////////
+		var total_tercero = 0;
+		jQuery.each($("#ter_p #cont tr"), function(i, val){
+			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val()) + total_tercero;
+		});
+		$("#ter_p #total_costo").html(total_tercero);
+
+		total_tercero = 0;
+		jQuery.each($("#ter_s #cont tr"), function(i, val){
+			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val()) + total_tercero;
+		});
+		$("#ter_s #total_costo").html(total_tercero);
 	}
-	/*
-	var total_costo_esti = 0;
-	var total_costo_prod = 0;
-	var total_costo_fact = 0;
-
-	
-	var total_tiempo_prod = "00:00:00";
-
-	var total_costo = 0;
-	var total_tiempo = "00:00:00";
-	$("#cont_acti tr").each(function(index){
-		total_costo += parseInt($(this).children()[7].innerHTML);
-		total_tiempo = sumar_tiempo(total_tiempo, $(this).children()[6].innerHTML);
-	});
-	$("#total_costo").html(total_costo);
-	$("#total_tiempo").html(total_tiempo);
-	*/
+	if($("#val_contribucion").length){
+		calcularContribucion($("#act_p #val_contribucion"));
+		calcularContribucion($("#act_s #val_contribucion"));
+		calcularContribucion($("#ter_p #val_contribucion"));
+		calcularContribucion($("#ter_s #val_contribucion"));
+	}
 }
 function read_list_act_x_rol(baseUrl, idRol){
 	$.ajax({
@@ -567,4 +635,12 @@ function cargar_Plantilla(param_ruta, param_ruta2){
 	$("#ter_p #cont").html("");
 	$("#ter_s #cont").html("");
 	read_pcp(param_ruta, $("#plantillas").val(), param_ruta2, 0);
+}
+function calcularContribucion(param_obj){
+	var idtableParent = $(param_obj).parent().parent().parent().parent().attr("id");
+	if ($("#form_proyecto").length) {
+		$("#"+idtableParent+" #val_precio").html( parseInt($("#"+idtableParent+" #total_costo").html())+($(param_obj).val()*parseInt($("#"+idtableParent+" #total_costo").html()))/100 );
+	}else if ($("#form_proyecto_view").length) {
+		$("#"+idtableParent+" #val_precio").html( parseInt($("#"+idtableParent+" #total_costo_est").html())+($(param_obj).html()*parseInt($("#"+idtableParent+" #total_costo_est").html()))/100 );
+	}
 }

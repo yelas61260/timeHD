@@ -101,6 +101,15 @@ class mcotizacion extends CI_Model
 		return $objEstandar;
 	}
 
+	public function get_contribucion($id){
+		$objDatos = new stdClass();
+		$result = $this->db_con->get_sql_records("SELECT cap, cas, ctp, cts FROM ".self::$tablas[10]." WHERE id = ".$id);
+		foreach ($result[0] as $key => $value) {
+			$objDatos->$key = $value;
+		}
+		return $objDatos;
+	}
+
 	public function get_actividades_principales($id){
 		$objActPrin = array();
 		$result = $this->db_con->get_sql_records("SELECT DISTINCT t5.id idRol, t5.nombre nombreRol, t2.id idObj, t7.id faseN, t7.nombre_fase fase, t3.id actN, t3.nombre actividad, t2.tiempo_cotizado tiempo, t2.costo_cotizado costo FROM proyecto t1 JOIN proyecto_actividad t2 on t2.fk_proyecto = t1.id JOIN actividad t3 ON t3.id = t2.fk_actividad JOIN tarea t4 ON t3.id = t4.fk_actividad JOIN roles t5 ON t5.id = t2.fk_roles JOIN fases_proyecto t7 ON t7.id = t3.fk_fases WHERE t2.opcional = 0 AND t1.id =".$id);

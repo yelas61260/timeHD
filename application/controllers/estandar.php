@@ -84,7 +84,7 @@ class Estandar extends CI_Controller {
 	}
 
 	public function jread(){
-		//$this->lib->required_session();
+		$this->lib->required_session();
 		$tablas = $this->db_struc->getTablas();
 
 		$this->load->model('estandar/mestandar');
@@ -119,7 +119,6 @@ class Estandar extends CI_Controller {
 
 		$this->db_con->update_db_datos($tablas[8], $this->mestandar->get_campos(), $datos_array, ["id"], [$id]);
 
-//		print_r($datos_actividades);
 		$this->db_con->delete_db_datos($tablas[9], ["fk_plantillas"], [$id]);
 		if ($datos_actividades != null) {
 			foreach ($datos_actividades->act_p as $value) {
