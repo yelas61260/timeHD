@@ -84,8 +84,8 @@
 						</tr>
 					</table>
 				</form>
-				<button id="enviar_btn" onclick="create('<?= base_url() ?>cliente','form_cliente')"/>Enviar</button>
-			<button id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>cliente')"/>Cancelar</button>
+				<button class="button_form" id="enviar_btn" onclick="create('<?= base_url() ?>cliente','form_cliente')"/>Enviar</button>
+			<button class="button_form" id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>cliente')"/>Cancelar</button>
 			</div>
 		</div>
 	</div>

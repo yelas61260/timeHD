@@ -13,3 +13,6 @@
 	position: absolute;
 	display: inline-block;
 }
+#header_image img{
+	width: 100%;
+}

@@ -1,13 +1,31 @@
 .loginform{
-	position:relative;
-	width:25%;
-	height:200px;
-	background:#fff;
-	text-align:center;
-	margin:30px auto;
-	border-radius:15%;
+	position: relative;
+    width: 480px;
+    height: 426px;
+    background: url(../pix/login.png);
+    text-align: center;
+    margin: 30px auto;
+    border-radius: 15%;
 }
 .loginform .contenido{
 	position:absolute;
-	margin:25px 50px;
+	margin:25px 95px;
+}
+#username, #password {
+    width: 230px;
+    height: 30px;
+    font-size: 20px;
+}
+.form-input-login {
+    border-radius: 30px;
+    margin-top: 120px;
+    margin-left: 20px;
+}
+#loginbtn {
+    background: url(../pix/ingresar.png);
+    border-radius: 30px;
+    width: 120px;
+    height: 30px;
+    margin-left: 30px;
+    margin-top: 0px;
 }

@@ -60,7 +60,8 @@ class mproyecto extends CI_Model
 		self::$camposTer[0] = "nombre";
 		self::$camposTer[1] = "fk_proyecto";
 		self::$camposTer[2] = "costo";
-		self::$camposTer[3] = "opcional";
+		self::$camposTer[3] = "costo_real";
+		self::$camposTer[4] = "opcional";
 
 		self::$tablas = $this->db_struc->getTablas();
 	}
@@ -158,7 +159,7 @@ class mproyecto extends CI_Model
 				$objActSecu[] = $objAct;
 			}
 		}
-		$result_fac = $this->db_con->get_sql_records("SELECT t1.fk_roles idRol, COALESCE((SELECT nombre FROM roles WHERE id = t1.fk_roles), 'No definido') nombreRol, -1 idObj, t3.id faseN, t3.nombre_fase fase, t1.fk_actividad actN, t2.nombre actividad, '00:00:00' tiempo_est, TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date) tiempo_fac, 0 costo_est, ROUND((TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date))/3600)*(SELECT DISTINCT AVG(t40.salario) AS dat1 FROM tarea AS t10 JOIN rol_tarea AS t20 ON t20.fk_tarea = t10.id JOIN recurso_rol AS t30 ON t30.fk_roles = t20.fk_roles JOIN recursos AS t40 ON t40.cedula = t30.fk_recursos WHERE t10.fk_actividad = t1.fk_actividad)) costo_fac FROM registro_actividad_proyecto_recurso t1 JOIN actividad t2 ON t1.fk_actividad = t2.id JOIN fases_proyecto t3 ON t2.fk_fases = t3.id WHERE t1.fk_proyecto = ".$id);
+		$result_fac = $this->db_con->get_sql_records("SELECT t1.fk_roles idRol, COALESCE((SELECT nombre FROM roles WHERE id = t1.fk_roles), 'No definido') nombreRol, -1 idObj, t3.id faseN, t3.nombre_fase fase, t1.fk_actividad actN, t2.nombre actividad, '00:00:00' tiempo_est, COALESCE(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date),'00:00:00') tiempo_fac, 0 costo_est, COALESCE(ROUND((TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date))/3600)*(SELECT DISTINCT AVG(t40.salario) AS dat1 FROM tarea AS t10 JOIN rol_tarea AS t20 ON t20.fk_tarea = t10.id JOIN recurso_rol AS t30 ON t30.fk_roles = t20.fk_roles JOIN recursos AS t40 ON t40.cedula = t30.fk_recursos WHERE t10.fk_actividad = t1.fk_actividad)),0) costo_fac FROM registro_actividad_proyecto_recurso t1 JOIN actividad t2 ON t1.fk_actividad = t2.id JOIN fases_proyecto t3 ON t2.fk_fases = t3.id WHERE t1.fk_proyecto = ".$id);
 		foreach ($result_fac as $valueAct_fac) {
 			$objAct = new stdClass();
 			$isSecunda = false;
@@ -214,7 +215,7 @@ class mproyecto extends CI_Model
 
 	public function get_tercero_principales($id){
 		$objTerPrin = array();
-		$result = $this->db_con->get_sql_records("SELECT * FROM ".self::$tablas[24]." WHERE ".self::$camposTer[1]." = ".$id." AND ".self::$camposTer[3]." = 0");
+		$result = $this->db_con->get_sql_records("SELECT * FROM ".self::$tablas[24]." WHERE ".self::$camposTer[1]." = ".$id." AND ".self::$camposTer[4]." = 0");
 		foreach ($result as $valueAct) {
 			$objAct = new stdClass();
 			foreach ($valueAct as $key => $value) {
@@ -227,7 +228,7 @@ class mproyecto extends CI_Model
 
 	public function get_tercero_secundarias($id){
 		$objTerSec = array();
-		$result = $this->db_con->get_sql_records("SELECT * FROM ".self::$tablas[24]." WHERE ".self::$camposTer[1]." = ".$id." AND ".self::$camposTer[3]." = 1");
+		$result = $this->db_con->get_sql_records("SELECT * FROM ".self::$tablas[24]." WHERE ".self::$camposTer[1]." = ".$id." AND ".self::$camposTer[4]." = 1");
 		foreach ($result as $valueAct) {
 			$objAct = new stdClass();
 			foreach ($valueAct as $key => $value) {

@@ -66,6 +66,12 @@ class mactividad extends CI_Model
 	}
 
 	public function suma_fecha($tiempo1, $tiempo2){
+		if ($tiempo1 == "") {
+			$tiempo1 = "00:00:00";
+		}
+		if ($tiempo2 == "") {
+			$tiempo2 = "00:00:00";
+		}
 		$fecha_sep1 = explode(":", $tiempo1);
 		$fecha_sep2 = explode(":", $tiempo2);
 		$fecha_res = [0,0,0];

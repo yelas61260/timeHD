@@ -79,8 +79,11 @@ class mreporte extends CI_Model
 				$cond_temp[] = $value;
 			}
 			self::$condicionales = array_merge(self::$condicionales, $cond_temp);
-		}
-		return $this->lib->tabla_generar(self::$tablas[2]." AS t1, ".self::$tablas[20]." AS t2, ".self::$tablas[10]." AS t3, ".self::$tablas[14]." AS t4, ".self::$tablas[19]." AS t5, ".self::$tablas[12]." AS t6, ".self::$tablas[0]." AS t7, ".self::$tablas[4]." AS t8, ".self::$tablas[22]." AS t9",
+			return $this->lib->tabla_generar(self::$tablas[2]." AS t1, ".self::$tablas[20]." AS t2, ".self::$tablas[10]." AS t3, ".self::$tablas[14]." AS t4, ".self::$tablas[19]." AS t5, ".self::$tablas[12]." AS t6, ".self::$tablas[0]." AS t7, ".self::$tablas[4]." AS t8, ".self::$tablas[22]." AS t9",
 				self::$encabezados,self::$etiquetas_get,self::$condicionales,"","",self::$etiquetas_set);
+		}else{
+			return $this->lib->tabla_vacia_generar(self::$encabezados,self::$etiquetas_get);
+		}		
 	}
+	
 }

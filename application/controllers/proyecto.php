@@ -109,23 +109,24 @@ class Proyecto extends CI_Controller {
 				}
 			}
 		}
+*/
 		if ($datos_terceros != null) {
 			foreach ($datos_terceros->ter_p as $value) {
 				if ($value->idObj == 0) {
-					$this->db_con->insert_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
+					$this->db_con->insert_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, $value->costo_real, 0]);
 				}else{
-					$this->db_con->update_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, 0], ["id"], [$value->idObj]);
+					$this->db_con->update_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, $value->costo_real, 0], ["id"], [$value->idObj]);
 				}
 			}
 			foreach ($datos_terceros->ter_s as $value) {
 				if ($value->idObj == 0) {
-					$this->db_con->insert_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
+					$this->db_con->insert_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, $value->costo_real, 1]);
 				}else{
-					$this->db_con->update_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, 1], ["id"], [$value->idObj]);
+					$this->db_con->update_db_datos($tablas[24], $this->mproyecto->get_campos_ter(), [$value->nombre, $id, $value->costo, $value->costo_real, 1], ["id"], [$value->idObj]);
 				}
 			}
 		}		
-*/
+
 		echo "OK";
 	}
 

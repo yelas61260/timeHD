@@ -100,7 +100,7 @@
 					<tr>
 						<td><div class"form-label"><label>Plantillas</label></div></td>
 						<td><div class="form-input"><select id="plantillas"><?= $lista_plantilla ?></select></div></td>
-						<td><button onclick="cargar_Plantilla('<?= base_url() ?>estandar', '<?= base_url() ?>actividad');">Cargar Plantilla</button></td>
+						<td><button class="button_form" onclick="cargar_Plantilla('<?= base_url() ?>estandar', '<?= base_url() ?>actividad');">Cargar Plantilla</button></td>
 					</tr>
 				</tbody>
 			</table>
@@ -116,19 +116,19 @@
 						<td><select name="act" id="act"></select></td>
 					</tr>
 					<tr>
-						<td><button onclick="read_actividad_cotizacion('<?= base_url() ?>actividad', 'act_p')">Agregar Actividad Principal</button></td>
-						<td><button onclick="read_actividad_cotizacion('<?= base_url() ?>actividad', 'act_s')">Agregar Actividad Secundaria</button></td>
+						<td><button class="button_form" onclick="read_actividad_cotizacion('<?= base_url() ?>actividad', 'act_p')">Agregar Actividad Principal</button></td>
+						<td><button class="button_form" onclick="read_actividad_cotizacion('<?= base_url() ?>actividad', 'act_s')">Agregar Actividad Secundaria</button></td>
 					</tr>
 				</table>
 				<br>
 				<table class="tabla_general tbl_act" id="act_p" border="1" borrar="">
-					<thead><th>Actividades Principales</th></thead>
+					<thead><th colspan="5">Actividades Principales</th></thead>
 					<thead>
-						<th>ID Rol</th>
+						<th class="col_id">ID Rol</th>
 						<th>Rol</th>
-						<th>Fase No.</th>
+						<th class="col_id">Fase No.</th>
 						<th>Fase</th>
-						<th>Act. No.</th>
+						<th class="col_id">Act. No.</th>
 						<th>Actividad</th>
 						<th>Horas</th>
 						<th>Costo</th>
@@ -137,45 +137,31 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th colspan="2"></th>
 							<th>Totales</th>
 							<th id="total_tiempo">00:00:00</th>
 							<th id="total_costo">0</th>
 						</tr>
 						<tr>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th colspan="3"></th>
 							<th>Contribución</th>
 							<th><input type="text" name="contribucion" id="val_contribucion" onkeyup="calcularContribucion(this);" /></th>
 						</tr>
 						<tr>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th colspan="3"></th>
 							<th>Precio</th>
 							<th id="val_precio">0</th>
 						</tr>
 					</tfoot>
 				</table>
 				<table class="tabla_general tbl_act" id="act_s" border="1" borrar="">
-					<thead><th>Actividades Secundarias</th></thead>
+					<thead><th colspan="5">Actividades Secundarias</th></thead>
 					<thead>
-						<th>ID Rol</th>
+						<th class="col_id">ID Rol</th>
 						<th>Rol</th>
-						<th>Fase No.</th>
+						<th class="col_id">Fase No.</th>
 						<th>Fase</th>
-						<th>Act. No.</th>
+						<th class="col_id">Act. No.</th>
 						<th>Actividad</th>
 						<th>Horas</th>
 						<th>Costo</th>
@@ -184,32 +170,18 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th colspan="2"></th>
 							<th>Totales</th>
 							<th id="total_tiempo">00:00:00</th>
 							<th id="total_costo">0</th>
 						</tr>
 						<tr>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th colspan="3"></th>
 							<th>Contribución</th>
 							<th><input type="text" name="contribucion" id="val_contribucion" onkeyup="calcularContribucion(this);" /></th>
 						</tr>
 						<tr>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th colspan="3"></th>
 							<th>Precio</th>
 							<th id="val_precio">0</th>
 						</tr>
@@ -222,12 +194,12 @@
 						<td><input type="text" name="ter" id="ter" size="15" value=""/></td>
 					</tr>
 					<tr>
-						<td><button onclick="read_tercero_cotizacion('<?= base_url() ?>actividad', 'ter_p')">Agregar Actividad Principal</button></td>
-						<td><button onclick="read_tercero_cotizacion('<?= base_url() ?>actividad', 'ter_s')">Agregar Actividad Secundaria</button></td>
+						<td><button class="button_form" onclick="read_tercero_cotizacion('<?= base_url() ?>actividad', 'ter_p')">Agregar Actividad Principal</button></td>
+						<td><button class="button_form" onclick="read_tercero_cotizacion('<?= base_url() ?>actividad', 'ter_s')">Agregar Actividad Secundaria</button></td>
 					</tr>
 				</table>
 				<table class="tabla_general tbl_ter" id="ter_p" border="1" borrar="">
-					<thead><th>Terceros Principales</th></thead>
+					<thead><th colspan="2">Terceros Principales</th></thead>
 					<thead>
 						<th>Nombre</th>
 						<th>Costo</th>
@@ -251,7 +223,7 @@
 				</table>
 
 				<table class="tabla_general tbl_ter" id="ter_s" border="1" borrar="">
-					<thead><th>Terceros Secundarios</th></thead>
+					<thead><th colspan="2">Terceros Secundarios</th></thead>
 					<thead>
 						<th>Nombre</th>
 						<th>Costo</th>
@@ -273,9 +245,23 @@
 						</tr>
 					</tfoot>
 				</table>
+				<br>
+				<br>
+				<br>
+				<table class="tabla_general" id="totales" border="1">
+					<thead><th>Tipo</th><th>Tiempo</th><th>Costo</th></thead>
+					<tbody>
+						<tr>
+							<td>Costos final sin actividades secundarias</td><td><div id="time1">00:00:00</div></td><td><div id="cost1">0</div></td>
+						</tr>
+						<tr>
+							<td>Costos final con actividades secundarias</td><td><div id="time2">00:00:00</div></td><td><div id="cost2">0</div></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
-			<button id="enviar_btn" onclick="create('<?= base_url() ?>cotizacion','form_proyecto')"/>Enviar</button>
-			<button id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>cotizacion')"/>Cancelar</button>
+			<button class="button_form" id="enviar_btn" onclick="create('<?= base_url() ?>cotizacion','form_proyecto')"/>Enviar</button>
+			<button class="button_form" id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>cotizacion')"/>Cancelar</button>
 		</div>
 	</div>
 </body>

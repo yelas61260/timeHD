@@ -11,18 +11,16 @@
     <form action="<?= base_url(); ?>login/control_login" method="post" id="login">
           <div class="loginform">
           <div class="contenido" align="center">
-            <div class="form-label"><label for="username">Usuario</label></div>
-            <div class="form-input">
+            <div class="form-input-login">
               <input type="text" name="username" id="username" size="15" value="" placeholder="Ingrese Usuario"/>
             </div>
             <br />
             <div class="clearer"><!-- --></div>
-            <div class="form-label"><label for="password">Contraseña</label></div>
-            <div class="form-input">
+            <div class="form-input-login">
               <input type="password" name="password" id="password" size="15" value="" placeholder="*************"/>
             </div>
             <br />
-          <input type="submit" id="loginbtn" value="Enviar" />
+          <input type="submit" id="loginbtn" value="" />
           <p id="mensaje_err" style="color:red"></p>
           </div>
           </div>

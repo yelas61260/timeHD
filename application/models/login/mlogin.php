@@ -15,9 +15,14 @@ class mlogin extends CI_Model
 		if(count($sql1)<=0 || count($sql1[0])<=1){
 			header("Location: ".base_url()."login");
 		}else{
-			$datos_user = array('id' => $sql1[0]["cedula"], 'nombre' => $sql1[0]["nombre"]);
-			$this->session->set_userdata($datos_user);
-			header("Location: ".base_url()."");
+			$sql2 = $this->db_con->get_all_records(self::$tablas[13], array("fk_recursos","fk_roles"), array($sql1[0]["cedula"], 8));
+			if(count($sql2)<=0 || count($sql2[0])<=1){
+				header("Location: ".base_url()."login");
+			}else{
+				$datos_user = array('id' => $sql1[0]["cedula"], 'nombre' => $sql1[0]["nombre"]);
+				$this->session->set_userdata($datos_user);
+				header("Location: ".base_url()."");
+			}
 		}
 	}
 

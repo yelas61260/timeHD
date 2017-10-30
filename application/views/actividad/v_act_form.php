@@ -71,21 +71,21 @@
 						</tr>
 						<tr>
 							<td>
-							<button onclick="read_tarea_act()">Agregar Tarea</button>
+							<button class="button_form" onclick="read_tarea_act()">Agregar Tarea</button>
 							</td>
 						</tr>
 					</table>
 					<table id="extra" class="tabla_general" border="1">
 						<thead>
 						<th>Rol</th>
-						<th>Tarea</th>
+						<th colspan="2">Tarea</th>
 						</thead>
 						<tbody id="cont_roles_tareas">
 						</tbody>
 					</table>
 				</div>
-				<button id="enviar_btn" onclick="create('<?= base_url() ?>actividad','form_actividad')">Enviar</button>
-			<button id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>actividad')"/>Cancelar</button>
+				<button class="button_form" id="enviar_btn" onclick="create('<?= base_url() ?>actividad','form_actividad')">Enviar</button>
+			<button class="button_form" id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>actividad')"/>Cancelar</button>
 		</div>
 	</div>
 </body>

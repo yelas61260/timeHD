@@ -61,7 +61,10 @@ function update(param_ruta,param_formName){
 			strDAtos["cas"] = $("#act_s #val_contribucion").val();
 			strDAtos["ctp"] = $("#ter_p #val_contribucion").val();
 			strDAtos["cts"] = $("#ter_s #val_contribucion").val();
-		}else if(datosExtra != ""){
+		}else if(param_formName=="form_proyecto_view"){
+			strDAtos["terceros"] = unirTercerosValor();
+		}
+		if(datosExtra != ""){
 			strDAtos["extra"] = datosExtra+"";
 		}
 		for(i=0; i<document.forms[param_formName].length; i++){
@@ -203,7 +206,7 @@ function read_actividad_cotizacion(param_ruta, param_table){
 		success: function(data) {
 			var filaTemp = $("<tr>");
 			filaTemp.attr("idObj", "0");
-			var cellRol = $("<td>");
+			var cellRol = $("<td class='col_id'>");
 			cellRol.html($("#rol").val());
 			filaTemp.append(cellRol);
 			var cellRolName = $("<td>");
@@ -213,13 +216,16 @@ function read_actividad_cotizacion(param_ruta, param_table){
 			for(i=0; i<datosArray.length; i++){
 				var cellTemp = $("<td>");
 				cellTemp.html(datosArray[i]);
+				if (i==0 || i==2) {
+					cellTemp.addClass('col_id');
+				}
 				filaTemp.append(cellTemp);
 			}
 			var cellHora = $("<td>");
 			cellHora.html("<input type='text' size='10' value='0' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta+"\", this);'/>");
 			filaTemp.append(cellHora);
 			filaTemp.append($("<td>").html("0"));
-			filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+			filaTemp.append($("<td>").html("<button class='button_form' onclick='removeElement(this);'>Quitar</button>"));
 
 			$('#'+param_table).append(filaTemp);
 			totales_tabla_tiempo_costo();
@@ -231,7 +237,7 @@ function read_tercero_cotizacion(param_ruta, param_table){
 	filaTemp.attr("idObj", "0");
 	filaTemp.append($("<td>").html($("#ter").val()));
 	filaTemp.append($("<td>").html("<input type='text' size='10' value='0' onkeyup='totales_tabla_tiempo_costo();'/>"));
-	filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+	filaTemp.append($("<td>").html("<button class='button_form' onclick='removeElement(this);'>Quitar</button>"));
 	$("#"+param_table).append(filaTemp);
 	totales_tabla_tiempo_costo();
 }
@@ -262,7 +268,7 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 						posForm++;
 					}
 				});
-				if (notFrame==1) {
+				if (notFrame==1 && datosJSON["contr"] != undefined) {
 					$("#act_p #val_contribucion").val(datosJSON["contr"]["cap"]);
 					$("#act_s #val_contribucion").val(datosJSON["contr"]["cas"]);
 					$("#ter_p #val_contribucion").val(datosJSON["contr"]["ctp"]);
@@ -282,26 +288,25 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 				}else{
 					filaTemp.attr("idObj", 0);
 				}
-				filaTemp.append($("<td>").html(val["idRol"]));
+				filaTemp.append($("<td class='col_id'>").html(val["idRol"]));
 				filaTemp.append($("<td>").html(val["nombreRol"]));
-				filaTemp.append($("<td>").html(val["faseN"]));
+				filaTemp.append($("<td class='col_id'>").html(val["faseN"]));
 				filaTemp.append($("<td>").html(val["fase"]));
-				filaTemp.append($("<td>").html(val["actN"]));
+				filaTemp.append($("<td class='col_id'>").html(val["actN"]));
 				filaTemp.append($("<td>").html(val["actividad"]));
 				if (notFrame == 2) {
-					filaTemp.append($("<td>").html(val["tiempo_est"]));
-					filaTemp.append($("<td>").html(val["tiempo_fac"]));
-					filaTemp.append($("<td>").html(val["costo_est"]));
-					filaTemp.append($("<td>").html(val["costo_fac"]));
-					filaTemp.append($("<td>").html("<input type='text' size='10' value='0' />"));
+					filaTemp.append($("<td class='cell_time'>").html(val["tiempo_est"]));
+					filaTemp.append($("<td class='cell_time'>").html(val["tiempo_fac"]));
+					filaTemp.append($("<td class='cell_number'>").html(formatMoneda(val["costo_est"])));
+					filaTemp.append($("<td class='cell_number'>").html(formatMoneda(val["costo_fac"])));
 				}else if(notFrame == 0){
-					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
-					filaTemp.append($("<td>").html("0"));
-					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+					filaTemp.append($("<td class='cell_time'>").html("<input type='text' size='10' value='"+Math.ceil(val["tiempo"]*$("#duracion_est").val()/60)+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
+					filaTemp.append($("<td class='cell_number'>").html("0"));
+					filaTemp.append($("<td>").html("<button class='button_form' onclick='removeElement(this);'>Quitar</button>"));
 				}else{
-					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"])+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
-					filaTemp.append($("<td>").html("0"));
-					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+					filaTemp.append($("<td class='cell_time'>").html("<input type='text' size='10' value='"+(val["tiempo"])+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
+					filaTemp.append($("<td class='cell_number'>").html("0"));
+					filaTemp.append($("<td>").html("<button class='button_form' onclick='removeElement(this);'>Quitar</button>"));
 				}
 				$("#act_p").append(filaTemp);
 				if (notFrame != 2) {
@@ -315,26 +320,25 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 				}else{
 					filaTemp.attr("idObj", 0);
 				}
-				filaTemp.append($("<td>").html(val["idRol"]));
+				filaTemp.append($("<td class='col_id'>").html(val["idRol"]));
 				filaTemp.append($("<td>").html(val["nombreRol"]));
-				filaTemp.append($("<td>").html(val["faseN"]));
+				filaTemp.append($("<td class='col_id'>").html(val["faseN"]));
 				filaTemp.append($("<td>").html(val["fase"]));
-				filaTemp.append($("<td>").html(val["actN"]));
+				filaTemp.append($("<td class='col_id'>").html(val["actN"]));
 				filaTemp.append($("<td>").html(val["actividad"]));
 				if (notFrame == 2) {
-					filaTemp.append($("<td>").html(val["tiempo_est"]));
-					filaTemp.append($("<td>").html(val["tiempo_fac"]));
-					filaTemp.append($("<td>").html(val["costo_est"]));
-					filaTemp.append($("<td>").html(val["costo_fac"]));
-					filaTemp.append($("<td>").html("<input type='text' size='10' value='0' />"));
+					filaTemp.append($("<td class='cell_time'>").html(val["tiempo_est"]));
+					filaTemp.append($("<td class='cell_time'>").html(val["tiempo_fac"]));
+					filaTemp.append($("<td class='cell_number'>").html(formatMoneda(val["costo_est"])));
+					filaTemp.append($("<td class='cell_number'>").html(formatMoneda(val["costo_fac"])));
 				}else if(notFrame == 0){
-					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"]*$("#duracion_est").val())+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
-					filaTemp.append($("<td>").html("0"));
-					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+					filaTemp.append($("<td class='cell_time'>").html("<input type='text' size='10' value='"+Math.ceil(val["tiempo"]*$("#duracion_est").val()/60)+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
+					filaTemp.append($("<td class='cell_number'>").html("0"));
+					filaTemp.append($("<td>").html("<button class='button_form' onclick='removeElement(this);'>Quitar</button>"));
 				}else{
-					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+(val["tiempo"])+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
-					filaTemp.append($("<td>").html("0"));
-					filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+					filaTemp.append($("<td class='cell_time'>").html("<input type='text' size='10' value='"+(val["tiempo"])+"' onkeyup='totales_tabla_tiempo_costo();if(event.keyCode == 13) calcularAct(\""+param_ruta2+"\", this);'/>"));
+					filaTemp.append($("<td class='cell_number'>").html("0"));
+					filaTemp.append($("<td>").html("<button class='button_form' onclick='removeElement(this);'>Quitar</button>"));
 				}
 				$("#act_s").append(filaTemp);
 				if (notFrame != 2) {
@@ -351,7 +355,10 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 				}
 				filaTemp.append($("<td>").html(val["nombre"]));
 				filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["costo"]+"' onkeyup='totales_tabla_tiempo_costo();'/>"));
-				filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+				if (notFrame==2) {
+					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["costo_real"]+"' onkeyup='totales_tabla_tiempo_costo();'/>"));
+				}
+				filaTemp.append($("<td>").html("<button class='button_form' onclick='removeElement(this);'>Quitar</button>"));
 				$("#ter_p").append(filaTemp);
 			});
 			jQuery.each(datosJSON["ter_s"], function(i, val){
@@ -363,7 +370,10 @@ function read_pcp(param_ruta, id, param_ruta2, notFrame = 1, frame = 'form_proye
 				}
 				filaTemp.append($("<td>").html(val["nombre"]));
 				filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["costo"]+"' onkeyup='totales_tabla_tiempo_costo();'/>"));
-				filaTemp.append($("<td>").html("<button onclick='removeElement(this);'>Quitar</button>"));
+				if (notFrame==2) {
+					filaTemp.append($("<td>").html("<input type='text' size='10' value='"+val["costo_real"]+"' onkeyup='totales_tabla_tiempo_costo();'/>"));
+				}
+				filaTemp.append($("<td>").html("<button class='button_form' onclick='removeElement(this);'>Quitar</button>"));
 				$("#ter_s").append(filaTemp);
 			});
 			totales_tabla_tiempo_costo();
@@ -382,7 +392,7 @@ function calcularAct(param_ruta, param_obj){
 		data: "id="+$($(param_obj).parent().parent().children()[4]).html()+"&rol="+$($(param_obj).parent().parent().children()[0]).html(),
 		success: function(data) {
 			console.log(data);
-			$($(param_obj).parent().parent().children()[7]).html(parseInt(data)*$(param_obj).val());
+			$($(param_obj).parent().parent().children()[7]).html(formatMoneda(parseInt(data)*$(param_obj).val()));
 			totales_tabla_tiempo_costo();
 		}
 	});
@@ -406,33 +416,33 @@ function sumar_tiempo(param_fecha1,param_fecha2){
 }
 function read_roles_usuario(){
 	var content = "<tr id='ext_"+document.getElementById("rol").value+"' valor='"+document.getElementById("rol").value+"'><td>"+$("#rol option:selected").html()+"</td>";
-	content += "<td><button onclick='quitar("+document.getElementById("rol").value+", "+0+");'>Quitar</button></td></tr>";
+	content += "<td><button class='button_form' onclick='quitar("+document.getElementById("rol").value+", "+0+");'>Quitar</button></td></tr>";
 	document.getElementById("cont_roles").innerHTML += content;
 }
 function read_roles_usuario_edit(id_rol, id_prin){
 	var content = "<tr id='ext_"+id_rol+"' valor='"+id_rol+"'><td>"+$("#rol option[value='"+id_rol+"']").text()+"</td>";
-	content += "<td><button onclick='quitar("+id_rol+", "+id_prin+");'>Quitar</button></td></tr>";
+	content += "<td><button class='button_form' onclick='quitar("+id_rol+", "+id_prin+");'>Quitar</button></td></tr>";
 	document.getElementById("cont_roles").innerHTML += content;
 }
 
 function read_tarea_act(){
 	var content = "<tr id='ext_"+document.getElementById("roles").value+"' valor='"+document.getElementById("roles").value+","+document.getElementById("tarea").value+"'><td>"+$("#roles option:selected").html()+"</td>";
 	content += "<td>"+document.getElementById("tarea").value+"</td>";
-	content += "<td><button onclick='quitar("+document.getElementById("roles").value+", "+0+");'>Quitar</button></td></tr>";
+	content += "<td><button class='button_form' onclick='quitar("+document.getElementById("roles").value+", "+0+");'>Quitar</button></td></tr>";
 	document.getElementById("cont_roles_tareas").innerHTML += content;
 }
 
 function read_tarea_rol(){
 	alert(document.getElementById("tarea").options);
 	var content = "<tr id='ext_"+document.getElementById("tarea").value+"' valor='"+document.getElementById("tarea").value+"'><td>"+$("#tarea option:selected").html()+"</td>";
-	content += "<td><button onclick='quitar("+document.getElementById("tarea").value+", "+0+");'>Quitar</button></td></tr>";
+	content += "<td><button class='button_form' onclick='quitar("+document.getElementById("tarea").value+", "+0+");'>Quitar</button></td></tr>";
 	document.getElementById("cont_tarea").innerHTML += content;
 }
 
 function read_tarea_act_edit(id_rol, nom_tarea){
 	var content = "<tr id='ext_"+id_rol+"' valor='"+id_rol+","+nom_tarea+"'><td>"+$("#roles option[value='"+id_rol+"']").text()+"</td>";
 	content += "<td>"+nom_tarea+"</td>";
-	content += "<td><button onclick='quitar("+id_rol+", \""+nom_tarea+"\");'>Quitar</button></td></tr>";
+	content += "<td><button class='button_form' onclick='quitar("+id_rol+", \""+nom_tarea+"\");'>Quitar</button></td></tr>";
 	
 	document.getElementById("cont_roles_tareas").innerHTML += content;
 }
@@ -443,12 +453,8 @@ function unirActividadesValor(){
 		returnVal += '"idObj":'+$(this).attr("idObj");
 		returnVal += ',"rolID":'+$($(this).children()[0]).html();
 		returnVal += ',"actID":'+$($(this).children()[4]).html();
-		if ($("#form_proyecto_view").length) {
-			returnVal += ',"costo_fac":'+$($($(this).children()[10]).children()[0]).val();			
-		}else{
-			returnVal += ',"horas":'+$($($(this).children()[6]).children()[0]).val();
-			returnVal += ',"costo":'+$($(this).children()[7]).html();
-		}
+		returnVal += ',"horas":'+$($($(this).children()[6]).children()[0]).val();
+		returnVal += ',"costo":'+$($(this).children()[7]).html().split(".").join("");
 		returnVal += '}';
 		if (index != $(this).parent().children().length-1) {
 			returnVal += ',';
@@ -461,12 +467,8 @@ function unirActividadesValor(){
 		returnVal += '"idObj":'+$(this).attr("idObj");
 		returnVal += ',"rolID":'+$($(this).children()[0]).html();
 		returnVal += ',"actID":'+$($(this).children()[4]).html();
-		if ($("#form_proyecto_view").length) {
-			returnVal += ',"costo_fac":'+$($($(this).children()[10]).children()[0]).val();			
-		}else{
-			returnVal += ',"horas":'+$($($(this).children()[6]).children()[0]).val();
-			returnVal += ',"costo":'+$($(this).children()[7]).html();
-		}
+		returnVal += ',"horas":'+$($($(this).children()[6]).children()[0]).val();
+		returnVal += ',"costo":'+$($(this).children()[7]).html().split(".").join("");
 		returnVal += '}';
 		if (index != $(this).parent().children().length-1) {
 			returnVal += ",";
@@ -482,7 +484,12 @@ function unirTercerosValor(){
 		returnVal += '{';
 		returnVal += '"idObj":'+$(this).attr("idObj");
 		returnVal += ',"nombre":"'+$($(this).children()[0]).html()+'"';
-		returnVal += ',"costo":'+$($($(this).children()[1]).children()[0]).val();
+		returnVal += ',"costo":'+$($($(this).children()[1]).children()[0]).val().split(".").join("");
+		if ($($($(this).children()[2]).children()[0]).is("input")) {
+			returnVal += ',"costo_real":'+$($($(this).children()[2]).children()[0]).val().split(".").join("");
+		}else{
+			returnVal += ',"costo_real":0';
+		}
 		returnVal += '}';
 		if (index != $(this).parent().children().length-1) {
 			returnVal += ',';
@@ -494,7 +501,12 @@ function unirTercerosValor(){
 		returnVal += '{';
 		returnVal += '"idObj":'+$(this).attr("idObj");
 		returnVal += ',"nombre":"'+$($(this).children()[0]).html()+'"';
-		returnVal += ',"costo":'+$($($(this).children()[1]).children()[0]).val();
+		returnVal += ',"costo":'+$($($(this).children()[1]).children()[0]).val().split(".").join("");
+		if ($($($(this).children()[2]).children()[0]).is("input")) {
+			returnVal += ',"costo_real":'+$($($(this).children()[2]).children()[0]).val().split(".").join("");
+		}else{
+			returnVal += ',"costo_real":0';
+		}
 		returnVal += '}';
 		if (index != $(this).parent().children().length-1) {
 			returnVal += ',';
@@ -535,31 +547,31 @@ function totales_tabla_tiempo_costo(){
 
 		jQuery.each($("#act_p #cont tr"), function(i, val){
 			total_tiempo_esti = sumar_tiempo($($($(val).children()[6]).children()[0]).val()+":00:00", total_tiempo_esti);
-			total_costo_esti = parseInt($($(val).children()[7]).html()) + total_costo_esti;
+			total_costo_esti = parseInt($($(val).children()[7]).html().split(".").join("")) + total_costo_esti;
 		});
 		$("#act_p #total_tiempo").html(total_tiempo_esti);
-		$("#act_p #total_costo").html(total_costo_esti);
+		$("#act_p #total_costo").html(formatMoneda(total_costo_esti));
 
 		total_tiempo_esti = "00:00:00";
 		total_costo_esti = 0;
 		jQuery.each($("#act_s #cont tr"), function(i, val){
 			total_tiempo_esti = sumar_tiempo($($($(val).children()[6]).children()[0]).val()+":00:00", total_tiempo_esti);
-			total_costo_esti = parseInt($($(val).children()[7]).html()) + total_costo_esti;
+			total_costo_esti = parseInt($($(val).children()[7]).html().split(".").join("")) + total_costo_esti;
 		});
 		$("#act_s #total_tiempo").html(total_tiempo_esti);
-		$("#act_s #total_costo").html(total_costo_esti);
+		$("#act_s #total_costo").html(formatMoneda(total_costo_esti));
 
 		var total_tercero = 0;
 		jQuery.each($("#ter_p #cont tr"), function(i, val){
-			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val()) + total_tercero;
+			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val().split(".").join("")) + total_tercero;
 		});
-		$("#ter_p #total_costo").html(total_tercero);
+		$("#ter_p #total_costo").html(formatMoneda(total_tercero));
 
 		total_tercero = 0;
 		jQuery.each($("#ter_s #cont tr"), function(i, val){
-			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val()) + total_tercero;
+			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val().split(".").join("")) + total_tercero;
 		});
-		$("#ter_s #total_costo").html(total_tercero);
+		$("#ter_s #total_costo").html(formatMoneda(total_tercero));
 	}else if($("#form_proyecto_view").length){
 		var total_tiempo_esti = "00:00:00";
 		var total_costo_esti = 0;
@@ -568,17 +580,17 @@ function totales_tabla_tiempo_costo(){
 
 		jQuery.each($("#act_p #cont tr"), function(i, val){
 			total_tiempo_esti = sumar_tiempo($($(val).children()[6]).html()+"", total_tiempo_esti);
-			total_costo_esti = parseInt($($(val).children()[8]).html()) + total_costo_esti;
+			total_costo_esti = parseInt($($(val).children()[8]).html().split(".").join("")) + total_costo_esti;
 		});
 		$("#act_p #total_tiempo_est").html(total_tiempo_esti);
-		$("#act_p #total_costo_est").html(total_costo_esti);
+		$("#act_p #total_costo_est").html(formatMoneda(total_costo_esti));
 
 		jQuery.each($("#act_p #cont tr"), function(i, val){
 			total_tiempo_prod = sumar_tiempo($($(val).children()[7]).html()+"", total_tiempo_prod);
-			total_costo_prod = parseInt($($(val).children()[9]).html()) + total_costo_prod;
+			total_costo_prod = parseInt($($(val).children()[9]).html().split(".").join("")) + total_costo_prod;
 		});
 		$("#act_p #total_tiempo").html(total_tiempo_prod);
-		$("#act_p #total_costo").html(total_costo_prod);
+		$("#act_p #total_costo").html(formatMoneda(total_costo_prod));
 
 //////////////////////////////////////////////////////////////////
 		total_tiempo_esti = "00:00:00";
@@ -587,30 +599,36 @@ function totales_tabla_tiempo_costo(){
 		total_costo_prod = 0;
 		jQuery.each($("#act_s #cont tr"), function(i, val){
 			total_tiempo_esti = sumar_tiempo($($(val).children()[6]).html()+"", total_tiempo_esti);
-			total_costo_esti = parseInt($($(val).children()[8]).html()) + total_costo_esti;
+			total_costo_esti = parseInt($($(val).children()[8]).html().split(".").join("")) + total_costo_esti;
 		});
 		$("#act_s #total_tiempo_est").html(total_tiempo_esti);
-		$("#act_s #total_costo_est").html(total_costo_esti);
+		$("#act_s #total_costo_est").html(formatMoneda(total_costo_esti));
 
 		jQuery.each($("#act_s #cont tr"), function(i, val){
 			total_tiempo_prod = sumar_tiempo($($(val).children()[7]).html()+"", total_tiempo_prod);
-			total_costo_prod = parseInt($($(val).children()[9]).html()) + total_costo_prod;
+			total_costo_prod = parseInt($($(val).children()[9]).html().split(".").join("")) + total_costo_prod;
 		});
 		$("#act_s #total_tiempo").html(total_tiempo_prod);
-		$("#act_s #total_costo").html(total_costo_prod);
+		$("#act_s #total_costo").html(formatMoneda(total_costo_prod));
 
 ///////////////////////////////////////////////////////////////////
 		var total_tercero = 0;
+		var total_tercero_real = 0;
 		jQuery.each($("#ter_p #cont tr"), function(i, val){
-			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val()) + total_tercero;
+			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val().split(".").join("")) + total_tercero;
+			total_tercero_real = parseInt($($($(val).children()[2]).children()[0]).val().split(".").join("")) + total_tercero_real;
 		});
-		$("#ter_p #total_costo").html(total_tercero);
+		$("#ter_p #total_costo").html(formatMoneda(total_tercero));
+		$("#ter_p #total_costo_real").html(formatMoneda(total_tercero_real));
 
 		total_tercero = 0;
+		total_tercero_real = 0;
 		jQuery.each($("#ter_s #cont tr"), function(i, val){
-			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val()) + total_tercero;
+			total_tercero = parseInt($($($(val).children()[1]).children()[0]).val().split(".").join("")) + total_tercero;
+			total_tercero_real = parseInt($($($(val).children()[2]).children()[0]).val().split(".").join("")) + total_tercero_real;
 		});
-		$("#ter_s #total_costo").html(total_tercero);
+		$("#ter_s #total_costo").html(formatMoneda(total_tercero));
+		$("#ter_s #total_costo_real").html(formatMoneda(total_tercero_real));
 	}
 	if($("#val_contribucion").length){
 		calcularContribucion($("#act_p #val_contribucion"));
@@ -639,8 +657,34 @@ function cargar_Plantilla(param_ruta, param_ruta2){
 function calcularContribucion(param_obj){
 	var idtableParent = $(param_obj).parent().parent().parent().parent().attr("id");
 	if ($("#form_proyecto").length) {
-		$("#"+idtableParent+" #val_precio").html( parseInt($("#"+idtableParent+" #total_costo").html())+($(param_obj).val()*parseInt($("#"+idtableParent+" #total_costo").html()))/100 );
+		$("#"+idtableParent+" #val_precio").html( formatMoneda(parseInt($("#"+idtableParent+" #total_costo").html().split(".").join(""))+Math.round(parseInt($(param_obj).val())*parseInt($("#"+idtableParent+" #total_costo").html().split(".").join(""))/100)) );
 	}else if ($("#form_proyecto_view").length) {
-		$("#"+idtableParent+" #val_precio").html( parseInt($("#"+idtableParent+" #total_costo_est").html())+($(param_obj).html()*parseInt($("#"+idtableParent+" #total_costo_est").html()))/100 );
+		$("#"+idtableParent+" #val_precio").html( formatMoneda(parseInt($("#"+idtableParent+" #total_costo").html().split(".").join(""))+Math.round(parseInt($(param_obj).html())*parseInt($("#"+idtableParent+" #total_costo").html().split(".").join(""))/100)) );
 	}
+	$("#totales #time1").html($("#act_p #total_tiempo").html());
+	$("#totales #time2").html(sumar_tiempo($("#act_p #total_tiempo").html(), $("#act_s #total_tiempo").html()));
+	$("#totales #cost1").html($("#act_p #val_precio").html());
+	$("#totales #cost2").html(formatMoneda(""+(parseInt($("#act_p #val_precio").html().split(".").join("")) + parseInt($("#act_s #val_precio").html().split(".").join("")))));
+	if($("#form_proyecto_view").length){
+		$("#totales #time1_est").html($("#act_p #total_tiempo_est").html());
+		$("#totales #time2_est").html(sumar_tiempo($("#act_p #total_tiempo_est").html(), $("#act_s #total_tiempo_est").html()));
+		$("#totales #cost1_est").html($("#act_p #total_costo_est").html());
+		$("#totales #cost2_est").html(formatMoneda(""+(parseInt($("#act_p #total_costo_est").html().split(".").join("")) + parseInt($("#act_s #total_costo_est").html().split(".").join("")))));
+	}
+}
+function formatMoneda(inputStr)
+{
+	inputStr = inputStr+"";
+	var num = inputStr.replace(/\./g,'');
+	if(!isNaN(num)){
+		num = num.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1.');
+		num = num.split('').reverse().join('').replace(/^[\.]/,'');
+		inputStr = num;
+	}else{
+		inputStr = inputStr.replace(/[^\d\.]*/g,'');
+	}
+	return inputStr;
+}
+function graficReport(){
+	
 }

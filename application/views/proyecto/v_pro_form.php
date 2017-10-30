@@ -116,58 +116,54 @@
 				<table class="tabla_general tbl_act" id="act_p" border="1" borrar="">
 					<thead><th>Actividades Principales</th></thead>
 					<thead>
-						<th>ID Rol</th>
+						<th class="col_id">ID Rol</th>
 						<th>Rol</th>
-						<th>Fase No.</th>
+						<th class="col_id">Fase No.</th>
 						<th>Fase</th>
-						<th>Act. No.</th>
+						<th class="col_id">Act. No.</th>
 						<th>Actividad</th>
 						<th>Horas Estimadas</th>
 						<th>Horas Reportadas</th>
 						<th>Costo Estimado</th>
 						<th>Costo Produccion</th>
-						<th>Costo Facturado</th>
 					</thead>
 					<tbody id="cont">
 					</tbody>
 					<tfoot>
 						<tr>
+							<th class="col_id"></th>
 							<th></th>
+							<th class="col_id"></th>
 							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th class="col_id"></th>
 							<th>Totales</th>
 							<th id="total_tiempo_est">00:00:00</th>
 							<th id="total_tiempo">00:00:00</th>
 							<th id="total_costo_est">0</th>
 							<th id="total_costo">0</th>
-							<th id="total_factu">0</th>
 						</tr>
 						<tr>
+							<th class="col_id"></th>
 							<th></th>
+							<th class="col_id"></th>
 							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th class="col_id"></th>
 							<th></th>
 							<th></th>
 							<th>Contribución</th>
 							<th><div id="val_contribucion"></div></th>
 							<th></th>
-							<th></th>
 						</tr>
 						<tr>
+							<th class="col_id"></th>
 							<th></th>
+							<th class="col_id"></th>
 							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th class="col_id"></th>
 							<th></th>
 							<th></th>
 							<th>Precio</th>
 							<th id="val_precio">0</th>
-							<th></th>
 							<th></th>
 						</tr>
 					</tfoot>
@@ -175,58 +171,54 @@
 				<table class="tabla_general tbl_act" id="act_s" border="1" borrar="">
 					<thead><th>Actividades Secundarias</th></thead>
 					<thead>
-						<th>ID Rol</th>
+						<th class="col_id">ID Rol</th>
 						<th>Rol</th>
-						<th>Fase No.</th>
+						<th class="col_id">Fase No.</th>
 						<th>Fase</th>
-						<th>Act. No.</th>
+						<th class="col_id">Act. No.</th>
 						<th>Actividad</th>
 						<th>Horas Estimadas</th>
 						<th>Horas Reportadas</th>
 						<th>Costo Estimado</th>
 						<th>Costo Produccion</th>
-						<th>Costo Facturado</th>
 					</thead>
 					<tbody id="cont">
 					</tbody>
 					<tfoot>
 						<tr>
+							<th class="col_id"></th>
 							<th></th>
+							<th class="col_id"></th>
 							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th class="col_id"></th>
 							<th>Totales</th>
 							<th id="total_tiempo_est">00:00:00</th>
 							<th id="total_tiempo">00:00:00</th>
 							<th id="total_costo_est">0</th>
 							<th id="total_costo">0</th>
-							<th id="total_factu">0</th>
 						</tr>
 						<tr>
+							<th class="col_id"></th>
 							<th></th>
+							<th class="col_id"></th>
 							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th class="col_id"></th>
 							<th></th>
 							<th></th>
 							<th>Contribución</th>
 							<th><div id="val_contribucion"></div></th>
 							<th></th>
-							<th></th>
 						</tr>
 						<tr>
+							<th class="col_id"></th>
 							<th></th>
+							<th class="col_id"></th>
 							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th class="col_id"></th>
 							<th></th>
 							<th></th>
 							<th>Precio</th>
 							<th id="val_precio">0</th>
-							<th></th>
 							<th></th>
 						</tr>
 					</tfoot>
@@ -237,6 +229,7 @@
 					<thead>
 						<th>Nombre</th>
 						<th>Costo</th>
+						<th>Costo Real</th>
 					</thead>
 					<tbody id="cont">
 					</tbody>
@@ -244,14 +237,17 @@
 						<tr>
 							<th>Total</th>
 							<th id="total_costo">0</th>
+							<th id="total_costo_real">0</th>
 						</tr>
 						<tr>
 							<th>Contribución</th>
 							<th><div id="val_contribucion"></div></th>
+							<th></th>
 						</tr>
 						<tr>
 							<th>Precio</th>
 							<th id="val_precio">0</th>
+							<th></th>
 						</tr>
 					</tfoot>
 				</table>
@@ -260,6 +256,7 @@
 					<thead>
 						<th>Nombre</th>
 						<th>Costo</th>
+						<th>Costo Real</th>
 					</thead>
 					<tbody id="cont">
 					</tbody>
@@ -267,14 +264,17 @@
 						<tr>
 							<th>Total</th>
 							<th id="total_costo">0</th>
+							<th id="total_costo_real">0</th>
 						</tr>
 						<tr>
 							<th>Contribución</th>
 							<th><div id="val_contribucion"></div></th>
+							<th></th>
 						</tr>
 						<tr>
 							<th>Precio</th>
 							<th id="val_precio">0</th>
+							<th></th>
 						</tr>
 					</tfoot>
 				</table>
@@ -282,11 +282,19 @@
 				<br>
 				<br>
 				<table class="tabla_general" id="totales" border="1">
-					<thead><th></th></thead>
+					<thead><th>Tipo</th><th>Tiempo Estimado</th><th>Tiempo Reportado</th><th>Costo Estimado</th><th>Costo Produccion</th></thead>
+					<tbody>
+						<tr>
+							<td>Costos final sin actividades secundarias</td><td><div id="time1_est">00:00:00</div></td><td><div id="time1">00:00:00</div></td><td><div id="cost1_est">0</div></td><td><div id="cost1">0</div></td>
+						</tr>
+						<tr>
+							<td>Costos final con actividades secundarias</td><td><div id="time2_est">00:00:00</div></td><td><div id="time2">00:00:00</div></td><td><div id="cost2_est">0</div></td><td><div id="cost2">0</div></td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
-			<button id="enviar_btn" onclick="create('<?= base_url() ?>proyecto','form_proyecto_view')"/>Enviar</button>
-			<button id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>proyecto')"/>Cancelar</button>
+			<button class="button_form" id="enviar_btn" onclick="create('<?= base_url() ?>proyecto','form_proyecto_view')"/>Enviar</button>
+			<button class="button_form" id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>proyecto')"/>Cancelar</button>
 		</div>
 	</div>
 </body>

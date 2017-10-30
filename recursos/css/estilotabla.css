@@ -1,11 +1,12 @@
 /*bordea los campos con colores*/
 #campo{
-    border: 1px solid #B8E68A;
+    border: 1px solid #00e0da;
 }
 
 #titul{
-	background: #8FBC8F;
+	background: #00e0da;
 	font-weight: bold;
+	color: #FFF;
 }
 
 
@@ -54,4 +55,11 @@
 
 #tab_datos input, #tab_datos select{
 	border-radius: 5px;
+}
+
+.paginate_button:hover{
+	background: #00e0da !important;
+}
+.paginate_button:active{
+	background: #00e0da !important;
 }

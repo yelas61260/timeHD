@@ -119,7 +119,6 @@ class db_con extends CI_Model {
 			$sentenciaSQL .= "`".$nameID[$i]."` = '".$valueID[$i]."' AND ";
 		}
 		$sentenciaSQL .= "`".$nameID[$tamParam-1]."` = '".$valueID[$i]."'";
-		//print_r($sentenciaSQL);
 		
 		$sql1 = $this->db->query($sentenciaSQL) or die("No se pudo actualizar el registro ".$sentenciaSQL);
 	}

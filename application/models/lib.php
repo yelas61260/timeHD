@@ -17,8 +17,9 @@ class lib extends CI_Model
 		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/alertify.core.css' />";
 		$content .= "<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/alertify.default.css' />";
 		$content .= "<div class='header'>";
-		$content .= "<div id='logo_img'><img src='".base_url()."recursos/pix/logo.png'/></div>";
-		$content .= "<div id='logo_texto'>Plataforma de gestión de costos</div>";
+		//$content .= "<div id='logo_img'><img src='".base_url()."recursos/pix/logo.png'/></div>";
+		$content .= "<div id='header_image'><img src='".base_url()."recursos/pix/barra.png'/></div>";
+		//$content .= "<div id='logo_texto'>Plataforma de gestión de costos</div>";
 		$content .= "</div>";
 		return $content;
 	}
@@ -117,7 +118,7 @@ class lib extends CI_Model
 			if($nameCampos[$tamcampos - 1] == "" && $nameCampos[$tamcampos - 2] == ""){
 				if($nameCampos[$tamcampos - 3] == ""){	
 		  			$content .= '<td>';
-					$content .= '<button onclick="conv_proy('.$dato[$id].', \''.base_url().$URL.'\');"><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
+					$content .= '<button onclick="conv_proy('.$dato[$id].', \''.base_url().$URL.'\');"><img src="'.base_url().'recursos/pix/convert.png" width="25" height="25"></button>';
 		  			$content .= '</td>';
 	  			}else{
 	  				$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 3]].'</td>';
@@ -125,11 +126,11 @@ class lib extends CI_Model
 
 				$content .= '<td>';
 				$content .= '<form action="'.base_url().$URL.'/update/'.$dato[$id].'" metod="post">';
-				$content .= '<button><img src="'.base_url().'recursos/pix/modificar.jpg" width="25" height="25"></button>';
+				$content .= '<button><img src="'.base_url().'recursos/pix/edit.png" width="25" height="25"></button>';
 	  			$content .= '</form>';
+				$content .= '<button onclick="deleted('.$dato[$id].', \''.base_url().$URL.'\');"><img src="'.base_url().'recursos/pix/close.png" width="25" height="25"></button>';
 	  			$content .= '</td>';
 	  			$content .= '<td>';
-				$content .= '<button onclick="deleted('.$dato[$id].', \''.base_url().$URL.'\');"><img src="'.base_url().'recursos/pix/eliminar.jpg" width="25" height="25"></button>';
 	  			$content .= '</td>';
 	  			$content .= '</tr>';
 	  		}else{
@@ -138,6 +139,28 @@ class lib extends CI_Model
 	  			$content .= '<td id="campo">'.$dato[$nameCampos[$tamcampos - 1]].'</td>';
 	  		}
 		}
+		$content .= '</tbody>';
+
+		$content .='<tfoot><tr>';
+		for($j = 0; $j<$tamcampos; $j++){
+			$content .= '<th id="titul"></th>';
+		}
+		$content .= '</tr></tfoot>';
+		return $content;
+	}
+
+	public function tabla_vacia_generar($campos,$nameCampos){
+		$content = '';
+
+		$tamano = count($campos);
+		$tamcampos = count($nameCampos);
+		$content .= '<thead><tr>';
+		for($i = 0; $i<$tamano; $i++){
+		$content .='<th id="titul">'.$campos[$i].'</th>';
+		}
+		$content .= '</tr></thead>';
+
+		$content .= '<tbody>';
 		$content .= '</tbody>';
 
 		$content .='<tfoot><tr>';

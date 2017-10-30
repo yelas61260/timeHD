@@ -13,9 +13,11 @@
 			<?php
 				$numBtn = count($LinkMenu);
 				for($i = 0; $i<$numBtn; $i++) {
+					echo '<div class="menu_item">';
 					echo '<a href="'.base_url().''.$LinkMenu[$i].'">';
 					echo '<img src="'.base_url().'recursos/pix/menu/'.$ItemsMenu[$i].'.png">';
 					echo '</a>';
+					echo '</div>';
 				}
 			?>
 		</div>

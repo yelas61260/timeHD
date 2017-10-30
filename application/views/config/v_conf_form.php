@@ -36,7 +36,7 @@
 						</tr>
 					</table>
 				</form>
-				<button id="enviar_btn" onclick="update_conf('<?= base_url() ?>config','form_conf')"/>Enviar</button>
+				<button class="button_form" id="enviar_btn" onclick="update_conf('<?= base_url() ?>config','form_conf')"/>Enviar</button>
 			</div>
 		</div>
 	</div>

@@ -1,12 +1,11 @@
 body {
-	background:#CCC;
+	margin: 0;
 }
 button{
-	background:#7EC000;
-	border-radius:5px;
+	border:hidden;
 	color:#FFF;
 	font-weight:bold;
-	padding:5px;
+	padding:0;
 }
 button:hover{
 	background:#28323C;
@@ -25,6 +24,7 @@ label span{
 	font-weight:bold;
 	float:left;
     padding:5px 5px;
+    color: #00e0da;
 }
 .form-input{
 	display:inline-block;
@@ -37,15 +37,16 @@ label span{
 }
 .botones{
 	height:38px;
-	background:#7EC000;
+	background:#ffee1d;
+	color: #00e0da;
 }
 .botones_salida a, .botones_nav a{
-	color:#FFF;
+	color:#00e0da;
 	display:inline-block;
 	text-decoration:none;
 	text-align:center;
 	padding:10px;
-	background:#7EC000;
+	/*background:#7EC000;*/
 }
 .botones_salida a{
 	float:right; 
@@ -76,8 +77,8 @@ label span{
 	background:rgb(0,0,0,0.5);
 }
 .tabla_general th{
-	background:#28323C;
-	border-color:#28323C;
+	background:#00e0da;
+	border-color:#00e0da;
 	color:#fff;
 	font-weight:bold;
 }
@@ -89,4 +90,28 @@ label span{
 }
 .tbl_ter{
 	min-width: 40%;
+}
+.col_id{
+	display: none;
+}
+.cell_number{
+	text-align: right;
+}
+.cell_time{
+	text-align: center;
+}
+.menu_item {
+    display: inline-block;
+    width: 20%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+#div_tabla form{
+	display: inline;
+}
+.button_form {
+    padding: 7px;
+    border-radius: 5px;
+    background: #ffee1d;
+    color: #00e0da;
 }

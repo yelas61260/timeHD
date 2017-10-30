@@ -36,7 +36,7 @@
 						</tr>
 						<tr>
 							<td>
-								<button id="roles_btn" onclick="read_tarea_rol()">Agregar Tarea</button>
+								<button class="button_form" id="roles_btn" onclick="read_tarea_rol()">Agregar Tarea</button>
 							</td>
 						</tr>
 					</table>
@@ -47,8 +47,8 @@
 						<tbody id="cont_tarea"></tbody>
 					</table>
 				</div>
-				<button id="enviar_btn" onclick="create('<?= base_url() ?>rol','form_rol')"/>Enviar</button>
-				<button id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>rol')"/>Cancelar</button>
+				<button class="button_form" id="enviar_btn" onclick="create('<?= base_url() ?>rol','form_rol')"/>Enviar</button>
+				<button class="button_form" id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>rol')"/>Cancelar</button>
 			</div>
 		</div>
 	</div>

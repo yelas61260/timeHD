@@ -124,19 +124,19 @@
 						</tr>
 						<tr>
 							<td>
-								<button id="roles_btn" onclick="read_roles_usuario()"/>Agregar Rol</button>
+								<button class="button_form" id="roles_btn" onclick="read_roles_usuario()"/>Agregar Rol</button>
 							</td>
 						</tr>
 					</table>
 					<table id="extra" class="tabla_general" border="1">
 						<thead>
-							<th>Roles</th>
+							<th colspan="2" >Roles</th>
 						</thead>
 						<tbody id="cont_roles"></tbody>
 					</table>
 				</div>
-				<button id="enviar_btn" onclick="create('<?= base_url() ?>usuario','form_usuario')"/>Enviar</button>
-			<button id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>usuario')"/>Cancelar</button>
+				<button class="button_form" id="enviar_btn" onclick="create('<?= base_url() ?>usuario','form_usuario')"/>Enviar</button>
+			<button class="button_form" id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>usuario')"/>Cancelar</button>
 			</div>
 		</div>
 	</div>

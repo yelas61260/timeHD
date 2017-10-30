@@ -83,6 +83,8 @@ class Cotizacion extends CI_Controller {
 		$datos_actividades = json_decode($this->input->post("actividades"));
 		$datos_terceros = json_decode($this->input->post("terceros"));
 
+		print_r($datos_terceros);
+
 		if($this->db_con->existe_registro($tablas[10], ["nombre","fk_cliente"], [$datos_array[0],$datos_array[9]])){
 			echo "El proyecto ya existe.";
 		}else{
@@ -174,6 +176,8 @@ class Cotizacion extends CI_Controller {
 
 		$datos_actividades = json_decode($this->input->post("actividades"));
 		$datos_terceros = json_decode($this->input->post("terceros"));
+
+		print_r($datos_terceros);
 		
 		$this->db_con->update_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array, [$this->mcotizacion->get_id()], [$id]);
 
@@ -189,10 +193,10 @@ class Cotizacion extends CI_Controller {
 		$this->db_con->delete_db_datos($tablas[24], ["fk_proyecto"], [$id]);
 		if ($datos_terceros != null) {
 			foreach ($datos_terceros->ter_p as $value) {
-				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 0]);
+				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 0, $value->costo_real]);
 			}
 			foreach ($datos_terceros->ter_s as $value) {
-				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 1]);
+				$this->db_con->insert_db_datos($tablas[24], $this->mcotizacion->get_campos_ter(), [$value->nombre, $id, $value->costo, 1, $value->costo_real]);
 			}
 		}
 		echo "OK";

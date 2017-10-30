@@ -58,7 +58,7 @@
 							</td>
 						</tr>
 					</table>
-					<button>Filtrar</button>
+					<button class="button_form">Filtrar</button>
 				</form>
 			</div>
 			<br>
@@ -71,10 +71,10 @@
 				</div>
 			</div>
 			<div>
-				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel/<?= $id_cli ?>/<?= $id_proy ?>/<?= $id_rec ?>/<?= $id_act ?>/<?= $fecha_ini ?>/<?= $fecha_fin ?>');">Exportar</button>
-				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_proyectos');">Exportar Proyectos</button>
-				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_actividad');">Exportar Actividades</button>
-				<button onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_recursos');">Exportar Colaboradores</button>
+				<button class="button_form" onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel/<?= $id_cli ?>/<?= $id_proy ?>/<?= $id_rec ?>/<?= $id_act ?>/<?= $fecha_ini ?>/<?= $fecha_fin ?>');">Exportar</button>
+				<button class="button_form" onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_proyectos');">Exportar Proyectos</button>
+				<button class="button_form" onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_actividad');">Exportar Actividades</button>
+				<button class="button_form" onClick="abrir_ruta('<?= base_url() ?>reportes/report_excel_recursos');">Exportar Colaboradores</button>
 			</div>
 		</div>
 	</div>
