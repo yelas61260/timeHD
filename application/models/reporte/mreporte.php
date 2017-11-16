@@ -85,5 +85,31 @@ class mreporte extends CI_Model
 			return $this->lib->tabla_vacia_generar(self::$encabezados,self::$etiquetas_get);
 		}		
 	}
+
+	public function report_recurso_x_proyecto($id){
+		$objActPrin = array();
+		$result = $this->db_con->get_sql_records("SELECT t6.cedula AS cedula, CONCAT(t6.nombre, ' ', t6.apellido) AS nombre_colaborador, (MINUTE(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t4.fecha_finalizacion_date,t4.fecha_inicio_date))))) + HOUR(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t4.fecha_finalizacion_date,t4.fecha_inicio_date)))))*60) AS duracion FROM proyecto AS t3, registro_actividad_proyecto_recurso AS t4, recursos AS t6, actividad AS t7, fases_proyecto AS t8, unidades_actividades AS t9 WHERE t4.fk_proyecto = t3.id AND t4.fk_recursos = t6.cedula AND t4.fk_actividad = t7.id AND t7.fk_fases = t8.id AND t7.fk_unidades = t9.id AND t4.fk_proyecto = ".$id." GROUP BY t6.cedula");
+		foreach ($result as $valueAct) {
+			$objAct = new stdClass();
+			foreach ($valueAct as $key => $value) {
+				$objAct->$key = $value;
+			}
+			$objActPrin[] = $objAct;
+		}
+		return $objActPrin;
+	}
+
+	public function report_fecha_x_proyecto($id){
+		$objActPrin = array();
+		$result = $this->db_con->get_sql_records("SELECT CONCAT(YEAR(t4.fecha_inicio), '/', MONTH(t4.fecha_inicio)) AS fecha, (MINUTE(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t4.fecha_finalizacion_date,t4.fecha_inicio_date))))) + HOUR(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t4.fecha_finalizacion_date,t4.fecha_inicio_date)))))*60) AS duracion FROM proyecto AS t3, registro_actividad_proyecto_recurso AS t4, recursos AS t6, actividad AS t7, fases_proyecto AS t8, unidades_actividades AS t9 WHERE t4.fk_proyecto = t3.id AND t4.fk_recursos = t6.cedula AND t4.fk_actividad = t7.id AND t7.fk_fases = t8.id AND t7.fk_unidades = t9.id AND t4.fk_proyecto = ".$id." GROUP BY YEAR(t4.fecha_inicio), MONTH(t4.fecha_inicio)");
+		foreach ($result as $valueAct) {
+			$objAct = new stdClass();
+			foreach ($valueAct as $key => $value) {
+				$objAct->$key = $value;
+			}
+			$objActPrin[] = $objAct;
+		}
+		return $objActPrin;
+	}
 	
 }

@@ -51,6 +51,46 @@ class mactividad extends CI_Model
 		self::$tablas = $this->db_struc->getTablas();
 	}
 
+	public function getRecordMinutosXEscenaAllRecursos($id){
+		$datos1 = $this->db_con->get_sql_records("SELECT t3.cedula, concat(t3.nombre, ' ', t3.apellido) nombre_completo, 
+			ROUND((hour(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date)))))*60+(minute(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date)))))))/IF(t2.cam_num>0,SUM(t1.num_escenas),1)) minXuni 
+			FROM registro_actividad_proyecto_recurso t1 
+			JOIN actividad t2 ON t2.id = t1.fk_actividad 
+			JOIN recursos t3 ON t3.cedula = t1.fk_recursos 
+			WHERE t1.fk_actividad=".$id." GROUP BY t1.fk_recursos ORDER BY t3.cedula ASC");
+		$list_recursos = [];
+		foreach ($datos1 as $recurso) {
+			$record_recurso = new stdClass();
+			$record_recurso->name = $recurso["nombre_completo"];
+			$record_recurso->y = intval($recurso["minXuni"]);
+			$record_recurso->drilldown = $recurso["cedula"];
+			$list_recursos[] = $record_recurso;
+		}
+		return json_encode($list_recursos);
+	}
+
+	public function getRecordMinutosXEscenaXRecursoAllRecursos($id){
+		$recursos = $this->db_con->get_sql_records("SELECT DISTINCT t2.cedula, t2.nombre FROM registro_actividad_proyecto_recurso t1 JOIN recursos t2 ON t2.cedula = t1.fk_recursos WHERE t1.fk_actividad = ".$id." ORDER BY t2.cedula ASC");
+		$list_recursos = [];
+		foreach ($recursos as $recurso) {
+			$datos1 = $this->db_con->get_sql_records("SELECT CONCAT(YEAR(t1.fecha_inicio_date), '_', IF(MONTH(t1.fecha_inicio_date)<10,CONCAT('0',MONTH(t1.fecha_inicio_date)),MONTH(t1.fecha_inicio_date))) fecha, 
+				ROUND((hour(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date)))))*60+(minute(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date)))))))/IF(t2.cam_num>0,SUM(t1.num_escenas),1)) cantXminuto
+				FROM registro_actividad_proyecto_recurso t1 
+				JOIN actividad t2 ON t2.id = t1.fk_actividad 
+				JOIN recursos t3 ON t3.cedula = t1.fk_recursos 
+				WHERE t1.fk_actividad=".$id." AND t1.fk_recursos = ".$recurso["cedula"]." GROUP BY fecha ORDER by fecha");
+			$record_recurso = new stdClass();
+			$record_recurso->name = $recurso["nombre"];
+			$record_recurso->id = $recurso["cedula"];
+			$record_recurso->data = [];
+			foreach ($datos1 as $datos_recurso) {
+				$record_recurso->data[] = [$datos_recurso["fecha"], intval($datos_recurso["cantXminuto"])];
+			}
+			$list_recursos[] = $record_recurso;
+		}
+		return json_encode($list_recursos);
+	}
+
 	public function mult_fecha($tiempo, $multiplo){
 		$fecha_sep = explode(":", $tiempo);
 		$tam_array = count($fecha_sep);
@@ -61,6 +101,15 @@ class mactividad extends CI_Model
 				$temp = floor($fecha_sep[$i]/60);
 				$fecha_sep[$i] = $fecha_sep[$i]-($temp*60);
 			}
+		}
+		if ($fecha_sep[0]<10) {
+			$fecha_sep[0] = "0".$fecha_sep[0];
+		}
+		if ($fecha_sep[1]<10) {
+			$fecha_sep[1] = "0".$fecha_sep[1];
+		}
+		if ($fecha_sep[2]<10) {
+			$fecha_sep[2] = "0".$fecha_sep[2];
 		}
 		return join(":",$fecha_sep);
 	}
@@ -83,6 +132,15 @@ class mactividad extends CI_Model
 				$temp = floor($fecha_res[$i]/60);
 				$fecha_res[$i] = $fecha_res[$i]-($temp*60);
 			}
+		}
+		if ($fecha_res[0]<10) {
+			$fecha_res[0] = "0".$fecha_res[0];
+		}
+		if ($fecha_res[1]<10) {
+			$fecha_res[1] = "0".$fecha_res[1];
+		}
+		if ($fecha_res[2]<10) {
+			$fecha_res[2] = "0".$fecha_res[2];
 		}
 		return join(":",$fecha_res);
 	}

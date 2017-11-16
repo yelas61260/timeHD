@@ -136,4 +136,16 @@ class Reportes extends CI_Controller {
 		echo ''.$this->renders->get_list_actividad_x_rec($this->input->post('id_rec'));
 	}
 
+	public function report_recurso_x_proyecto(){
+		$this->lib->required_session();
+		$this->load->model('reporte/mreporte');
+		echo json_encode($this->mreporte->report_recurso_x_proyecto($this->input->get('id')));
+	}
+
+	public function report_fecha_x_proyecto(){
+		$this->lib->required_session();
+		$this->load->model('reporte/mreporte');
+		echo json_encode($this->mreporte->report_fecha_x_proyecto($this->input->get('id')));
+	}
+
 }

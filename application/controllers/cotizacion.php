@@ -83,7 +83,7 @@ class Cotizacion extends CI_Controller {
 		$datos_actividades = json_decode($this->input->post("actividades"));
 		$datos_terceros = json_decode($this->input->post("terceros"));
 
-		print_r($datos_terceros);
+		$this->lib->debug_time_print($datos_terceros);
 
 		if($this->db_con->existe_registro($tablas[10], ["nombre","fk_cliente"], [$datos_array[0],$datos_array[9]])){
 			echo "El proyecto ya existe.";
@@ -177,7 +177,7 @@ class Cotizacion extends CI_Controller {
 		$datos_actividades = json_decode($this->input->post("actividades"));
 		$datos_terceros = json_decode($this->input->post("terceros"));
 
-		print_r($datos_terceros);
+		$this->lib->debug_time_print($datos_terceros);
 		
 		$this->db_con->update_db_datos($tablas[10], $this->mcotizacion->get_campos(), $datos_array, [$this->mcotizacion->get_id()], [$id]);
 

@@ -14,6 +14,7 @@
 		<div id="cont" >
 			<div id="formulario">
 				<form action="" method="post" name="form_rol" id="form_rol">
+					<input type="hidden" name="id" id="id" value="">
 					<table class="form_header" id="tab_datos">
 						<br>
 						<tr>

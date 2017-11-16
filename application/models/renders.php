@@ -54,7 +54,7 @@ class renders extends CI_Model
 	}
 
 	public function get_list_actividades(){
-		return $this->lib->print_lista(self::$tablas[0], ["id","nombre"], "nombre");
+		return $this->lib->print_lista_filtrada(self::$tablas[0], ["id","nombre"], ["id","nombre"], "fk_estados=1", "nombre");
 	}
 
 	public function get_list_tareas(){

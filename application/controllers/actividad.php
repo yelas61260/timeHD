@@ -125,6 +125,13 @@ class Actividad extends CI_Controller {
 			$script_roles .= 'read_tarea_act_edit('.$dato["fk_roles"].',"'.$dato["nombre"].'");';
 		}
 
+		$report_act_all_recursos = $this->mactividad->getRecordMinutosXEscenaAllRecursos($id);
+		$report_actxrecurso_all_recursos = $this->mactividad->getRecordMinutosXEscenaXRecursoAllRecursos($id);
+		$Unidad = $this->db_con->get_sql_records("SELECT t2.nombre FROM actividad t1 JOIN unidades_actividades t2 ON t1.fk_unidades = t2.id WHERE t1.id = ".$id);
+		$script_graficas = "$(function () {
+			graficReportColumnSubrecord('Productividad', '', 'minutos por ".$Unidad[0]["nombre"]."', ".$report_act_all_recursos.", ".$report_actxrecurso_all_recursos.", 'grafica1');
+		});";
+
 		$data = array(
 			'titulo' => 'Editar Actividad',
 			'header' => $this->lib->print_header(),
@@ -133,7 +140,7 @@ class Actividad extends CI_Controller {
 			'lista_estado' => $this->renders->get_list_estado(),
 			'lista_roles' => $this->renders->get_list_roles(),
 			'lista_unidades' => $this->renders->get_list_unidad(),
-			'update_script' => 'read('.$id.', "'.base_url().'actividad", "form_actividad");'.$script_roles
+			'update_script' => 'read('.$id.', "'.base_url().'actividad", "form_actividad");'.$script_roles.$script_graficas
 			);
 		$this->load->view('actividad/v_act_form',$data);
 	}
@@ -231,7 +238,7 @@ class Actividad extends CI_Controller {
 
 		$datos = $this->db_con->get_all_records($tablas[16]." AS t1, ".$tablas[18]." AS t2", [" t1.fk_tarea=t2.id AND t1.fk_roles", "t2.nombre"], [$this->input->post("p2_extra"), $this->input->post("p1_extra")], ["t1.id"]);		
 
-		//print_r($datos);
+		$this->lib->debug_time_print($datos);
 		$this->db_con->delete_db_datos($tablas[16], ["id"], [$datos[0]["id"]]);
 	}
 

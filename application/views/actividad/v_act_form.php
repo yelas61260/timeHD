@@ -4,6 +4,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <title><?= $titulo ?></title>
+	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/highcharts.js'/></script>
+	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/data.js'/></script>
+	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/drilldown.js'/></script>
 </head>
 
 <body>
@@ -87,6 +90,10 @@
 				<button class="button_form" id="enviar_btn" onclick="create('<?= base_url() ?>actividad','form_actividad')">Enviar</button>
 			<button class="button_form" id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>actividad')"/>Cancelar</button>
 		</div>
+	</div>
+	<div class="cont_graficos">
+		<div id="grafica1"></div>
+		<div id="grafica2"></div>
 	</div>
 </body>
 <script type="text/javascript"><?= $update_script ?></script>

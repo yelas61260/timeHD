@@ -106,10 +106,10 @@ class lib extends CI_Model
 				$sentenciaSQL .= $valoresCondicion[$k]." AND ";
 			}
 			$sentenciaSQL .= $valoresCondicion[$tamCondicion-1];
+			$this->lib->debug_time_print($sentenciaSQL);
 			$datos = $this->db_con->get_sql_records($sentenciaSQL);
 		}
-		//print_r($sentenciaSQL);
-		//print_r($datos);
+		$this->lib->debug_time_print($datos);
 		foreach ($datos as $dato) {
 			$content .= '<tr>';
 			for($j = 0; $j<$tamcampos - 3; $j++){
@@ -195,6 +195,10 @@ class lib extends CI_Model
 		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/responsive/jquery.dataTables.min.css'>";
 		$content .="<link rel='stylesheet' type='text/css' href='".base_url()."recursos/css/estilotabla.css'>";
 		return $content;
+	}
+
+	public function debug_time_print($text){
+		//print_r($text);
 	}
 
 }

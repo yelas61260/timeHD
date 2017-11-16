@@ -14,8 +14,8 @@ class db_con extends CI_Model {
 			$sentenciaSQL .= " ".$parametros[$i]."='".$valores[$i]."' AND";
 		}
 		$sentenciaSQL .= " ".$parametros[$tamParam-1]."='".$valores[$tamParam-1]."';";
+		$this->lib->debug_time_print($sentenciaSQL);
 		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
-		//print_r($sentenciaSQL);
 		if(count($sql1->result_array())>0 && count($sql1->result_array()[0])>0){
 			return true;
 		}else{
@@ -44,7 +44,7 @@ class db_con extends CI_Model {
 		}else{
 			$sentenciaSQL .= " ORDER BY ".$order_by." ASC;";
 		}
-		//print_r($sentenciaSQL);
+		$this->lib->debug_time_print($sentenciaSQL);
 		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 
 		return $sql1->result_array();
@@ -64,7 +64,7 @@ class db_con extends CI_Model {
 		}else{
 			$sentenciaSQL .= " ORDER BY ".$order_by." ASC;";
 		}
-		//print_r($sentenciaSQL);
+		$this->lib->debug_time_print($sentenciaSQL);
 		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 		
 		return $sql1->result_array();
@@ -84,12 +84,13 @@ class db_con extends CI_Model {
 		}else{
 			$sentenciaSQL .= " ORDER BY ".$order_by." ASC;";
 		}
-		//print_r($sentenciaSQL);
+		$this->lib->debug_time_print($sentenciaSQL);
 		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 		
 		return $sql1->result_array();
 	}
 	public function get_sql_records($sentenciaSQL){
+		$this->lib->debug_time_print($sentenciaSQL);
 		$sql1=$this->db->query($sentenciaSQL) or die("No se pudo ejecutar la consulta ".$sentenciaSQL);
 		
 		return $sql1->result_array();
@@ -119,7 +120,7 @@ class db_con extends CI_Model {
 			$sentenciaSQL .= "`".$nameID[$i]."` = '".$valueID[$i]."' AND ";
 		}
 		$sentenciaSQL .= "`".$nameID[$tamParam-1]."` = '".$valueID[$i]."'";
-		
+		$this->lib->debug_time_print($sentenciaSQL);
 		$sql1 = $this->db->query($sentenciaSQL) or die("No se pudo actualizar el registro ".$sentenciaSQL);
 	}
 
@@ -127,10 +128,10 @@ class db_con extends CI_Model {
 		$tamParam = count($parametros);
 		$sentenciaSQL = "DELETE FROM $tabla WHERE ";
 		for($i = 0; $i<$tamParam-1; $i++){
-			$sentenciaSQL .= "`".$parametros[$i]."` = '".$valores[$i]."' AND ";
+			$sentenciaSQL .= "`".$parametros[$i]."` = ".$valores[$i]." AND ";
 		}
-		$sentenciaSQL .= "`".$parametros[$tamParam-1]."` = '".$valores[$i]."'";
-		//print_r($sentenciaSQL);
+		$sentenciaSQL .= "`".$parametros[$tamParam-1]."` = ".$valores[$i]."";
+		$this->lib->debug_time_print($sentenciaSQL);
 		$sql1 = $this->db->query($sentenciaSQL) or die("No se pudo borrar el registro ".$sentenciaSQL);
 	}
 }

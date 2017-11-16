@@ -30,6 +30,10 @@ class mcotizacion extends CI_Model
 		self::$campos[11] = "fk_tecnologia";
 		self::$campos[12] = "fk_recursos";
 		self::$campos[13] = "fk_estados";
+		self::$campos[14] = "cap";
+		self::$campos[15] = "cas";
+		self::$campos[16] = "ctp";
+		self::$campos[17] = "cts";
 
 		self::$campos_read[0] = "fk_cliente";
 		self::$campos_read[1] = "fecha_inicio_estimada";

@@ -433,9 +433,14 @@ function read_tarea_act(){
 }
 
 function read_tarea_rol(){
-	alert(document.getElementById("tarea").options);
 	var content = "<tr id='ext_"+document.getElementById("tarea").value+"' valor='"+document.getElementById("tarea").value+"'><td>"+$("#tarea option:selected").html()+"</td>";
 	content += "<td><button class='button_form' onclick='quitar("+document.getElementById("tarea").value+", "+0+");'>Quitar</button></td></tr>";
+	document.getElementById("cont_tarea").innerHTML += content;
+}
+
+function read_tarea_rol_edit(idTarea, nameTarea, idRol){
+	var content = "<tr id='ext_"+idTarea+"' valor='"+idTarea+"'><td>"+nameTarea+"</td>";
+	content += "<td><button class='button_form' onclick='quitar("+idTarea+", "+idRol+");'>Quitar</button></td></tr>";
 	document.getElementById("cont_tarea").innerHTML += content;
 }
 
@@ -534,7 +539,7 @@ function quitar(id_ext, id_ext_parent){
 			datatype: "html",
 			data: strDAtos,
 			success: function(data) {
-				//alert(data);
+				console.log(data);
 			}
 		});
 	}
@@ -685,6 +690,122 @@ function formatMoneda(inputStr)
 	}
 	return inputStr;
 }
-function graficReport(){
-	
+function graficReportColumn(titleParam, subtitleParam, titleyParam, categoriesParam, dataParam, containerParam){
+	Highcharts.chart(containerParam, {
+        chart: {
+            type: 'column',
+            options3d: {
+                enabled: true,
+                alpha: 10,
+                beta: 25,
+                depth: 70
+            }
+        },
+        title: {
+            text: titleParam
+        },
+        subtitle: {
+            text: subtitleParam
+        },
+        plotOptions: {
+            column: {
+                depth: 25
+            }
+        },
+        xAxis: {
+            categories: categoriesParam
+        },
+        yAxis: {
+            title: {
+                text: titleyParam
+            }
+        },
+        series: [{
+            name: titleyParam,
+            data: dataParam
+        }]
+    });
+}
+function graficReportLine(titleParam, subtitleParam, titleyParam, categoriesParam, dataParam, containerParam){
+	Highcharts.chart(containerParam, {
+        title: {
+            text: titleParam,
+            x: -20 //center
+        },
+        subtitle: {
+            text: subtitleParam,
+            x: -20
+        },
+        xAxis: {
+            categories: categoriesParam
+        },
+        yAxis: {
+            title: {
+                text: titleyParam
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: ''
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: dataParam
+    });
+}
+function graficReportColumnSubrecord(titleParam, subtitleParam, titleyParam, dataParam1, dataParam2, containerParam) {
+    Highcharts.chart(containerParam, {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: titleParam
+        },
+        subtitle: {
+            text: subtitleParam
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: titleyParam
+            }
+
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y} minutos'
+                }
+            }
+        },
+
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y} minutos</b><br/>'
+        },
+
+        series: [{
+            name: 'Detalle',
+            colorByPoint: true,
+            data: dataParam1
+        }],
+        drilldown: {
+            series: dataParam2
+        }
+    });
 }

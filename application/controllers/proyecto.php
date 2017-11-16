@@ -30,6 +30,17 @@ class Proyecto extends CI_Controller {
 		$this->lib->required_session();
 		$this->load->model('proyecto/mproyecto');
 
+		$report_proyecto_all_roles = $this->mproyecto->getRecordProyectoAllRoles($id);
+		$report_proyectoxrol_all_roles = $this->mproyecto->getRecordProyectoXRolAllRoles($id);
+
+		$report_proyecto_fechas = $this->mproyecto->getFechasProyecto($id);
+		$report_proyectoxactividad_all_actividades = $this->mproyecto->getRecordProyectoXActividadAllActividades($id);
+
+		$script_graficas = "$(function () {
+			graficReportColumnSubrecord('Tiempo dedicado por roles', '', 'tiempo en minutos', ".$report_proyecto_all_roles.", ".$report_proyectoxrol_all_roles.", 'grafica1');
+			graficReportLine('Tiempo dedicado por actividad', '', 'tiempo en minutos', ".$report_proyecto_fechas.", ".$report_proyectoxactividad_all_actividades.", 'grafica2');
+		});";
+
 		$data = array(
 			'titulo' => 'Editar Cotizacion',
 			'header' => $this->lib->print_header(),
@@ -41,7 +52,7 @@ class Proyecto extends CI_Controller {
 			'lista_estados_proy' => $this->renders->get_list_estado_proy(),
 			'lista_actividades' => $this->renders->get_list_actividades(),
 			'lista_roles' => $this->renders->get_list_roles(),
-			'update_script' => 'read_pcp("'.base_url().'proyecto", '.$id.', "'.base_url().'actividad", 2, "form_proyecto_view");'
+			'update_script' => 'read_pcp("'.base_url().'proyecto", '.$id.', "'.base_url().'actividad", 2, "form_proyecto_view");'.$script_graficas
 			);
 		$this->load->view('proyecto/v_pro_form',$data);
 	}
@@ -130,13 +141,13 @@ class Proyecto extends CI_Controller {
 		echo "OK";
 	}
 
-	public function jdextra(){
+	public function jdextra(){/*
 		$tablas = $this->db_struc->getTablas();
 
 		$this->load->model('proyecto/mproyecto');
 
 		$this->db_con->delete_db_datos($tablas[11], [$this->mproyecto->get_campos_actividad()[5], $this->mproyecto->get_campos_actividad()[6]], [$this->input->post("p1_extra"), $this->input->post("p2_extra")]);
-	}
+	*/}
 
 	public function getRecordProyectoXRol(){
 		//$this->lib->required_session();

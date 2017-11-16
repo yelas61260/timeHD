@@ -19,7 +19,7 @@ class mrol extends CI_Model
 	}
 
 	public function get_table_grafic(){
-		return $this->lib->tabla_generar(self::$tablas[15],array("id","Nombre","",""),array("id","nombre","",""),[],"roles",self::$campos[0]);
+		return $this->lib->tabla_generar(self::$tablas[15],array("id","Nombre","",""),array("id","nombre","",""),[],"rol",self::$campos[0]);
 	}
 
 	public function get_campos(){

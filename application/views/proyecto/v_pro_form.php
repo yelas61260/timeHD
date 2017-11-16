@@ -6,8 +6,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?= $titulo ?></title>
 	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/highcharts.js'/></script>
-	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/exporting.js'/></script>
-	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/pro_avance.js'/></script>
+	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/data.js'/></script>
+	<script type='text/javascript' charset='UTF-8' src='<?= base_url(); ?>recursos/js/drilldown.js'/></script>
 </head>
 
 <body>
@@ -297,6 +297,10 @@
 			<button class="button_form" id="cancelar_btn" onclick="abrir_ruta('<?= base_url() ?>proyecto')"/>Cancelar</button>
 		</div>
 	</div>
+	<div class="cont_graficos">
+		<div id="grafica1"></div>
+		<div id="grafica2"></div>
+	</div>
 </body>
-<script type="text/javascript"><?= $update_script ?></script>
+<script type="text/javascript" charset="UTF-8"><?= $update_script ?></script>
 </html>

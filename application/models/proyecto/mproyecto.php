@@ -94,24 +94,85 @@ class mproyecto extends CI_Model
 		return self::$camposTer;
 	}
 
-	public function getRecordProyectoXRol($id_proyecto, $id_rol){
-		$datos1 = $this->db_con->get_sql_records("SELECT CONCAT(YEAR(t1.fecha_inicio_date), '/', MONTH(t1.fecha_inicio_date), '/', DAY(t1.fecha_inicio_date)) fecha, (hour(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date)))))+(minute(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date)))))/60)) tiempo
+	public function getRecordProyectoAllRoles($id_proyecto){
+		$datos1 = $this->db_con->get_sql_records("SELECT t4.id, t4.nombre rol, (hour(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date)))))*60+(minute(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date))))))) tiempo
 			FROM registro_actividad_proyecto_recurso t1
-			JOIN recursos t2 ON t2.cedula = t1.fk_recursos
-			JOIN recurso_rol t3 ON t3.fk_recursos = t2.cedula
-			JOIN roles t4 ON t4.id = t3.fk_roles
-			WHERE t1.fk_proyecto=".$id_proyecto." AND t4.nombre = '".$id_rol."'
-			GROUP BY fecha
-			ORDER by fecha");
-		return $datos1;
+			JOIN roles t4 ON t4.id = t1.fk_roles
+			WHERE t1.fk_proyecto=".$id_proyecto."
+			GROUP BY t4.id ORDER BY t4.id ASC");
+		$list_roles = [];
+		foreach ($datos1 as $rol) {
+			$record_rol = new stdClass();
+			$record_rol->name = $rol["rol"];
+			$record_rol->y = intval($rol["tiempo"]);
+			$record_rol->drilldown = $rol["id"];
+			$list_roles[] = $record_rol;
+		}
+		return json_encode($list_roles);
+	}
+
+	public function getRecordProyectoXRolAllRoles($id_proyecto){
+		$roles = $this->db_con->get_sql_records("SELECT * FROM roles ORDER BY id ASC");
+		$list_roles = [];
+		foreach ($roles as $rol) {
+			$datos1 = $this->db_con->get_sql_records("SELECT CONCAT(YEAR(t1.fecha_inicio_date), '_', IF(MONTH(t1.fecha_inicio_date)<10,CONCAT('0',MONTH(t1.fecha_inicio_date)),MONTH(t1.fecha_inicio_date))) fecha, (hour(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date)))))*60+(minute(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date))))))) tiempo
+				FROM registro_actividad_proyecto_recurso t1
+				JOIN roles t4 ON t4.id = t1.fk_roles
+				WHERE t1.fk_proyecto=".$id_proyecto." AND t4.id = '".$rol["id"]."'
+				GROUP BY fecha
+				ORDER by fecha");
+			$record_rol = new stdClass();
+			$record_rol->name = $rol["nombre"];
+			$record_rol->id = $rol["id"];
+			$record_rol->data = [];
+			foreach ($datos1 as $datos_rol) {
+				$record_rol->data[] = [$datos_rol["fecha"], intval($datos_rol["tiempo"])];
+			}
+			$list_roles[] = $record_rol;
+		}
+		return json_encode($list_roles);
+	}
+
+	public function getRecordProyectoXActividadAllActividades($id_proyecto){
+		$list_categorias = json_decode(self::getFechasProyecto($id_proyecto));
+		$sql_query1 = "SELECT DISTINCT t2.id, t2.nombre FROM registro_actividad_proyecto_recurso t1 JOIN actividad t2 ON t1.fk_actividad = t2.id WHERE t1.fk_proyecto=1 ORDER BY t2.nombre ASC";
+		$record_sql1 = $this->db_con->get_sql_records($sql_query1);
+
+		$list_actividades = [];
+		foreach ($record_sql1 as $actividad_record) {
+			$sql_query2 = "SELECT CONCAT(YEAR(t1.fecha_inicio_date), '_', IF(MONTH(t1.fecha_inicio_date)<10,CONCAT('0',MONTH(t1.fecha_inicio_date)),MONTH(t1.fecha_inicio_date))) fecha, 
+			(hour(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date)))))*60+(minute(SEC_TO_TIME(SUM(TIME_TO_SEC(TIMEDIFF(t1.fecha_finalizacion_date,t1.fecha_inicio_date))))))) tiempo 
+			FROM registro_actividad_proyecto_recurso t1 JOIN actividad t2 ON t1.fk_actividad = t2.id 
+			WHERE t1.fk_proyecto=".$id_proyecto." AND t1.fk_actividad = ".$actividad_record["id"]." GROUP BY fecha ORDER BY fecha ASC";
+			$record_sql2 = $this->db_con->get_sql_records($sql_query2);
+			$temp_actividad = new stdClass();
+			$temp_actividad->name = $actividad_record["nombre"];
+			$temp_actividad->data = [];
+			$pos_fecha_act = 0;
+			$tam_fecha_act = count($record_sql2);
+			foreach ($list_categorias as $fecha) {
+				if ($pos_fecha_act < $tam_fecha_act && $fecha == $record_sql2[$pos_fecha_act]["fecha"]) {
+					$temp_actividad->data[] = intval($record_sql2[$pos_fecha_act]["tiempo"]);
+					$pos_fecha_act++;
+				}else{
+					$temp_actividad->data[] = 0;
+				}
+			}
+			$list_actividades[] = $temp_actividad;
+		}
+		return json_encode($list_actividades);		
 	}
 
 	public function getFechasProyecto($id_proyecto){
-		$datos1 = $this->db_con->get_sql_records("SELECT DISTINCT CONCAT(YEAR(t1.fecha_inicio_date), '/', MONTH(t1.fecha_inicio_date), '/', DAY(t1.fecha_inicio_date)) fecha
+		$datos1 = $this->db_con->get_sql_records("SELECT DISTINCT CONCAT(YEAR(t1.fecha_inicio_date), '_', IF(MONTH(t1.fecha_inicio_date)<10,CONCAT('0',MONTH(t1.fecha_inicio_date)),MONTH(t1.fecha_inicio_date))) fecha
 			FROM registro_actividad_proyecto_recurso t1
 			WHERE t1.fk_proyecto=".$id_proyecto."
-			ORDER by fecha");
-		return $datos1;
+			ORDER by fecha ASC");
+		$list_categorias = [];
+		foreach ($datos1 as $dato) {
+			$list_categorias[] = $dato["fecha"];
+		}
+		return json_encode($list_categorias);
 	}
 
 	public function get_datos($id){
